@@ -1,6 +1,7 @@
 \documentclass[unicode,11pt,a4paper,oneside,numbers=endperiod,openany]{scrartcl}
 
 \usepackage{listings}
+\usepackage{amsmath}
 
 \input{assignment.sty}
 
@@ -70,13 +71,94 @@ The job can then be submitted to the SLURM scheduler with the following command:
 
 The code and output can be found in the \texttt{hello\_euler} directory.
 
+\subsection{Multiple Nodes}
+
+We can run the same code on multiple nodes using the following job script:
+
+
+\begin{lstlisting}[language=bash,caption={Hello Euler Job Script}]
+    #!/bin/bash
+    #SBATCH --job-name=hello_euler_2      # Job name    (default: sbatch)
+    #SBATCH --output=hello_euler_2.out    # Output file (default: slurm-%j.out)
+    #SBATCH --error=hello_euler_2.err     # Error file  (default: slurm-%j.out)
+    #SBATCH --time=00:01:00               # Wall clock time limit
+    #SBATCH --nodes=2                     # Number of tasks
+    #SBATCH --ntasks=2                    # Number of tasks
+    #SBATCH --cpus-per-task=1             # Number of CPUs per task
+    #SBATCH --mem-per-cpu=1024            # Memory per CPU
+
+    srun hello_euler hello_euler
+\end{lstlisting}
+
+Where we set the number of nodes to 2 and the number of tasks to 2. The output can be found in the \texttt{hello\_euler\_2.out} file.
+
 \section{Performance characteristics [50 points]}
 
 \subsection{Peak performance}
 
+The peak performance of a CPU can be calculated using the following formula:
+
+\begin{equation}
+    p_{core} = n_{super} \times n_{FMA} \times f_{SIMD} \times f_{core}
+\end{equation}
+
+\begin{equation}
+    p_{CPU} = n_{core} \times p_{core}
+\end{equation}
+
+in our case this is equal to:
+
+For the EPYC\_7742 node:
+
+\begin{equation}
+    p_{core} = 2 \times 2 \times 256 \times 2.25 \times 2.25 = 4095 \text{ GFLOPS}
+\end{equation}
+
+\begin{equation}
+    p_{CPU} = 64 \times 4095 = 261120 \text{ GFLOPS}
+\end{equation}
+
+For the EPYC\_7763 node:
+
+\begin{equation}
+    p_{core} = 2 \times 2 \times 256 \times 2.45 \times 2.45 = 4768 \text{ GFLOPS}
+\end{equation}
+
+\begin{equation}
+    p_{CPU} = 64 \times 4768 = 304192 \text{ GFLOPS}
+\end{equation}
+
 \subsection{Memory Hierarchies}
 
+The output of running \texttt{lscpu} and \texttt{hwloc-ls} can be found in the \texttt{memory\_hierarchies} directory. As in the example in the assignment there are also two PDFs detailing the memory hierarchy of the EPYC\_7742 and EPYC\_7763 nodes. In summary both nodes have 8 NUMA nodes, with 8 cores per NUMA node. More information on NUMA can easily be found in the \href{https://en.wikipedia.org/wiki/Non-uniform_memory_access}{Wikipedia} page. Basically it means that the nodes have faster access to their specific part of the shared memory. The rest of the numbers can easily be read out of the two PDFs detailing the memory hierarchy.
+
 \subsubsection{Cache and main memory size}
+
+% Tables for cache (L1-L3) and main memory size for both nodes (EPYC_7742 and EPYC_7763) and if they are shared or not
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+
+        \textbf{Cache} & \textbf{EPYC\_7742} & \textbf{EPYC\_7763} \\
+        \hline
+        L1d            & 32KB                & 32KB                \\
+        \hline
+        L1i            & 32KB                & 32KB                \\
+        \hline
+        L2             & 512KB               & 512KB               \\
+        \hline
+        L3             & 16MB                & 32MB                \\
+        \hline
+        NUMA           & 63GB                & 31GB                \\
+        \hline
+        Total Machine  & 502GB               & 248GB               \\
+        \hline
+    \end{tabular}
+    \caption{Cache and main memory size for both nodes}
+    \label{tab:cache_main_memory}
+\end{table}
 
 \subsection{Bandwidth: STREAM benchmark}
 

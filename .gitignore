@@ -11,6 +11,8 @@
 *.cb2
 .*.lb
 
+*/report/*.out
+
 ## Intermediate documents:
 *.dvi
 *.xdv
