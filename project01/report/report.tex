@@ -3,6 +3,7 @@
 \usepackage{minted}
 \usepackage{xcolor}
 \usepackage{amsmath}
+\usepackage{listings}
 
 \input{assignment.sty}
 
@@ -14,7 +15,7 @@
 
 \serieheader{High-Performance Computing Lab for CSE}{2024}
 {Student: Benedict Armstrong}
-{Discussed with: FULL NAME}{Solution for Project 1a}{}
+{Discussed with: -}{Solution for Project 1a}{}
 \newline
 
 
@@ -189,9 +190,47 @@ As per the STREAM benchmark documentation we need to set DSTREAM\_ARRAY\_SIZE to
 
 For the EPYC\_7H12 node the cache size (\ref{tab:cache_main_memory}) is 16MB. $$16\text{MB} = 1.6e7\text{B}$$ So we set DSTREAM\_ARRAY\_SIZE to be $1.6e7 \times 4 / 8 + 2e6 = 10e6$ (we add a little extra as recommended).
 
+\begin{lstlisting}
+Function    Best Rate MB/s  Avg time     Min time     Max time
+Copy:           25125.0     0.006416     0.006368     0.006472
+Scale:          18591.8     0.008643     0.008606     0.008667
+Add:            19702.7     0.012235     0.012181     0.012269
+Triad:          20075.2     0.012017     0.011955     0.012046
+\end{lstlisting}
 
+The peak bandwidth for the EPYC\_7763 node is around $20\text{GB/s}$. \\
+
+The same calculation for the EPYC\_7763 node gives us a DSTREAM\_ARRAY\_SIZE of $32\text{MB} \times 4 / 8 + 4e6 = 20e6$.
+
+\begin{lstlisting}
+Function    Best Rate MB/s  Avg time     Min time     Max time
+Copy:           35390.3     0.009231     0.009042     0.009746
+Scale:          25082.3     0.012878     0.012758     0.013321
+Add:            25780.4     0.018783     0.018619     0.019019
+Triad:          26000.8     0.018654     0.018461     0.019720
+\end{lstlisting}
+
+The peak bandwidth for the EPYC\_7763 node is around $25\text{GB/s}$. \\
+
+The entire output of the STREAM benchmark for both CPUs can be found in the \texttt{stream\_benchmark} directory.
 
 \subsection{Performance model: A simple roofline model}
 
+
+Using the STREAM benchmark results and the peak performance of the CPUs we can create a simple roofline model. The peak performance of the EPYC\_7H12 and EPYC\_7763 nodes are $41.6\text{GFLOPS}$ and $39.2\text{GFLOPS}$, respectively. The peak bandwidth for the EPYC\_7H12 and EPYC\_7763 nodes are $20\text{GB/s}$ and $25\text{GB/s}$, respectively.
+
+% insert image of roofline model (../01a/roofline_model/roofline.png)
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../01a/roofline_model/roofline.png}
+    \caption{Roofline model for the EPYC\_7H12 and EPYC\_7763 nodes}
+    \label{fig:roofline}
+\end{figure}
+
+The ridge point for the EPYC\_7H12 is around $I_{ridge}=2$, and for the EPYC\_7763 node is around $I_{ridge}=1.6$.
+
+\section{Auto-vectorization}
+
+\section{Matrix multiplication optimization}
 
 \end{document}
