@@ -185,6 +185,12 @@ The output of running \texttt{lscpu} and \texttt{hwloc-ls} can be found in the \
 
 \subsection{Bandwidth: STREAM benchmark}
 
+As per the STREAM benchmark documentation we need to set DSTREAM\_ARRAY\_SIZE to be a four times the L3 cache size.
+
+For the EPYC\_7H12 node the cache size (\ref{tab:cache_main_memory}) is 16MB. $$16\text{MB} = 1.6e7\text{B}$$ So we set DSTREAM\_ARRAY\_SIZE to be $1.6e7 \times 4 / 8 + 2e6 = 10e6$ (we add a little extra as recommended).
+
+
+
 \subsection{Performance model: A simple roofline model}
 
 
