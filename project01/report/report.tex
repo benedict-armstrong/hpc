@@ -1,6 +1,7 @@
 \documentclass[unicode,11pt,a4paper,oneside,numbers=endperiod,openany]{scrartcl}
 
 \usepackage{minted}
+\usepackage{xcolor}
 \usepackage{amsmath}
 
 \input{assignment.sty}
@@ -96,50 +97,62 @@ The peak performance of a cluster can be calculated using the following formula:
 \begin{align*}
     p_{core}    & = n_{super} \times n_{FMA} \times n_{SIMD} \times f_{core} \\
     p_{CPU}     & = n_{core} \times p_{core}                                 \\
-    p_{nodes}   & = n_{nodes} \times p_{CPU}                                 \\
-    p_{cluster} & = p_{nodes} \times n_{cluster}
+    p_{node}    & = n_{sockets} \times p_{CPU}                               \\
+    p_{cluster} & = n_{nodes} \times p_{node}
 \end{align*}
 
-
-in our case this is equal to:
+The the \textbf{Euler VII — phase 1} and \textbf{Euler VII — phase 2} nodes use the \textit{EPYC\_7H12} and \textit{EPYC\_7763} cpus, respectively.
 
 \begin{table}
     \centering
 
-    \begin{tabular}{|c|c|c|c}
+    \begin{tabular}{|c|c|c|c|}
         \hline
-        \textbf{Parameter} & \textbf{EPYC\_7H12} & \textbf{EPYC\_7763} \\
+        \textbf{Parameter} & \textbf{Euler VII — phase 1} & \textbf{Euler VII — phase 2} & source                                                                                                \\
         \hline
-        $n_{super}$        & 2                   & 2                   \\
+        CPU                & EPYC\_7H12                   & EPYC\_7763                   & \href{https://scicomp.ethz.ch/wiki/Euler#Euler_VII_.E2.80.94_phase_1}{Euler docs}                     \\
         \hline
-        $n_{FMA}$          & 2                   & 2                   \\
+        $n_{super}$        & 2                            & 2                            & \href{https://uops.info/table.html}{UOPS Website} ($=TP^{-1}$)                                        \\
         \hline
-        $n_{SIMD}$         & 256                 & 256                 \\
+        $n_{FMA}$          & 2                            & 2                            & \href{https://uops.info/table.html}{UOPS Website}                                                     \\
         \hline
-        $f_{core}$         & 2.25GHz             & 2.45GHz             \\
+        $n_{SIMD}$         & 4                            & 4                            & \href{https://en.wikichip.org/wiki/amd/microarchitectures/zen_2#Floating_Point_Unit}{en.wikichip.org} \\
         \hline
-        $n_{core}$         & 64                  & 64                  \\
+        $f_{core}$         & 2.6 GHz                      & 2.45 GHz                     & \href{https://scicomp.ethz.ch/wiki/Euler#Euler_VII_.E2.80.94_phase_1}{Euler docs}                     \\
         \hline
-        $n_{nodes}$        & 2                   & 2                   \\
+        $n_{core}$         & 64                           & 64                           & \href{https://scicomp.ethz.ch/wiki/Euler#Euler_VII_.E2.80.94_phase_1}{Euler docs}                     \\
         \hline
-        $n_{cluster}$      & 1                   & 1                   \\
+        $n_{sockets}$      & 2                            & 2                            & \href{https://scicomp.ethz.ch/wiki/Euler#Euler_VII_.E2.80.94_phase_1}{Euler docs}                     \\
         \hline
-        $p_{core}$         & 2.25GHz             & 2.45GHz             \\
-        \hline
-        $p_{CPU}$          & 144GHz              & 156.8GHz            \\
-        \hline
-        $p_{nodes}$        & 288GHz              & 313.6GHz            \\
-        \hline
-        $p_{cluster}$      & 288GHz              & 313.6GHz            \\
+        $n_{nodes}$        & 292                          & 248                          & \href{https://scicomp.ethz.ch/wiki/Euler#Euler_VII_.E2.80.94_phase_1}{Euler docs}                     \\
         \hline
     \end{tabular}
-    \caption{Peak performance of the EPYC\_7H12 and EPYC\_7763 nodes}
+    \caption{Parameters of the Euler VII — phase 1 and Euler VII — phase 2 nodes}
     \label{tab:peak_performance}
 \end{table}
 
+Using the values from the table \ref{tab:peak_performance} we can calculate the peak performance of the Euler VII — phase 1 and Euler VII — phase 2 nodes.
+\\
+
+Euler VII — phase 1:
+\begin{align*}
+    p_{core}    & = 2 \times 2 \times 4 \times 2.6 \, \text{GHz}  =     41.6 \, \text{GFLOPS}               \\
+    p_{CPU}     & = 64 \times 41.6 \, \text{GFLOPS}                  =  2662.4 \, \text{GFLOPS}             \\
+    p_{node}    & = 2 \times 2662.4 \, \text{GFLOPS}                =   5324.8 \, \text{GFLOPS}             \\
+    p_{cluster} & = 292 \times 5324.8 \, \text{GFLOPS}               =  \underline{1554.8 \, \text{TFLOPS}}
+\end{align*}
+
+Euler VII — phase 2:
+\begin{align*}
+    p_{core}    & = 2 \times 2 \times 4 \times 2.45 \, \text{GHz}  = 39.2 \, \text{GFLOPS}               \\
+    p_{CPU}     & = 64 \times 39.2 \, \text{GFLOPS}                = 2508.8 \, \text{GFLOPS}             \\
+    p_{node}    & = 2 \times 2508.8 \, \text{GFLOPS}               = 5017.6 \, \text{GFLOPS}             \\
+    p_{cluster} & = 248 \times 5017.6 \, \text{GFLOPS}             = \underline{1244.4 \, \text{TFLOPS}}
+\end{align*}
+
 \subsection{Memory Hierarchies}
 
-The output of running \texttt{lscpu} and \texttt{hwloc-ls} can be found in the \texttt{memory\_hierarchies} directory. As in the example in the assignment there are also two PDFs detailing the memory hierarchy of the EPYC\_7H12 and EPYC\_7763 nodes. In summary both nodes have 8 NUMA nodes, with 8 cores per NUMA node. More information on NUMA can easily be found in the \href{https://en.wikipedia.org/wiki/Non-uniform_memory_access}{Wikipedia} page. Basically it means that the nodes have faster access to their specific part of the shared memory. The rest of the numbers can easily be read out of the two PDFs detailing the memory hierarchy.
+The output of running \texttt{lscpu} and \texttt{hwloc-ls} can be found in the \texttt{memory\_hierarchies} directory. As in the example in the assignment there are also two PDFs detailing the memory hierarchy of the EPYC\_7H12 and EPYC\_7763 nodes. Both nodes have 8 NUMA nodes, with 8 cores per NUMA node. More information on NUMA can easily be found in the \href{https://en.wikipedia.org/wiki/Non-uniform_memory_access}{Wikipedia} page. Basically it means that the nodes have faster access to their specific part of the shared memory. The rest of the numbers can easily be read out of the two PDFs detailing the memory hierarchy. The main difference between the two nodes is the size of the L3 cache, which is 16MB for the EPYC\_7H12 and 32MB for the EPYC\_7763. The main memory size is the same for both nodes at 248GB.
 
 \subsubsection{Cache and main memory size}
 
@@ -150,24 +163,25 @@ The output of running \texttt{lscpu} and \texttt{hwloc-ls} can be found in the \
     \begin{tabular}{|c|c|c|}
         \hline
 
-        \textbf{Cache} & \textbf{EPYC\_7H12} & \textbf{EPYC\_7763} \\
+        \textbf{Cache} & \textbf{EPYC\_7H12}             & \textbf{EPYC\_7763}             \\
         \hline
-        L1d            & 32KB                & 32KB                \\
+        L1d            & 32KB                            & 32KB                            \\
         \hline
-        L1i            & 32KB                & 32KB                \\
+        L1i            & 32KB                            & 32KB                            \\
         \hline
-        L2             & 512KB               & 512KB               \\
+        L2             & 512KB                           & 512KB                           \\
         \hline
-        L3             & 16MB                & 32MB                \\
+        L3 (shared)    & \textcolor{red}{16MB} (4 cores) & \textcolor{red}{32MB} (8 cores) \\
         \hline
-        NUMA           & 63GB                & 31GB                \\
+        NUMA           & 31GB                            & 31GB                            \\
         \hline
-        Total Machine  & 502GB               & 248GB               \\
+        Total Machine  & 248GB                           & 248GB                           \\
         \hline
     \end{tabular}
     \caption{Cache and main memory size for both nodes}
     \label{tab:cache_main_memory}
 \end{table}
+
 
 \subsection{Bandwidth: STREAM benchmark}
 
