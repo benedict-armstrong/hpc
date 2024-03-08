@@ -90,52 +90,67 @@ Where we set the number of nodes to 2 and the number of tasks to 2. The output c
 
 \subsection{Peak performance}
 
-The peak performance of a CPU can be calculated using the following formula:
+The peak performance of a cluster can be calculated using the following formula:
 
-\begin{equation}
-    p_{core} = n_{super} \times n_{FMA} \times f_{SIMD} \times f_{core}
-\end{equation}
 
-\begin{equation}
-    p_{CPU} = n_{core} \times p_{core}
-\end{equation}
+\begin{align*}
+    p_{core}    & = n_{super} \times n_{FMA} \times n_{SIMD} \times f_{core} \\
+    p_{CPU}     & = n_{core} \times p_{core}                                 \\
+    p_{nodes}   & = n_{nodes} \times p_{CPU}                                 \\
+    p_{cluster} & = p_{nodes} \times n_{cluster}
+\end{align*}
+
 
 in our case this is equal to:
 
-For the EPYC\_7742 node:
+\begin{table}
+    \centering
 
-\begin{equation}
-    p_{core} = 2 \times 2 \times 256 \times 2.25 \times 2.25 = 4095 \text{ GFLOPS}
-\end{equation}
-
-\begin{equation}
-    p_{CPU} = 64 \times 4095 = 261120 \text{ GFLOPS}
-\end{equation}
-
-For the EPYC\_7763 node:
-
-\begin{equation}
-    p_{core} = 2 \times 2 \times 256 \times 2.45 \times 2.45 = 4768 \text{ GFLOPS}
-\end{equation}
-
-\begin{equation}
-    p_{CPU} = 64 \times 4768 = 304192 \text{ GFLOPS}
-\end{equation}
+    \begin{tabular}{|c|c|c|c}
+        \hline
+        \textbf{Parameter} & \textbf{EPYC\_7H12} & \textbf{EPYC\_7763} \\
+        \hline
+        $n_{super}$        & 2                   & 2                   \\
+        \hline
+        $n_{FMA}$          & 2                   & 2                   \\
+        \hline
+        $n_{SIMD}$         & 256                 & 256                 \\
+        \hline
+        $f_{core}$         & 2.25GHz             & 2.45GHz             \\
+        \hline
+        $n_{core}$         & 64                  & 64                  \\
+        \hline
+        $n_{nodes}$        & 2                   & 2                   \\
+        \hline
+        $n_{cluster}$      & 1                   & 1                   \\
+        \hline
+        $p_{core}$         & 2.25GHz             & 2.45GHz             \\
+        \hline
+        $p_{CPU}$          & 144GHz              & 156.8GHz            \\
+        \hline
+        $p_{nodes}$        & 288GHz              & 313.6GHz            \\
+        \hline
+        $p_{cluster}$      & 288GHz              & 313.6GHz            \\
+        \hline
+    \end{tabular}
+    \caption{Peak performance of the EPYC\_7H12 and EPYC\_7763 nodes}
+    \label{tab:peak_performance}
+\end{table}
 
 \subsection{Memory Hierarchies}
 
-The output of running \texttt{lscpu} and \texttt{hwloc-ls} can be found in the \texttt{memory\_hierarchies} directory. As in the example in the assignment there are also two PDFs detailing the memory hierarchy of the EPYC\_7742 and EPYC\_7763 nodes. In summary both nodes have 8 NUMA nodes, with 8 cores per NUMA node. More information on NUMA can easily be found in the \href{https://en.wikipedia.org/wiki/Non-uniform_memory_access}{Wikipedia} page. Basically it means that the nodes have faster access to their specific part of the shared memory. The rest of the numbers can easily be read out of the two PDFs detailing the memory hierarchy.
+The output of running \texttt{lscpu} and \texttt{hwloc-ls} can be found in the \texttt{memory\_hierarchies} directory. As in the example in the assignment there are also two PDFs detailing the memory hierarchy of the EPYC\_7H12 and EPYC\_7763 nodes. In summary both nodes have 8 NUMA nodes, with 8 cores per NUMA node. More information on NUMA can easily be found in the \href{https://en.wikipedia.org/wiki/Non-uniform_memory_access}{Wikipedia} page. Basically it means that the nodes have faster access to their specific part of the shared memory. The rest of the numbers can easily be read out of the two PDFs detailing the memory hierarchy.
 
 \subsubsection{Cache and main memory size}
 
-% Tables for cache (L1-L3) and main memory size for both nodes (EPYC_7742 and EPYC_7763) and if they are shared or not
+% Tables for cache (L1-L3) and main memory size for both nodes (EPYC_7H12 and EPYC_7763) and if they are shared or not
 
 \begin{table}[h]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
 
-        \textbf{Cache} & \textbf{EPYC\_7742} & \textbf{EPYC\_7763} \\
+        \textbf{Cache} & \textbf{EPYC\_7H12} & \textbf{EPYC\_7763} \\
         \hline
         L1d            & 32KB                & 32KB                \\
         \hline

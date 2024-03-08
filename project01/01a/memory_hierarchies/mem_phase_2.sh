@@ -6,6 +6,6 @@
 #SBATCH --nodes=1                    # Number of tasks
 #SBATCH --ntasks=1                    # Number of tasks
 #SBATCH --cpus-per-task=1             # Number of CPUs per task
-#SBATCH --constraint=EPYC_7742
+#SBATCH --constraint=EPYC_7H12
 
-srun ./mem.sh EPYC_7742.fig
+srun ./mem.sh EPYC_7H12.fig
