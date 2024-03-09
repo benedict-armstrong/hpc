@@ -1,7 +1,9 @@
 benchmark-blas
 benchmark-blocked
+benchmark-blocked-*
 benchmark-naive
 benchmark.o
 dgemm-blas.o
 dgemm-blocked.o
 dgemm-naive.o
+BLOCKSIZE_RUNS

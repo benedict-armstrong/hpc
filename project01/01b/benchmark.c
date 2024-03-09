@@ -70,9 +70,21 @@ int main(int argc, char **argv) {
 
   /* Test sizes should highlight performance dips at multiples of certain
      powers-of-two */
+
+  // if TEST_SMALL is 1, then test a small problem size
+  // if TEST_SMALL is 0, then test a large problem size
+
+#ifndef TEST_SMALL
+#define TEST_SMALL 0
+#endif
+
+#if TEST_SMALL
+  int test_sizes[] = {31, 32, 64, 127, 128, 129, 255, 256, 257, 513};
+#else
   int test_sizes[] = {31,  32,  96,  97,  127, 128, 129,  191,  192, 229, 255,
                       256, 257, 319, 320, 321, 417, 479,  480,  511, 512, 639,
                       640, 767, 768, 769, 800, 900, 1000, 1100, 1200};
+#endif
 
   int nsizes = sizeof(test_sizes) / sizeof(test_sizes[0]);
 

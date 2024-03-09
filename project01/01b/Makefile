@@ -2,7 +2,7 @@
 
 # Euler GCC config (module load gcc)
 CC = gcc                         # compiler (& linker)
-OPT = -O3                        # optimization flags (you may add more)
+OPT = -O3 -DBLOCK_SIZE=$(BLOCK_SIZE) -DTEST_SMALL=${TEST_SMALL}  # optimization flags (you may add more)
 CFLAGS = -Wall -std=gnu99 $(OPT) # standard compiler flags
 LDLIBS = -L${OPENBLAS_ROOT} \
 		 -lopenblas              # linker options
@@ -23,11 +23,11 @@ LDLIBS = -L${OPENBLAS_ROOT} \
 
 ################################################################################
 
-targets = benchmark-naive benchmark-blocked benchmark-blas
+targets = benchmark-naive benchmark-blocked-$(BLOCK_SIZE) benchmark-blas
 objects = benchmark.o dgemm-naive.o dgemm-blocked.o dgemm-blas.o
 results = timing_basic_dgemm.data   \
           timing_blas_dgemm.data    \
-          timing_blocked_dgemm.data \
+          timing_blocked_$(BLOCK_SIZE)_dgemm.data \
           timing.pdf
 
 .PHONY: default
@@ -38,7 +38,7 @@ all: $(targets)
 
 benchmark-naive: benchmark.o dgemm-naive.o 
 	$(CC) -o $@ $^ $(LDLIBS)
-benchmark-blocked: benchmark.o dgemm-blocked.o
+benchmark-blocked-$(BLOCK_SIZE): benchmark.o dgemm-blocked.o
 	$(CC) -o $@ $^ $(LDLIBS)
 benchmark-blas: benchmark.o dgemm-blas.o
 	$(CC) -o $@ $^ $(LDLIBS)
@@ -48,7 +48,7 @@ benchmark-blas: benchmark.o dgemm-blas.o
 
 .PHONY: clean
 clean:
-	$(RM) $(targets) $(objects)
+	$(RM) $(targets) benchmark-blocked-*  $(objects)
 
 .PHONY: cleanall
 cleanall: clean

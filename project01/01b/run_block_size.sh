@@ -18,16 +18,17 @@ export MKL_NUM_THREADS=1
 
 # compile
 make clean
-make
 
-echo "==== benchmark-naive ======================"
-./benchmark-naive | tee timing_basic_dgemm.data
-echo
-echo "==== benchmark-blas ======================="
-./benchmark-blas | tee timing_blas_dgemm.data
-echo
-echo "==== benchmark-blocked ===================="
-./benchmark-blocked | tee timing_blocked_dgemm.data
+for BLOCK_SIZE in $(seq 32 64); do
+    make BLOCK_SIZE=${BLOCK_SIZE} TEST_SMALL=1
+    echo "==== benchmark-blocked (BLOCK_SIZE=${BLOCK_SIZE}) ====================="
+    # mkdir if not exists
+    mkdir -p BLOCKSIZE_RUNS
+    ./benchmark-blocked-${BLOCK_SIZE} | tee BLOCKSIZE_RUNS/timing_blocked_${BLOCK_SIZE}_dgemm.data
+    echo
+    rm -f dgemm-blocked.o
+    rm -f benchmark-blocked-${BLOCK_SIZE}
+done
 
 echo
 echo "==== plot results ========================="

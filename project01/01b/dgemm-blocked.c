@@ -1,8 +1,14 @@
-const char *dgemm_desc = "Blocked dgemm.";
+#include <stdio.h>
 
+// see
+// https://stackoverflow.com/questions/40591312/c-macro-how-to-get-an-integer-value-into-a-string-literal
+#define STR_IMPL_(x) #x     // stringify argument
+#define STR(x) STR_IMPL_(x) // indirection to expand argument macros
 #ifndef BLOCK_SIZE
 #define BLOCK_SIZE 32
 #endif
+
+const char *dgemm_desc = "Blocked dgemm. BLOCKSIZE=" STR(BLOCK_SIZE) "";
 
 /* This routine performs a dgemm operation
  *
