@@ -263,6 +263,23 @@ The ridge point for the EPYC\_7H12 is around $I_{ridge}=2$, and for the EPYC\_77
 
 \section{Matrix multiplication optimization}
 
+The goal of this task was to improve the performance of a simple matrix multiplication program. To do this I implemented blocked matrix multiplication.
 
+\inputminted[firstline=19, lastline=40]{c}{../01b/dgemm-blocked.c}
+
+One important parameter is the block size. To evaluate different block sizes I added a macro \texttt{BLOCK\_SIZE} to the code.
+
+\inputminted[firstline=6, lastline=9]{c}{../01b/dgemm-blocked.c}
+
+Plotting the performance of the blocked matrix multiplication for different block sizes we see that we get the best performance for a block size of around 10. This result was not expected, as the L1 cache size is 32KB, which using the calculation from the task description $$ 32\text{KB} = 32e3\text{B} \rightarrow 32e3\text{B} / 8 = 4000\,\text{doubles} \rightarrow \sqrt{\frac{4000}{3}} = 36,51$$ would give us a theoretical ideal block size of 36.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../01b/BLOCKSIZE_RUNS/blocksize.pdf}
+    \caption{Performance of blocked matrix multiplication for different block sizes}
+    \label{fig:blocked_matrix_multiplication}
+\end{figure}
+
+The entire output of the blocked matrix multiplication for different block sizes can be found in the \texttt{BLOCKSIZE\_RUNS} directory.
 
 \end{document}
