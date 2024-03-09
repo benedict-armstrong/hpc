@@ -1,0 +1,34 @@
+# Description:	Reference dgemm.
+
+Size:       31	Gflop/s:    24.62	Percentage:   62.81
+Size:       32	Gflop/s:    20.03	Percentage:   51.10
+Size:       96	Gflop/s:    34.93	Percentage:   89.10
+Size:       97	Gflop/s:    34.23	Percentage:   87.33
+Size:      127	Gflop/s:    36.72	Percentage:   93.67
+Size:      128	Gflop/s:    37.50	Percentage:   95.65
+Size:      129	Gflop/s:    37.31	Percentage:   95.19
+Size:      191	Gflop/s:    40.72	Percentage:  103.87
+Size:      192	Gflop/s:    41.26	Percentage:  105.27
+Size:      229	Gflop/s:    42.73	Percentage:  108.99
+Size:      255	Gflop/s:    42.78	Percentage:  109.14
+Size:      256	Gflop/s:    44.06	Percentage:  112.39
+Size:      257	Gflop/s:    43.19	Percentage:  110.18
+Size:      319	Gflop/s:    44.52	Percentage:  113.56
+Size:      320	Gflop/s:    45.73	Percentage:  116.66
+Size:      321	Gflop/s:    45.47	Percentage:  115.99
+Size:      417	Gflop/s:    47.25	Percentage:  120.53
+Size:      479	Gflop/s:    47.04	Percentage:  120.01
+Size:      480	Gflop/s:    48.47	Percentage:  123.65
+Size:      511	Gflop/s:    46.75	Percentage:  119.25
+Size:      512	Gflop/s:    45.97	Percentage:  117.27
+Size:      639	Gflop/s:    48.13	Percentage:  122.79
+Size:      640	Gflop/s:    48.79	Percentage:  124.45
+Size:      767	Gflop/s:    48.66	Percentage:  124.12
+Size:      768	Gflop/s:    49.13	Percentage:  125.34
+Size:      769	Gflop/s:    47.96	Percentage:  122.35
+Size:      800	Gflop/s:    49.37	Percentage:  125.95
+Size:      900	Gflop/s:    49.96	Percentage:  127.45
+Size:     1000	Gflop/s:    50.71	Percentage:  129.36
+Size:     1100	Gflop/s:    50.15	Percentage:  127.94
+Size:     1200	Gflop/s:    49.39	Percentage:  126.00
+# Average percentage of peak performance = 110.56
