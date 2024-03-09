@@ -1,0 +1,13 @@
+# Description:	Blocked dgemm. BLOCKSIZE=39
+
+Size:       31	Gflop/s:     4.00	Percentage:   10.21
+Size:       32	Gflop/s:     3.95	Percentage:   10.06
+Size:       64	Gflop/s:     3.89	Percentage:    9.93
+Size:      127	Gflop/s:     3.73	Percentage:    9.52
+Size:      128	Gflop/s:     2.44	Percentage:    6.22
+Size:      129	Gflop/s:     3.74	Percentage:    9.55
+Size:      255	Gflop/s:     3.55	Percentage:    9.06
+Size:      256	Gflop/s:     1.10	Percentage:    2.80
+Size:      257	Gflop/s:     3.57	Percentage:    9.11
+Size:      513	Gflop/s:     3.32	Percentage:    8.47
+# Average percentage of peak performance = 8.49187

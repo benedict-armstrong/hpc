@@ -19,7 +19,7 @@ export MKL_NUM_THREADS=1
 # compile
 make clean
 
-for BLOCK_SIZE in $(seq 32 64); do
+for BLOCK_SIZE in $(seq 64 8 256); do
     make BLOCK_SIZE=${BLOCK_SIZE} TEST_SMALL=1
     echo "==== benchmark-blocked (BLOCK_SIZE=${BLOCK_SIZE}) ====================="
     # mkdir if not exists
@@ -29,7 +29,3 @@ for BLOCK_SIZE in $(seq 32 64); do
     rm -f dgemm-blocked.o
     rm -f benchmark-blocked-${BLOCK_SIZE}
 done
-
-echo
-echo "==== plot results ========================="
-gnuplot timing.gp
