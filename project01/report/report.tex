@@ -231,6 +231,38 @@ The ridge point for the EPYC\_7H12 is around $I_{ridge}=2$, and for the EPYC\_77
 
 \section{Auto-vectorization}
 
+\begin{enumerate}
+    \item Why is it important for data structures to be aligned?
+
+          It is important for data structures to be aligned because the CPU can only load and store data from memory in chunks of a certain size. If the data is not aligned, the CPU will have to load and store the data in multiple chunks, which is less efficient. For example, if the CPU can load 128 bits at a time, and the data is not aligned, the CPU will have to load 64 bits, then 64 bits, which is less efficient than loading 128 bits at once.
+
+    \item What are some obstacles that can prevent automatic vectorization by the compiler?
+
+          Some obstacles that can prevent automatic vectorization by the compiler are:
+          \begin{itemize}
+              \item The code is not written in a way that the compiler can understand and optimize.
+              \item The code contains dependencies that prevent the compiler from reordering instructions.
+              \item Complex loop terminations
+              \item The code contains loops that the compiler cannot unroll.
+              \item Using pointers instead of arrays
+          \end{itemize}
+
+    \item Is there a way to help the compiler to vectorize and how?
+
+          Yes, there are ways to help the compiler to vectorize. For example, you can use compiler directives to give the compiler hints about how to vectorize the code. You should also write code in a way that the compiler can understand and optimize, for example by using simple loops, avoiding dependencies and using arrays instead of pointers.
+
+    \item Which loop optimizations are performed by the compiler to vectorize and pipeline loops?
+
+          The compiler can perform several loop optimizations to vectorize and pipeline loops. For example, the compiler can unroll loops to expose more instruction-level parallelism, and it can reorder instructions to eliminate dependencies. The compiler can also use loop interchange to improve data locality, and it can use loop fusion to combine multiple loops into a single loop. The compiler can also use loop tiling to break up large loops into smaller loops that fit in the cache.
+
+    \item What can be done if automatic vectorization by the compiler fails or is sub-optimal?
+
+          If automatic vectorization by the compiler fails or is sub-optimal, you can try to rewrite the code in a way that the compiler can understand and optimize (See previous points). You can also use compiler directives to give the compiler hints about how to vectorize the code. Examples are \texttt{\#pragma ivdep} and \texttt{\#pragma vector align}.
+
+\end{enumerate}
+
 \section{Matrix multiplication optimization}
+
+
 
 \end{document}
