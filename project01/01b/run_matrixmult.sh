@@ -16,9 +16,11 @@ module list
 export OMP_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 
+BLOCK_SIZE=10
+
 # compile
 make clean
-make
+make BLOCK_SIZE=${BLOCK_SIZE} TEST_SMALL=0
 
 echo "==== benchmark-naive ======================"
 ./benchmark-naive | tee timing_basic_dgemm.data
@@ -27,7 +29,7 @@ echo "==== benchmark-blas ======================="
 ./benchmark-blas | tee timing_blas_dgemm.data
 echo
 echo "==== benchmark-blocked ===================="
-./benchmark-blocked | tee timing_blocked_dgemm.data
+./benchmark-blocked-${BLOCK_SIZE} | tee timing_blocked_dgemm.data
 
 echo
 echo "==== plot results ========================="

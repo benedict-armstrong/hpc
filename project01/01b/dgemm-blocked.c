@@ -5,7 +5,7 @@
 #define STR_IMPL_(x) #x     // stringify argument
 #define STR(x) STR_IMPL_(x) // indirection to expand argument macros
 #ifndef BLOCK_SIZE
-#define BLOCK_SIZE 32
+#define BLOCK_SIZE 10
 #endif
 
 const char *dgemm_desc = "Blocked dgemm. BLOCKSIZE=" STR(BLOCK_SIZE) "";
