@@ -1,29 +1,29 @@
-CC     = gcc-13
+CC      = gcc-13
 CFLAGS  = -O2 -fopenmp
 
-all: pi_serial pi_omp_critical pi_omp_reduction
+all: build/pi_serial build/pi_omp_critical build/pi_omp_reduction
 
-pi_serial: pi_serial.o walltime.o
+build/pi_serial: build/pi_serial.o build/walltime.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-pi_serial.o: pi_serial.c walltime.h
-	$(CC) -c $(CFLAGS) $<
+build/pi_serial.o: pi_serial.c walltime.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
-pi_omp_critical: pi_omp_critical.o walltime.o
+build/pi_omp_critical: build/pi_omp_critical.o build/walltime.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-pi_omp_critical.o: pi_omp_critical.c walltime.h
-	$(CC) -c $(CFLAGS) $<
+build/pi_omp_critical.o: pi_omp_critical.c walltime.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
-pi_omp_reduction: pi_omp_reduction.o walltime.o
+build/pi_omp_reduction: build/pi_omp_reduction.o build/walltime.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-pi_omp_reduction.o: pi_omp_reduction.c walltime.h
-	$(CC) -c $(CFLAGS) $<
+build/pi_omp_reduction.o: pi_omp_reduction.c walltime.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
-walltime.o: walltime.c walltime.h
-	$(CC) -c $(CFLAGS) $<
+build/walltime.o: walltime.c walltime.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
-	$(RM) *.o pi_serial pi_omp_critical pi_omp_reduction *.data
+	$(RM) build/* *.data
