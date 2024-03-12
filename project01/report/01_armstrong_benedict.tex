@@ -15,7 +15,7 @@
 
 \serieheader{High-Performance Computing Lab for CSE}{2024}
 {Student: Benedict Armstrong}
-{Discussed with: -}{Solution for Project 1a}{}
+{Discussed with: Tristan Gabl}{Solution for Project 01}{}
 \newline
 
 
@@ -265,13 +265,9 @@ The ridge point for the EPYC\_7H12 is around $I_{ridge}=2$, and for the EPYC\_77
 
 The goal of this task was to improve the performance of a simple matrix multiplication program. To do this I implemented blocked matrix multiplication.
 
-\inputminted[firstline=19, lastline=40]{c}{../01b/dgemm-blocked.c}
+\inputminted[firstline=20, lastline=41]{c}{../01b/dgemm-blocked.c}
 
-One important parameter is the block size. To evaluate different block sizes I added a macro \texttt{BLOCK\_SIZE} to the code.
-
-\inputminted[firstline=6, lastline=9]{c}{../01b/dgemm-blocked.c}
-
-Plotting the performance of the blocked matrix multiplication for different block sizes we see that we get the best performance for a block size of around 10. This result was not expected, as the L1 cache size is 32KB, which using the calculation from the task description $$ 32\text{KB} = 32e3\text{B} \rightarrow 32e3\text{B} / 8 = 4000\,\text{doubles} \rightarrow \sqrt{\frac{4000}{3}} = 36,51$$ would give us a theoretical ideal block size of 36.
+One important parameter is the block size. To evaluate different block sizes I added a macro \texttt{BLOCK\_SIZE} to the code. I then compiled the code with different block sizes from 2 to 256. Plotting the performance of the blocked matrix multiplication for different block sizes we see that we get the best performance for a block size of around 10. This result was not expected, as the L1 cache size is 32KB, which using the calculation from the task description $$ 32\text{KB} = 32000\text{B} \rightarrow 32000\text{B} / 8 = 4000\,\text{doubles} \rightarrow \sqrt{\frac{4000}{3}} \approx 36$$ would give us a theoretical ideal block size of 36.
 
 \begin{figure}[h]
     \centering
@@ -281,5 +277,16 @@ Plotting the performance of the blocked matrix multiplication for different bloc
 \end{figure}
 
 The entire output of the blocked matrix multiplication for different block sizes can be found in the \texttt{BLOCKSIZE\_RUNS} directory.
+
+Running the benchmark against the naive and BLAS implementation we see that the blocked matrix multiplication is faster than the naive implementation, but slower than the BLAS implementation. To evaluate the performance fairly I compiled all three versions with the \texttt{-O3} flag.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../01b/EPYC_7763_GCC/timing.pdf}
+    \caption{Performance of naive, blocked and BLAS matrix multiplication}
+    \label{fig:naive_vs_blocked_vs_blas}
+\end{figure}
+
+The naive implementation hovers at around $2\text{GFLOPS}$, the blocked implementation at around $4\text{GFLOPS}$ and the BLAS implementation goes up to around $50\text{GFLOPS}$.
 
 \end{document}
