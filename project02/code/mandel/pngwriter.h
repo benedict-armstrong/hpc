@@ -5,7 +5,8 @@
 
 #define PNGWRITER_DEFAULT_COMPRESSION 6
 
-typedef struct {
+typedef struct
+{
   png_bytepp pPixels;
   int nWidth;
   int nHeight;

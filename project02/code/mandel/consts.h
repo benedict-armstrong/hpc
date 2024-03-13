@@ -2,7 +2,9 @@
 #define CONSTS_H_
 
 // maximum number of iterations
+#ifndef MAX_ITERS
 #define MAX_ITERS 35207
+#endif
 
 // image size
 #define IMAGE_WIDTH 4096

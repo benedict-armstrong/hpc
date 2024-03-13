@@ -44,20 +44,27 @@ def main():
     axs[1].set_yscale("log")
     axs[2].set_yscale("log")
 
+    types = ["pi_serial", "pi_omp_critical", "pi_omp_reduction"]
     threads = [1, 2, 3, 4, 5, 6, 7, 8]
-    iterations = [10**i for i in range(6, 9)]  # + [10000]
+    iterations = [10**i for i in range(3, 10, 2)]
 
-    for t, type in enumerate(["pi_serial", "pi_omp_critical", "pi_omp_reduction"]):
-        for n in iterations:
+    for t, type in enumerate(types):
+        for i, n in enumerate(iterations):
             times = []
             for n_threads in threads:
                 times.append(run(type, n, n_threads))
-            axs[t].plot(threads, times, label=f"N = {n}")
+            # set line thickness
+            if i == len(iterations) - 1:
+                axs[t].plot(threads, times, label=f"N = {n}", linewidth=1)
+            else:
+                axs[t].plot(threads, times,
+                            label=f"N = {n}", linewidth=1, alpha=0.5)
             axs[t].set_title(type)
             axs[t].set_ylabel("Time (s)")
+
             if t == 0:
                 axs[t].legend()
-            if t == 2:
+            if t == len(types) - 1:
                 axs[t].set_xlabel("Number of threads")
 
     # global legend

@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <omp.h>
 
 #include "consts.h"
 #include "pngwriter.h"
@@ -18,19 +19,24 @@ int main(int argc, char **argv)
 
        double x, y, x2, y2, cx, cy;
 
-       double fDeltaX = (MAX_X - MIN_X) / (double)IMAGE_WIDTH;
-       double fDeltaY = (MAX_Y - MIN_Y) / (double)IMAGE_HEIGHT;
+       const double fDeltaX = (MAX_X - MIN_X) / (double)IMAGE_WIDTH;
+       const double fDeltaY = (MAX_Y - MIN_Y) / (double)IMAGE_HEIGHT;
 
        long nTotalIterationsCount = 0;
 
        long i, j;
 
        double time_start = walltime();
-       // do the calculation
-       cy = MIN_Y;
+
+       omp_set_num_threads(8);
+
+#pragma omp parallel for shared(pPng)
        for (j = 0; j < IMAGE_HEIGHT; j++)
        {
+              printf("Thread %d/%d is working on row %ld\n", omp_get_thread_num(), omp_get_num_threads(), j);
               cx = MIN_X;
+              cy = MIN_Y + fDeltaY * j;
+
               for (i = 0; i < IMAGE_WIDTH; i++)
               {
                      x = cx;
@@ -41,7 +47,6 @@ int main(int argc, char **argv)
                      // count the iterations until the orbit leaves the circle |z|=2.
                      // stop if the number of iterations exceeds the bound MAX_ITERS.
                      int n = 0;
-                     // TODO
                      // >>>>>>>> CODE IS MISSING
 
                      for (int k = 0; k < MAX_ITERS; k++)
@@ -56,20 +61,25 @@ int main(int argc, char **argv)
                             y2 = y * y;
                             n++;
                      }
-                     nTotalIterationsCount += n;
                      // <<<<<<<< CODE IS MISSING
                      // n indicates if the point belongs to the mandelbrot set
                      // plot the number of iterations at point (i, j)
                      int c = ((long)n * 255) / MAX_ITERS;
-                     png_plot(pPng, i, j, c, c, c);
+#pragma omp critical
+                     {
+                            png_plot(pPng, i, j, c, c, c);
+                     }
+
                      cx += fDeltaX;
+                     // nTotalIterationsCount += n;
               }
-              cy += fDeltaY;
        }
+
        double time_end = walltime();
 
        // print benchmark data
        printf("Max. iterations:            %d\n", (long)MAX_ITERS);
+       printf("Number of threads:          %d\n", omp_get_max_threads());
        printf("Total time:                 %g seconds\n",
               (time_end - time_start));
        printf("Image size:                 %ld x %ld = %ld Pixels\n",
@@ -86,7 +96,6 @@ int main(int argc, char **argv)
        printf("MFlop/s:                    %g\n",
               nTotalIterationsCount * 8.0 / (time_end - time_start) * 1.e-6);
 
-       png_write(pPng, "images/mandel_seq_" STR(MAX_ITERS) ".png");
-
-              return 0;
+       png_write(pPng, "images/mandel_par_" STR(MAX_ITERS) ".png");
+       return 0;
 }
