@@ -25,7 +25,7 @@ def run(n_threads: int) -> float:
     # OMP_NUM_THREADS env variable is set to the number of threads
     try:
         output = subprocess.check_output(
-            [f"./build/mandel_par"],
+            [f"./build/mandel_par", f"images/mandel_par_{n_threads}.png"],
             env={"OMP_NUM_THREADS": str(n_threads)}
         ).decode("utf-8")
 
@@ -50,7 +50,7 @@ def main():
 
     # run the benchmark for 1 to 8 threads and plot the results
 
-    n_threads = list(range(1, 9))
+    n_threads = list(range(1, 8))
 
     times = []
     for i in n_threads:
@@ -68,7 +68,12 @@ def main():
     plt.xlabel("Number of threads")
     plt.ylabel("Total time (s)")
 
-    plt.show()
+    plt.savefig("benchmark.png")
+
+    # save data to file
+    with open("benchmark.data", "w") as f:
+        for i in range(len(n_threads)):
+            f.write(f"{n_threads[i]} {times[i]}\n")
 
 
 if __name__ == "__main__":

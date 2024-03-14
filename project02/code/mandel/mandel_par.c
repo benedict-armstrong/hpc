@@ -10,9 +10,6 @@
 #include "pngwriter.h"
 #include "walltime.h"
 
-#define STR_EXPAND(tok) #tok
-#define STR(tok) STR_EXPAND(tok)
-
 int main(int argc, char **argv)
 {
        png_data *pPng = png_create(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -28,12 +25,10 @@ int main(int argc, char **argv)
 
        double time_start = walltime();
 
-       omp_set_num_threads(8);
-
-#pragma omp parallel for shared(pPng)
+#pragma omp parallel for shared(pPng) private(i, j, x, y, x2, y2, cx, cy) reduction(+ : nTotalIterationsCount)
        for (j = 0; j < IMAGE_HEIGHT; j++)
        {
-              printf("Thread %d/%d is working on row %ld\n", omp_get_thread_num(), omp_get_num_threads(), j);
+              // printf("Thread %d/%d is working on row %ld\n", omp_get_thread_num(), omp_get_num_threads(), j);
               cx = MIN_X;
               cy = MIN_Y + fDeltaY * j;
 
@@ -70,8 +65,8 @@ int main(int argc, char **argv)
                             png_plot(pPng, i, j, c, c, c);
                      }
 
+                     nTotalIterationsCount += n;
                      cx += fDeltaX;
-                     // nTotalIterationsCount += n;
               }
        }
 
@@ -96,6 +91,15 @@ int main(int argc, char **argv)
        printf("MFlop/s:                    %g\n",
               nTotalIterationsCount * 8.0 / (time_end - time_start) * 1.e-6);
 
-       png_write(pPng, "images/mandel_par_" STR(MAX_ITERS) ".png");
+       if (argc > 1)
+       {
+
+              png_write(pPng, argv[1]);
+       }
+       else
+       {
+              png_write(pPng, "images/mandel_par.png");
+       }
+
        return 0;
 }

@@ -1,14 +1,7 @@
-ifdef MAX_ITERS
-else
-	MAX_ITERS = 100
-endif
-
-
 CPATH  			?= /opt/homebrew/include
 LIBRARY_PATH 	?= /opt/homebrew/lib
-CC      		= gcc-13
-OPT   			= -DMAX_ITERS=$(MAX_ITERS)
-CFLAGS  		= -O3 -I$(CPATH) $(OPT)
+CC      		?= gcc-13
+CFLAGS  		= -O3 -I$(CPATH) -fopenmp
 LDFLAGS 		= -O3 -L$(LIBRARY_PATH) -lpng -fopenmp
 
 all: build/mandel_seq build/mandel_par
