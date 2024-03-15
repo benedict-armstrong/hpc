@@ -1,4 +1,4 @@
-CC      = gcc-13
+CC      ?= gcc
 CFLAGS  = -O2 -fopenmp
 
 all: build/pi_serial build/pi_omp_critical build/pi_omp_reduction

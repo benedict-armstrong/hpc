@@ -1,21 +1,21 @@
 CC ?= gcc
 
-all: recur_seq recur_omp
+all: build/recur_seq build/recur_omp
 
-recur_seq: recur_seq.o walltime.o
+build/recur_seq: build/recur_seq.o build/walltime.o
 	$(CC) -O3 $^ -o $@
 
-recur_seq.o: recur_seq.c walltime.h
-	$(CC) -c -O3 $<
+build/recur_seq.o: recur_seq.c walltime.h
+	$(CC) -c -O3 $< -o $@
 
-recur_omp: recur_omp.c walltime.o
+build/recur_omp: recur_omp.c build/walltime.o
 	$(CC) -O3 -fopenmp $^ -o $@
 
-recur_omp.o: recur_omp.c walltime.h
-	$(CC) -c -O3 -fopenmp $<
+build/recur_omp.o: recur_omp.c walltime.h
+	$(CC) -c -O3 -fopenmp $< -o $@
 
-walltime.o: walltime.c walltime.h
-	$(CC) -c $<
+build/walltime.o: walltime.c walltime.h
+	$(CC) -c $< -o $@
 
 clean:
-	$(RM) *.o recur_seq recur_omp
+	$(RM) build/*

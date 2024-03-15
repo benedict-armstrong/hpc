@@ -1,22 +1,22 @@
-CC     = g++-13
+CC     ?= g++
 CFLAGS = -O3 -fopenmp
 
-all: omp_bug1 omp_bug2 omp_bug3 omp_bug4 omp_bug5
+all: build/omp_bug1 build/omp_bug2 build/omp_bug3 build/omp_bug4 build/omp_bug5
 
-omp_bug1: omp_bug1.c
+build/omp_bug1: omp_bug1.c
 	$(CC) $(CFLAGS) $< -o $@
 
-omp_bug2: omp_bug2.c
+build/omp_bug2: omp_bug2.c
 	$(CC) $(CFLAGS) $< -o $@
 
-omp_bug3: omp_bug3.c
+build/omp_bug3: omp_bug3.c
 	$(CC) $(CFLAGS) $< -o $@
 
-omp_bug4: omp_bug4.c
+build/omp_bug4: omp_bug4.c
 	$(CC) $(CFLAGS) $< -o $@
 
-omp_bug5: omp_bug5.c
+build/omp_bug5: omp_bug5.c
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	$(RM) omp_bug1 omp_bug2 omp_bug3 omp_bug4 omp_bug5
+	$(RM) build/omp_bug1 build/omp_bug2 build/omp_bug3 build/omp_bug4 build/omp_bug5

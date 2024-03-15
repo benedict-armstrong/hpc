@@ -1,6 +1,6 @@
 CPATH  			?= /opt/homebrew/include
 LIBRARY_PATH 	?= /opt/homebrew/lib
-CC      		?= gcc-13
+CC      		?= gcc
 CFLAGS  		= -O3 -I$(CPATH) -fopenmp
 LDFLAGS 		= -O3 -L$(LIBRARY_PATH) -lpng -fopenmp
 

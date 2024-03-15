@@ -1,17 +1,18 @@
-CC     = gcc-13
-CFLAGS = -O3 -fopenmp
+CC     ?= gcc-13
+MIN_SIZE ?= 100
+CFLAGS = -O3 -fopenmp -DMIN_SIZE=$(MIN_SIZE)
 
-all: quicksort
+all: build/quicksort
 
-quicksort: quicksort.o walltime.o
+build/quicksort: build/quicksort.o build/walltime.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-quicksort.o: quicksort.c walltime.h
-	$(CC) -c $(CFLAGS) $<
+build/quicksort.o: quicksort.c walltime.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
-walltime.o: walltime.c walltime.h
-	$(CC) -c $(CFLAGS) $<
+build/walltime.o: walltime.c walltime.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
-	$(RM) *.o quicksort
+	$(RM) build/*

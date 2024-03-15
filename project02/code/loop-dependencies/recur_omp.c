@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "walltime.h"
+#include <omp.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   int N = 2000000000;
   double up = 1.00000001;
   double Sn = 1.00000001;
@@ -11,23 +13,28 @@ int main(int argc, char *argv[]) {
 
   /* allocate memory for the recursion */
   double *opt = (double *)malloc((N + 1) * sizeof(double));
-  if (opt == NULL) {
+  if (opt == NULL)
+  {
     perror("failed to allocate problem size");
     exit(EXIT_FAILURE);
   }
 
   double time_start = walltime();
   // TODO: YOU NEED TO PARALLELIZE THIS LOOP
-  for (n = 0; n <= N; ++n) {
-    opt[n] = Sn;
+#pragma omp parallel for private(n) shared(opt) reduction(* : Sn)
+  for (n = 0; n <= N; ++n)
+  {
     Sn *= up;
+    opt[n] = Sn;
   }
 
   printf("Parallel RunTime  :  %f seconds\n", walltime() - time_start);
   printf("Final Result Sn   :  %.17g \n", Sn);
+  printf("Final Result opt[N]:  %.17g \n", opt[N]);
 
   double temp = 0.0;
-  for (n = 0; n <= N; ++n) {
+  for (n = 0; n <= N; ++n)
+  {
     temp += opt[n] * opt[n];
   }
   printf("Result ||opt||^2_2 :  %f\n", temp / (double)N);
@@ -35,3 +42,7 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+
+// Py solution 485165087.9217357
+// Se solution 485165097.62511122
+// Pa solution 485165097.62391502

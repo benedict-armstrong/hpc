@@ -21,6 +21,12 @@
 
 \section{Bug hunt [10 points]}
 
+\begin{enumerate}
+    \item The first bug is a compile-time bug. The \texttt{\#pragma} directive must be followed by a for loop. In this case we have a \texttt{tid = omp\_get\_thread\_num()} statement immediately after the \texttt{\#pragma}. This is not allowed. The fix is to move the \texttt{tid} assignment into the for loop.
+    \item There are a couple of errors in the code. The variable \texttt{tid} should be made explicitly private as every thread is writing to it. In the last \texttt{for} loop the total sum should be marked as a reduction variable (using the \texttt{reduction(+:total)} clause). Also by default the second loop will not spawn any new threads as the option \texttt{OMP\_NESTED} is set to \texttt{FALSE} by default (see \href{https://www.ibm.com/docs/en/xl-c-aix/13.1.2?topic=openmp-omp-nested}{IBM OpenMP documentation}).
+
+\end{enumerate}
+
 \section{Parallel histogram calculation using \texttt{OpenMP} [15 points]}
 
 \section{Parallel loop dependencies with \texttt{OpenMP} [15 points]}

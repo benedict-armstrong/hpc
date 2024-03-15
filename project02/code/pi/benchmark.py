@@ -1,4 +1,6 @@
 import subprocess
+from typing import List
+import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -70,7 +72,7 @@ def main():
     # global legend
     axs[0].legend(loc="upper right")
 
-    plt.show()
+    plt.savefig("benchmark.png")
 
 
 if __name__ == "__main__":
