@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 CC      = gcc
+=======
+CC      ?= gcc
+>>>>>>> a34d1c96343d732ac645fb133c4a58ae0386ed26
 CFLAGS  = -O2 -fopenmp
 
 all: build/pi_serial build/pi_omp_critical build/pi_omp_reduction

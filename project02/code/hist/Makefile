@@ -1,23 +1,23 @@
 CXX    ?= g++
 CFLAGS  = -O3 -fopenmp
 
-all: hist_seq hist_omp
+all: build/hist_seq build/hist_omp
 
-hist_seq: hist_seq.o walltime.o
+build/hist_seq: build/hist_seq.o build/walltime.o
 	$(CXX) $(CFLAGS) $^ -o $@
 
-hist_seq.o: hist_seq.cpp walltime.h
-	$(CXX) -c $(CFLAGS) $<
+build/hist_seq.o: hist_seq.cpp walltime.h
+	$(CXX) -c $(CFLAGS) $< -o $@
 
-hist_omp: hist_omp.o walltime.o
+build/hist_omp: build/hist_omp.o build/walltime.o
 	$(CXX) $(CFLAGS) $^ -o $@
 
-hist_omp.o: hist_omp.cpp walltime.h
-	$(CXX) -c $(CFLAGS) $<
+build/hist_omp.o: hist_omp.cpp walltime.h
+	$(CXX) -c $(CFLAGS) $< -o $@
 
-walltime.o: walltime.c walltime.h
-	$(CXX) -c $(CFLAGS) $<
+build/walltime.o: walltime.c walltime.h
+	$(CXX) -c $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
-	$(RM) *.o hist_seq hist_omp *.data
+	$(RM) build/* *.data

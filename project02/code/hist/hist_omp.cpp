@@ -2,11 +2,13 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <omp.h>
 
 #define VEC_SIZE 1000000000
 #define BINS 16
 
-int main() {
+int main()
+{
   double time_start, time_end;
 
   // Initialize random number generator
@@ -20,27 +22,38 @@ int main() {
   // Note: normal distribution is on interval [-inf; inf]
   //       we want [0; BINS-1]
   std::vector<int> vec(VEC_SIZE);
-  for (long i = 0; i < VEC_SIZE; ++i) {
+  for (long i = 0; i < VEC_SIZE; ++i)
+  {
     vec[i] = int(distribution(generator));
-    if (vec[i] < 0       ) vec[i] = 0;
-    if (vec[i] > BINS - 1) vec[i] = BINS - 1;
+    if (vec[i] < 0)
+      vec[i] = 0;
+    if (vec[i] > BINS - 1)
+      vec[i] = BINS - 1;
   }
 
   // Initialize histogram: Set all bins to zero
   long dist[BINS];
-  for (int i = 0; i < BINS; ++i) {
+  for (int i = 0; i < BINS; ++i)
+  {
     dist[i] = 0;
   }
 
   // TODO Parallelize the histogram computation
   time_start = walltime();
-  for (long i = 0; i < VEC_SIZE; ++i) {
+
+  std::cout << "OMP_NUM_THREADS=" << omp_get_max_threads() << std::endl;
+
+#pragma omp parallel for reduction(+ : dist[ : BINS])
+  for (long i = 0; i < VEC_SIZE; ++i)
+  {
     dist[vec[i]]++;
   }
+
   time_end = walltime();
 
   // Write results
-  for (int i = 0; i < BINS; ++i) {
+  for (int i = 0; i < BINS; ++i)
+  {
     std::cout << "dist[" << i << "]=" << dist[i] << std::endl;
   }
   std::cout << "Time: " << time_end - time_start << " sec" << std::endl;
