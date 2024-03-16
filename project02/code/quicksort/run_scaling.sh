@@ -16,9 +16,9 @@ module list
 make clean
 
 # Run
-for ((i = 8; i <= 15; i++)); do
+for ((i = 3; i <= 20; i++)); do
   make clean
   make CC=gcc-13 MIN_SIZE=$((2 ** i))
   echo "MIN_SIZE=$((2 ** i))"
-  ./build/quicksort 500000000
+  ./build/quicksort
 done
