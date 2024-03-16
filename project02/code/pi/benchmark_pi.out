@@ -1,0 +1,7 @@
+gcc -c -O2 -fopenmp pi_serial.c -o build/pi_serial.o
+gcc -c -O2 -fopenmp walltime.c -o build/walltime.o
+gcc -O2 -fopenmp build/pi_serial.o build/walltime.o -o build/pi_serial
+gcc -c -O2 -fopenmp pi_omp_critical.c -o build/pi_omp_critical.o
+gcc -O2 -fopenmp build/pi_omp_critical.o build/walltime.o -o build/pi_omp_critical
+gcc -c -O2 -fopenmp pi_omp_reduction.c -o build/pi_omp_reduction.o
+gcc -O2 -fopenmp build/pi_omp_reduction.o build/walltime.o -o build/pi_omp_reduction
