@@ -56,7 +56,7 @@ void quicksort(double *data, int length)
   quicksort(data, right);
 
   int t = length - left;
-#pragma omp task shared(data, left, length) firstprivate(t) final(t < MIN_SIZE)
+#pragma omp task shared(data, left) firstprivate(t) final(t < MIN_SIZE)
   quicksort(&(data[left]), t);
 
 #pragma omp taskwait
