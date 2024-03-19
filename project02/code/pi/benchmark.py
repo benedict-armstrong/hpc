@@ -1,6 +1,5 @@
+import argparse
 import subprocess
-from typing import List
-import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -30,50 +29,68 @@ def run(type: str, n: int, n_threads: int) -> float:
     return time
 
 
-def main():
-
-    # run the benchmark for each type and number of iterations
-    # and plot the results
-    # create three plots
-
-    fig, axs = plt.subplots(3, sharex=True)
-
-    # set space between plots
-    # plt.subplots_adjust(hspace=0.5)
-
-    # y axis log scale
-    axs[0].set_yscale("log")
-    axs[1].set_yscale("log")
-    axs[2].set_yscale("log")
-
-    types = ["pi_serial", "pi_omp_critical", "pi_omp_reduction"]
-    threads = [1, 2, 3, 4, 5, 6, 7, 8]
-    iterations = [10**i for i in range(3, 10, 2)]
-
-    for t, type in enumerate(types):
-        for i, n in enumerate(iterations):
-            times = []
-            for n_threads in threads:
-                times.append(run(type, n, n_threads))
-            # set line thickness
-            if i == len(iterations) - 1:
-                axs[t].plot(threads, times, label=f"N = {n}", linewidth=1)
-            else:
-                axs[t].plot(threads, times,
-                            label=f"N = {n}", linewidth=1, alpha=0.5)
-            axs[t].set_title(type)
-            axs[t].set_ylabel("Time (s)")
-
-            if t == 0:
-                axs[t].legend()
-            if t == len(types) - 1:
-                axs[t].set_xlabel("Number of threads")
-
-    # global legend
-    axs[0].legend(loc="upper right")
-
-    plt.savefig("benchmark.png")
+def run_weak_scaling(type: str, n_per_processor: int, n_threads: int) -> float:
+    return run(type, n_per_processor * n_threads, n_threads)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(prog='Scaling Benchmark')
+    parser.add_argument(
+        '-t', '--max_threads',
+        type=int,
+        default=8,
+        help='Maximum number of threads'
+    )
+    parser.add_argument(
+        '-n',
+        '--problem_size',
+        type=int,
+        default=1000000,
+        help='Problem size'
+    )
+    parser.add_argument(
+        '-m',
+        '--problem_pp',
+        type=int,
+        default=100000,
+        help='Problem size per Processor'
+    )
+    args = parser.parse_args()
+
+    fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, figsize=(10, 5))
+
+    # run the benchmark for each type and number of iterations
+    types = ["pi_serial", "pi_omp_critical", "pi_omp_reduction"]
+    threads = list(range(1, args.max_threads + 1))
+
+    # run strong and weak scaling
+
+    for t, type in enumerate(types):
+        times = []
+        for n_threads in threads:
+            times.append(run(type, args.problem_size, n_threads))
+        axs[0].plot(threads, times, label=type, linewidth=1)
+        axs[0].set_title(f"Strong scaling (N={args.problem_size:.1e})")
+        axs[0].set_ylabel("Time (s)")
+
+    for t, type in enumerate(types):
+        times = []
+        for n_threads in threads:
+            if type == "pi_serial":
+                times.append(run_weak_scaling(type, args.problem_pp, 1))
+            else:
+                times.append(run_weak_scaling(
+                    type, args.problem_pp, n_threads))
+        axs[1].plot(threads, times, label=type, linewidth=1)
+        axs[1].set_title(
+            f"Weak scaling (N per processor={args.problem_pp:.1e})")
+        axs[1].set_ylabel("Time (s)")
+
+    # global legend
+    axs[1].legend(loc="upper right")
+    # set axis log
+    axs[0].set_yscale("log")
+    axs[1].set_yscale("log")
+
+    plt.savefig("benchmark.png", dpi=300)
+    plt.show()

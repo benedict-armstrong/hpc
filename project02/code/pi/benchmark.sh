@@ -3,7 +3,7 @@
 #SBATCH --output=benchmark_pi.out
 #SBATCH --error=benchmark_pi.err
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=42
 #SBATCH --constraint=EPYC_7763
 #SBATCH --time=00:20:00
 
@@ -12,9 +12,8 @@ module load gcc python
 # module load intel
 module list
 
-
 mkdir -p build
 make
 
 # run for different max_iters values
-python3 benchmark.py
+srun python3 benchmark.py -n 1000000000 -m 100000000 -t 42
