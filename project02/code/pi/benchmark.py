@@ -64,6 +64,7 @@ if __name__ == "__main__":
     threads = list(range(1, args.max_threads + 1))
 
     # run strong and weak scaling
+    data = {}
 
     for t, type in enumerate(types):
         times = []
@@ -72,6 +73,8 @@ if __name__ == "__main__":
         axs[0].plot(threads, times, label=type, linewidth=1)
         axs[0].set_title(f"Strong scaling (N={args.problem_size:.1e})")
         axs[0].set_ylabel("Time (s)")
+        data[type + "_strong"] = times
+        print(f"{type} strong scaling: {times}")
 
     for t, type in enumerate(types):
         times = []
@@ -85,6 +88,8 @@ if __name__ == "__main__":
         axs[1].set_title(
             f"Weak scaling (N per processor={args.problem_pp:.1e})")
         axs[1].set_ylabel("Time (s)")
+        data[type + "_weak"] = times
+        print(f"{type} weak scaling: {times}")
 
     # global legend
     axs[1].legend(loc="upper right")
@@ -92,5 +97,8 @@ if __name__ == "__main__":
     axs[0].set_yscale("log")
     axs[1].set_yscale("log")
 
+    print("## Data")
+    print(data)
+
     plt.savefig("benchmark.png", dpi=300)
-    plt.show()
+    # plt.show()

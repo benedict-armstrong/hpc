@@ -17,4 +17,4 @@ make clean
 make
 
 # run for different max_iters values
-srun python3 benchmark.py -n 1000000000 -m 100000000 -t 42
+srun python3 benchmark.py -n 1000000000 -m 10000000 -t 42
