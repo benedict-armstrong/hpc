@@ -57,7 +57,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, figsize=(10, 5))
+    fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True, figsize=(12, 10))
 
     # run the benchmark for each type and number of iterations
     types = ["pi_serial", "pi_omp_critical", "pi_omp_reduction"]
@@ -70,9 +70,15 @@ if __name__ == "__main__":
         times = []
         for n_threads in threads:
             times.append(run(type, args.problem_size, n_threads))
-        axs[0].plot(threads, times, label=type, linewidth=1)
-        axs[0].set_title(f"Strong scaling (N={args.problem_size:.1e})")
-        axs[0].set_ylabel("Time (s)")
+        axs[0, 0].plot(threads, times, label=type, linewidth=1)
+        axs[0, 0].set_title(f"Strong scaling (N={args.problem_size:.1e})")
+        axs[0, 0].set_ylabel("Time (s)")
+
+        # plot speedup below
+        speedup = [times[0] / t for t in times]
+        axs[1, 0].plot(threads, speedup, label=type, linewidth=1)
+        axs[1, 0].set_ylabel("Speedup")
+        axs[1, 0].set_xlabel("Threads")
         data[type + "_strong"] = times
         print(f"{type} strong scaling: {times}")
 
@@ -84,18 +90,25 @@ if __name__ == "__main__":
             else:
                 times.append(run_weak_scaling(
                     type, args.problem_pp, n_threads))
-        axs[1].plot(threads, times, label=type, linewidth=1)
-        axs[1].set_title(
+        axs[0, 1].plot(threads, times, label=type, linewidth=1)
+        axs[0, 1].set_title(
             f"Weak scaling (N per processor={args.problem_pp:.1e})")
-        axs[1].set_ylabel("Time (s)")
+        axs[0, 1].set_ylabel("Time (s)")
+
+        # plot efficiency below
+        efficiency = [times[0] / (t * n) for t, n in zip(times, threads)]
+        axs[1, 1].plot(threads, efficiency, label=type, linewidth=1)
+        axs[1, 1].set_ylabel("Efficiency")
+        axs[1, 1].set_xlabel("Threads")
+
         data[type + "_weak"] = times
         print(f"{type} weak scaling: {times}")
 
     # global legend
-    axs[1].legend(loc="upper right")
+    axs[0, 1].legend(loc="upper right")
     # set axis log
-    axs[0].set_yscale("log")
-    axs[1].set_yscale("log")
+    axs[0, 0].set_yscale("log")
+    axs[0, 1].set_yscale("log")
 
     print("## Data")
     print(data)
