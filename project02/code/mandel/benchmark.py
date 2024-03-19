@@ -1,3 +1,4 @@
+import argparse
 import subprocess
 import matplotlib.pyplot as plt
 
@@ -47,10 +48,17 @@ def run(n_threads: int) -> float:
 
 
 def main():
+    parser = argparse.ArgumentParser(prog='Scaling Benchmark')
+    parser.add_argument(
+        '-t', '--max_threads',
+        type=int,
+        default=8,
+        help='Maximum number of threads'
+    )
 
-    # run the benchmark for 1 to 8 threads and plot the results
+    args = parser.parse_args()
 
-    n_threads = list(range(1, 8))
+    n_threads = list(range(1, args.max_threads + 1))
 
     times = []
     for i in n_threads:
@@ -70,10 +78,8 @@ def main():
 
     plt.savefig("benchmark.png")
 
-    # save data to file
-    with open("benchmark.data", "w") as f:
-        for i in range(len(n_threads)):
-            f.write(f"{n_threads[i]} {times[i]}\n")
+    for i in range(len(n_threads)):
+        print(f"{n_threads[i]} {times[i]}\n")
 
 
 if __name__ == "__main__":
