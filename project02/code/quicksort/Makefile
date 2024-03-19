@@ -1,5 +1,5 @@
 CC     ?= gcc-13
-MIN_SIZE ?= 100
+MIN_SIZE ?= 1000
 CFLAGS = -O3 -fopenmp -DMIN_SIZE=$(MIN_SIZE)
 
 all: build/quicksort

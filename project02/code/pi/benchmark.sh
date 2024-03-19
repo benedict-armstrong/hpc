@@ -13,6 +13,7 @@ module load gcc python
 module list
 
 mkdir -p build
+make clean
 make
 
 # run for different max_iters values

@@ -4,7 +4,7 @@
 #SBATCH --error=quicksort.err     # Error file  (default: slurm-%j.out)
 #SBATCH --ntasks=1                # Number of tasks
 #SBATCH --constraint=EPYC_7763    # Select node with CPU
-#SBATCH --cpus-per-task=128       # Number of CPUs per task
+#SBATCH --cpus-per-task=47         # Number of CPUs per task
 #SBATCH --mem-per-cpu=1024        # Memory per CPU
 #SBATCH --time=00:05:00           # Wall clock time limit
 
@@ -16,12 +16,11 @@ module list
 make clean
 
 # Run
-# for ((i = 3; i <= 20; i++)); do
-#   make clean
-#   make CC=gcc-13 MIN_SIZE=$((2 ** i))
-#   echo "MIN_SIZE=$((2 ** i))"
-#   ./build/quicksort
-# done
+for ((i = 3; i <= 20; i++)); do
+  export OMP_NUM_THREADS=47
+  make clean
+  make CC=gcc-13 MIN_SIZE=$((2 ** i))
+  echo "MIN_SIZE=$((2 ** i))"
+  ./build/quicksort 100000000
+done
 
-make
-./build/quicksort 100000000
