@@ -58,7 +58,7 @@ def main():
 
     args = parser.parse_args()
 
-    n_threads = list(range(1, args.max_threads + 1))
+    n_threads = list(range(1, args.max_threads + 1, 2))
 
     times = []
     for i in n_threads:

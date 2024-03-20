@@ -3,7 +3,7 @@
 #SBATCH --output=mandel.out
 #SBATCH --error=mandel.err
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=47
+#SBATCH --cpus-per-task=42
 #SBATCH --constraint=EPYC_7763
 #SBATCH --time=00:30:00
 
@@ -18,4 +18,4 @@ mkdir -p images
 make clean
 make
 
-srun python3 benchmark.py --max_threads 47
+srun python3 benchmark.py --max_threads 42
