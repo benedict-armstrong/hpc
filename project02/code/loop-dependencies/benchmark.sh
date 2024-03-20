@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=benchmark_mandel
-#SBATCH --output=benchmark_mandel.out
-#SBATCH --error=benchmark_mandel.err
+#SBATCH --job-name=benchmark_loop_dependencies
+#SBATCH --output=benchmark_loop_dependencies.out
+#SBATCH --error=benchmark_loop_dependencies.err
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=47
 #SBATCH --constraint=EPYC_7763
@@ -14,7 +14,6 @@ module list
 
 # compile
 mkdir -p build
-mkdir -p images
 make clean
 make
 

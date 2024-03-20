@@ -17,4 +17,4 @@ make clean
 make
 
 # Run
-./hist_seq
+srun ./hist_seq

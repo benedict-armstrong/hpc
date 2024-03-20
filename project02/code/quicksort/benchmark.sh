@@ -9,18 +9,13 @@
 #SBATCH --time=00:05:00           # Wall clock time limit
 
 # Load some modules & list loaded modules
-module load gcc
+module load gcc python
 module list
 
 # Compile
+mkdir -p build
 make clean
+make
 
 # Run
-for ((i = 3; i <= 20; i++)); do
-  export OMP_NUM_THREADS=47
-  make clean
-  make CC=gcc-13 MIN_SIZE=$((2 ** i))
-  echo "MIN_SIZE=$((2 ** i))"
-  ./build/quicksort 100000000
-done
-
+srun python3 benchmark.py --max_threads 47

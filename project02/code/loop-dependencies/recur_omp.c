@@ -21,15 +21,44 @@ int main(int argc, char *argv[])
 
   double time_start = walltime();
   // TODO: YOU NEED TO PARALLELIZE THIS LOOP
-#pragma omp parallel for private(n) shared(opt) reduction(* : Sn)
-  for (n = 0; n <= N; ++n)
+#pragma omp parallel shared(opt, Sn)
   {
-    Sn *= up;
-    opt[n] = Sn;
+    int tid = omp_get_thread_num();
+    int nthreads = omp_get_num_threads();
+    int chunk = N / nthreads;
+    int start = tid * chunk;
+    int end = (tid == nthreads - 1) ? N : start + chunk;
+
+    // if (tid == 0)
+    // {
+    //   printf("Number of threads: %d\n", nthreads);
+    //   printf("Chunk size: %d\n", chunk);
+    //   printf("Start: %d\n", start);
+    //   printf("End: %d\n", end);
+    // }
+
+    double Sn_i = Sn * pow(up, start);
+
+    for (n = start; n <= end; ++n)
+    {
+      Sn_i *= up;
+      opt[n] = Sn_i;
+    }
+
+    // for (n = 0; n <= N; ++n)
+    // {
+    //   Sn *= up;
+    //   opt[n] = Sn;
+    // }
+    if (tid == nthreads - 1)
+    {
+      // #pragma omp critical
+      Sn = Sn_i;
+    }
   }
 
   printf("Parallel RunTime  :  %f seconds\n", walltime() - time_start);
-  printf("Final Result Sn   :  %.17g \n", Sn);
+  // printf("Final Result Sn   :  %.17g \n", Sn);
   printf("Final Result opt[N]:  %.17g \n", opt[N]);
 
   double temp = 0.0;
@@ -42,7 +71,3 @@ int main(int argc, char *argv[])
 
   return 0;
 }
-
-// Py solution 485165087.9217357
-// Se solution 485165097.62511122
-// Pa solution 485165097.62391502
