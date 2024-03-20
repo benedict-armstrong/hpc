@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=benchmark_loop_dependencies
-#SBATCH --output=benchmark_loop_dependencies.out
-#SBATCH --error=benchmark_loop_dependencies.err
+#SBATCH --job-name=loop-dep
+#SBATCH --output=loop-dep.out
+#SBATCH --error=loop-dep.err
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=47
 #SBATCH --constraint=EPYC_7763

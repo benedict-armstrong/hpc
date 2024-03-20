@@ -87,6 +87,5 @@ if __name__ == "__main__":
 
     plt.savefig("benchmark.png")
 
-    for i in range(len(n_threads)):
-        print(f"Threads: {[i[1] for i in times]}")
-        print(f"Times: {[i[0] for i in times]}")
+    print(f"Threads: {[i[1] for i in times]}")
+    print(f"Times: {[i[0] for i in times]}")

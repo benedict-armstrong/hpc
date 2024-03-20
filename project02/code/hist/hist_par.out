@@ -1,0 +1,50 @@
+rm -f build/* *.data
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -c -O3 -fopenmp hist_seq.cpp -o build/hist_seq.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -c -O3 -fopenmp walltime.c -o build/walltime.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp build/hist_seq.o build/walltime.o -o build/hist_seq
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -c -O3 -fopenmp hist_omp.cpp -o build/hist_omp.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp build/hist_omp.o build/walltime.o -o build/hist_omp
+Running benchmark for 1 threads
+Running benchmark for 2 threads
+Running benchmark for 3 threads
+Running benchmark for 4 threads
+Running benchmark for 5 threads
+Running benchmark for 6 threads
+Running benchmark for 7 threads
+Running benchmark for 8 threads
+Running benchmark for 9 threads
+Running benchmark for 10 threads
+Running benchmark for 11 threads
+Running benchmark for 12 threads
+Running benchmark for 13 threads
+Running benchmark for 14 threads
+Running benchmark for 15 threads
+Running benchmark for 16 threads
+Running benchmark for 17 threads
+Running benchmark for 18 threads
+Running benchmark for 19 threads
+Running benchmark for 20 threads
+Running benchmark for 21 threads
+Running benchmark for 22 threads
+Running benchmark for 23 threads
+Running benchmark for 24 threads
+Running benchmark for 25 threads
+Running benchmark for 26 threads
+Running benchmark for 27 threads
+Running benchmark for 28 threads
+Running benchmark for 29 threads
+Running benchmark for 30 threads
+Running benchmark for 31 threads
+Running benchmark for 32 threads
+Running benchmark for 33 threads
+Running benchmark for 34 threads
+Running benchmark for 35 threads
+Running benchmark for 36 threads
+Running benchmark for 37 threads
+Running benchmark for 38 threads
+Running benchmark for 39 threads
+Running benchmark for 40 threads
+Running benchmark for 41 threads
+Running benchmark for 42 threads
+Threads: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42]
+Times: [1.57549, 1.29287, 0.893996, 0.688735, 0.535488, 0.464712, 0.395655, 0.353468, 0.302496, 0.282308, 0.252053, 0.249264, 0.242567, 0.292724, 0.298158, 0.29619, 0.297681, 0.331367, 0.227122, 0.207016, 0.320305, 0.209229, 0.249083, 0.290871, 0.342982, 0.235066, 0.21325, 0.351718, 0.270837, 0.277999, 0.23962, 0.342495, 0.387915, 0.215955, 0.288466, 0.188124, 0.359778, 0.399369, 0.330946, 0.190544, 0.372335, 0.32522]

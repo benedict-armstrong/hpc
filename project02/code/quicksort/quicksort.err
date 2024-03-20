@@ -1,0 +1,18 @@
+
+Inactive Modules:
+  1) code-server/4.16.1     2) git/2.31.1
+
+The following have been reloaded with a version change:
+  1) gcc/8.2.0 => gcc/11.4.0                3) python/3.8.5 => python/3.11.6
+  2) openblas/0.2.20 => openblas/0.3.20
+
+
+Currently Loaded Modules:
+  1) StdEnv      3) gcc/11.4.0        5) python/3.11.6
+  2) eth_proxy   4) openblas/0.3.20
+
+Inactive Modules:
+  1) code-server/4.16.1   2) git/2.31.1
+
+ 
+
