@@ -62,6 +62,7 @@ if __name__ == "__main__":
     plt.title("Quicksort benchmark")
     plt.xlabel("Number of threads")
     plt.ylabel("Total time (s)")
+    plt.yscale('log')
 
     plt.savefig("benchmark.png")
 

@@ -74,6 +74,7 @@ def main():
     plt.title("Loop dependencies benchmark")
     plt.xlabel("Number of threads")
     plt.ylabel("Total time (s)")
+    plt.yscale('log')
 
     plt.savefig("benchmark.png")
 
