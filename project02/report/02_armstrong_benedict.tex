@@ -1,5 +1,9 @@
 \documentclass[unicode,11pt,a4paper,oneside,numbers=endperiod,openany]{scrartcl}
 
+\usepackage{minted}
+\usepackage{amsmath}
+\usepackage{listings}
+
 \input{assignment.sty}
 
 \begin{document}
@@ -17,7 +21,22 @@
 
 \section{Computing $\pi$ with \texttt{OpenMP} [20 points]}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{../code/pi/benchmark.png}
+    \caption{Benchmark results for the $\pi$ calculation using \texttt{OpenMP}.}
+    \label{fig:pi_benchmark}
+\end{figure}
+
 \section{The Mandelbrot set  using \texttt{OpenMP} [20 points]}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../code/mandel/images/mandel_seq_1000.png}
+    \caption{Mandelbrot set}
+    \label{fig:mandel}
+\end{figure}
 
 \section{Bug hunt [10 points]}
 
@@ -29,9 +48,68 @@
 
 \section{Parallel histogram calculation using \texttt{OpenMP} [15 points]}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../code/hist/benchmark.png}
+    \caption{Benchmark results for the histogram calculation using \texttt{OpenMP}.}
+    \label{fig:hist_benchmark}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../code/hist/speedup.png}
+    \caption{Speedup results for the histogram calculation using \texttt{OpenMP}.}
+    \label{fig:hist_speedup}
+\end{figure}
+
 \section{Parallel loop dependencies with \texttt{OpenMP} [15 points]}
 
+To parallelize the loop with dependencies we split up the loop into $N$ equal parts, where $N$ is the number of threads. We then calculate the first element of each thread's partition
+$$S_i = Sn * {up}^{i * chunk\_size}$$
+where $i$ is the thread number. Each thread then calculates the rest of the assigned elements.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../code/loop-dependencies/benchmark.png}
+    \caption{Benchmark results for the loop dependencies calculation using \texttt{OpenMP}.}
+    \label{fig:loop_dependencies_benchmark}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../code/loop-dependencies/speedup.png}
+    \caption{Speedup results for the loop dependencies calculation using \texttt{OpenMP}.}
+    \label{fig:loop_dependencies_speedup}
+\end{figure}
+
 \section{Quicksort using \texttt{OpenMP} tasks [20 points]}
+
+Quicksort can be easily parallelized using tasks. We create a task for each recursive call to the quicksort function. We then wait for all tasks to finish before returning. This is done by adding a \texttt{taskwait} directive after the recursive calls. The only complication is defining a minimum task size to prevent the creation of too many tasks. The code is shown in Listing \ref{lst:quicksort_tasks}.
+
+% Code examples
+\begin{listing}[h!t]
+    \begin{minted}{c}
+        #pragma omp task shared(data) firstprivate(right) final(right < MIN_SIZE)
+        quicksort(data, right);
+      
+        int t = length - left;
+      #pragma omp task shared(data, left) firstprivate(t) final(t < MIN_SIZE)
+        quicksort(&(data[left]), t);
+      
+      #pragma omp taskwait
+    \end{minted}
+    \caption{Recursion of the quicksort function using tasks}
+    \label{lst:quicksort_tasks}
+\end{listing}
+
+After implementing the quicksort function using tasks I benchmarked the code using a strong scaling analysis. The results are shown in Figure \ref{fig:quicksort_benchmark}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../code/quicksort/benchmark.png}
+    \caption{Benchmark results for the quicksort calculation using \texttt{OpenMP} tasks.}
+    \label{fig:quicksort_benchmark}
+\end{figure}
+
 
 
 \end{document}

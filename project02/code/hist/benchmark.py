@@ -84,8 +84,16 @@ if __name__ == "__main__":
     plt.xlabel("Number of threads")
     plt.ylabel("Total time (s)")
     plt.yscale('log')
-
     plt.savefig("benchmark.png")
+
+    # plot speedup in seperate plot
+    t_1 = times[0][0]
+    speedup = [t_1 / t[0] for t in times]
+    plt.clf()
+    plt.plot(n_threads, speedup)
+    plt.ylabel("Speedup")
+    plt.xlabel("Threads")
+    plt.savefig("speedup.png")
 
     print(f"Threads: {[i[1] for i in times]}")
     print(f"Times: {[i[0] for i in times]}")

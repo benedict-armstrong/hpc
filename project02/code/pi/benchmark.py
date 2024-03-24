@@ -95,14 +95,17 @@ if __name__ == "__main__":
             f"Weak scaling (N per processor={args.problem_pp:.1e})")
         axs[0, 1].set_ylabel("Time (s)")
 
+        data[type + "_weak"] = times
+        print(f"{type} weak scaling: {times}")
+
+        if type == "pi_serial":
+            continue
+
         # plot efficiency below
         efficiency = [times[0] / (t * n) for t, n in zip(times, threads)]
         axs[1, 1].plot(threads, efficiency, label=type, linewidth=1)
         axs[1, 1].set_ylabel("Efficiency")
         axs[1, 1].set_xlabel("Threads")
-
-        data[type + "_weak"] = times
-        print(f"{type} weak scaling: {times}")
 
     # global legend
     axs[0, 1].legend(loc="upper right")

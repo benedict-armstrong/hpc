@@ -46,7 +46,7 @@ def main():
     parser.add_argument(
         '-r', '--runs',
         type=int,
-        default=5,
+        default=3,
         help='Number of runs'
     )
 
@@ -61,13 +61,14 @@ def main():
         print(f"Sequential run {i + 1}: {time}")
         times.append(time)
 
-    print(f"Sequential average: {sum(times) / len(times)}")
+    if len(times) > 1:
+        print(f"Sequential average: {sum(times) / len(times)}")
 
     times = []
-    for threads in n_threads:
+    for i in n_threads:
         time = run(i, "recur_omp")
-        print(f"Parallel run {threads + 1}: {time}")
-        times.append((time, threads))
+        print(f"Parallel run w/ {i} threads: {time}")
+        times.append((time, i))
 
     plt.plot([i[1] for i in times], [i[0] for i in times])
 
@@ -75,8 +76,16 @@ def main():
     plt.xlabel("Number of threads")
     plt.ylabel("Total time (s)")
     plt.yscale('log')
-
     plt.savefig("benchmark.png")
+
+    # plot speedup in seperate plot
+    t_1 = times[0][0]
+    speedup = [t_1 / t[0] for t in times]
+    plt.clf()
+    plt.plot(n_threads, speedup)
+    plt.ylabel("Speedup")
+    plt.xlabel("Threads")
+    plt.savefig("speedup.png")
 
 
 if __name__ == "__main__":
