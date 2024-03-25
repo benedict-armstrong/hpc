@@ -17,9 +17,34 @@
 {Discussed with: Tristan Gabl}{Solution for Project 02}{}
 \newline
 
-\assignmentpolicy
+% \assignmentpolicy
 
 \section{Computing $\pi$ with \texttt{OpenMP} [20 points]}
+
+We used two different ways to parallelize the computation of $\pi$. Defining a parallel region using the \texttt{\#pragma parallel} directive and the calculating the work for each thread \ref{lst:pi_parallel_critical}. The second method is to use the \texttt{\#pragma parallel for} directive to parallelize the for loop. The benchmark results are shown in Figure \ref{fig:pi_benchmark}.
+
+\begin{listing}[h!t]
+    \begin{minted}{c}
+    #pragma omp parallel
+    {
+        double sum_private = 0.;
+        int nthreads = omp_get_num_threads();
+        int tid = omp_get_thread_num();
+        int i_beg = tid * N / nthreads;
+        int i_end = (tid + 1) * N / nthreads;
+        for (int i = i_beg; i < i_end; ++i)
+        {
+        double x = (i + 0.5) * h;
+        sum_private += 4.0 / (1.0 + x * x);
+        }
+
+    #pragma omp critical
+        sum += sum_private;
+    }
+    \end{minted}
+    \caption{Parallel computation of $\pi$ using \texttt{OpenMP} and a parallel region.}
+    \label{lst:pi_parallel_critical}
+\end{listing}
 
 \begin{figure}[h]
     \centering
@@ -30,6 +55,23 @@
 
 \section{The Mandelbrot set  using \texttt{OpenMP} [20 points]}
 
+The Mandelbrot set can be parallelized by splitting the image into $N$ equal parts, where $N$ is the number of threads. Each thread then calculates the Mandelbrot set for its assigned part of the image. The pragma directive for parallelizing the Mandelbrot set calculation is shown in Listing \ref{lst:mandel}. The result of a strong scaling benchmark (using $1000$ iterations to determine convergence) is shown in Figure \ref{fig:mandel_benchmark}. The generated Mandelbrot set image is shown in Figure \ref{fig:mandel}.
+
+\begin{listing}[h!t]
+    \begin{minted}{c}
+#pragma omp parallel for shared(pPng) \ 
+    private(i, j, x, y, x2, y2, cx, cy) reduction(+ : nTotalIterationsCount)
+    \end{minted}
+    \caption{Pragma directive for parallelizing the Mandelbrot set calculation.}
+    \label{lst:mandel}
+\end{listing}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../code/mandel/benchmark.png}
+    \caption{Benchmark results for the Mandelbrot set calculation using \texttt{OpenMP}.}
+    \label{fig:mandel_benchmark}
+\end{figure}
 
 \begin{figure}[h]
     \centering
@@ -47,6 +89,16 @@
 \end{enumerate}
 
 \section{Parallel histogram calculation using \texttt{OpenMP} [15 points]}
+
+The histogram calculation can be easily parallelized using a one line compiler directive. The code is shown in Listing \ref{lst:hist}. The strong scaling benchmark results are shown in Figure \ref{fig:hist_benchmark} and the speedup results are shown in Figure \ref{fig:hist_speedup}.
+
+\begin{listing}[h!t]
+    \begin{minted}{c}
+        #pragma omp parallel for reduction(+ : dist[ : BINS])
+    \end{minted}
+    \caption{Parallel histogram calculation using \texttt{OpenMP}}
+    \label{lst:hist}
+\end{listing}
 
 \begin{figure}[h]
     \centering
@@ -66,7 +118,7 @@
 
 To parallelize the loop with dependencies we split up the loop into $N$ equal parts, where $N$ is the number of threads. We then calculate the first element of each thread's partition
 $$S_i = Sn * {up}^{i * chunk\_size}$$
-where $i$ is the thread number. Each thread then calculates the rest of the assigned elements.
+where $i$ is the thread number. Each thread then calculates the rest of the assigned elements. Figure \ref{fig:loop_dependencies_benchmark} shows the benchmark results and Figure \ref{fig:loop_dependencies_speedup} shows the speedup results.
 
 \begin{figure}[h]
     \centering
