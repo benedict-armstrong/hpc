@@ -3,56 +3,54 @@ rm -f build/*
 /cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/gcc -c walltime.c -o build/walltime.o
 /cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/gcc -O3 build/recur_seq.o build/walltime.o -o build/recur_seq
 /cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/gcc -O3 -lm -fopenmp recur_omp.c build/walltime.o -o build/recur_omp
-Sequential run 1: 5.782961
-Sequential run 2: 5.707164
-Sequential run 3: 5.761731
-Sequential run 4: 5.703588
-Sequential run 5: 5.775737
-Sequential average: 5.7462362
-Parallel run 2: 2.377963
-Parallel run 3: 2.658833
-Parallel run 4: 2.54301
-Parallel run 5: 2.570332
-Parallel run 6: 2.682202
-Parallel run 7: 2.653559
-Parallel run 8: 2.702355
-Parallel run 9: 2.590224
-Parallel run 10: 2.587872
-Parallel run 11: 2.563151
-Parallel run 12: 2.592969
-Parallel run 13: 2.741275
-Parallel run 14: 2.939653
-Parallel run 15: 2.634247
-Parallel run 16: 2.426997
-Parallel run 17: 2.398443
-Parallel run 18: 3.045777
-Parallel run 19: 2.520985
-Parallel run 20: 2.656465
-Parallel run 21: 2.52224
-Parallel run 22: 2.430944
-Parallel run 23: 2.677872
-Parallel run 24: 2.688365
-Parallel run 25: 2.535821
-Parallel run 26: 2.508533
-Parallel run 27: 2.506607
-Parallel run 28: 2.471278
-Parallel run 29: 2.670201
-Parallel run 30: 2.607384
-Parallel run 31: 2.474591
-Parallel run 32: 2.573776
-Parallel run 33: 2.694563
-Parallel run 34: 2.49303
-Parallel run 35: 2.543432
-Parallel run 36: 2.71856
-Parallel run 37: 2.635266
-Parallel run 38: 2.517598
-Parallel run 39: 2.605472
-Parallel run 40: 2.660054
-Parallel run 41: 2.481545
-Parallel run 42: 2.525616
-Parallel run 43: 2.740783
-Parallel run 44: 2.581185
-Parallel run 45: 2.474046
-Parallel run 46: 2.593254
-Parallel run 47: 2.554085
-Parallel run 48: 2.863166
+Sequential run 1: 5.718666
+Sequential run 2: 5.779855
+Sequential run 3: 8.637081
+Sequential average: 6.711867333333333
+Parallel run w/ 1 threads: 5.785709
+Parallel run w/ 2 threads: 3.960202
+Parallel run w/ 3 threads: 2.88271
+Parallel run w/ 4 threads: 2.610497
+Parallel run w/ 5 threads: 2.267737
+Parallel run w/ 6 threads: 3.263336
+Parallel run w/ 7 threads: 1.974119
+Parallel run w/ 8 threads: 1.556172
+Parallel run w/ 9 threads: 2.773166
+Parallel run w/ 10 threads: 1.470785
+Parallel run w/ 11 threads: 1.254835
+Parallel run w/ 12 threads: 2.156173
+Parallel run w/ 13 threads: 1.025226
+Parallel run w/ 14 threads: 1.100231
+Parallel run w/ 15 threads: 1.101345
+Parallel run w/ 16 threads: 1.410394
+Parallel run w/ 17 threads: 0.800432
+Parallel run w/ 18 threads: 0.845037
+Parallel run w/ 19 threads: 0.781119
+Parallel run w/ 20 threads: 0.855115
+Parallel run w/ 21 threads: 1.329948
+Parallel run w/ 22 threads: 0.70273
+Parallel run w/ 23 threads: 0.714163
+Parallel run w/ 24 threads: 0.741879
+Parallel run w/ 25 threads: 0.749557
+Parallel run w/ 26 threads: 0.621292
+Parallel run w/ 27 threads: 1.116316
+Parallel run w/ 28 threads: 0.608201
+Parallel run w/ 29 threads: 0.663003
+Parallel run w/ 30 threads: 1.030373
+Parallel run w/ 31 threads: 0.582687
+Parallel run w/ 32 threads: 0.560239
+Parallel run w/ 33 threads: 0.584365
+Parallel run w/ 34 threads: 0.939327
+Parallel run w/ 35 threads: 0.69438
+Parallel run w/ 36 threads: 0.544773
+Parallel run w/ 37 threads: 0.975847
+Parallel run w/ 38 threads: 0.584942
+Parallel run w/ 39 threads: 0.564638
+Parallel run w/ 40 threads: 0.591979
+Parallel run w/ 41 threads: 0.651534
+Parallel run w/ 42 threads: 0.621398
+Parallel run w/ 43 threads: 0.617435
+Parallel run w/ 44 threads: 1.031217
+Parallel run w/ 45 threads: 0.705036
+Parallel run w/ 46 threads: 0.582689
+Parallel run w/ 47 threads: 0.565171
