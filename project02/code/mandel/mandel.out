@@ -5,3 +5,66 @@ rm -f build/*.o build/mandel_seq
 /cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/gcc -O3 -L/cluster/apps/gcc-11.4.0/openblas-0.3.20-ssgo6yxxzud3xbfabkvv77e6lpnq7hep/lib:/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/lib64:/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/lib -lpng -fopenmp build/mandel_seq.o build/pngwriter.o build/walltime.o -o build/mandel_seq
 /cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/gcc -c -O3 -I/cluster/apps/gcc-11.4.0/openblas-0.3.20-ssgo6yxxzud3xbfabkvv77e6lpnq7hep/include:/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/include -fopenmp mandel_par.c -o build/mandel_par.o
 /cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/gcc -O3 -L/cluster/apps/gcc-11.4.0/openblas-0.3.20-ssgo6yxxzud3xbfabkvv77e6lpnq7hep/lib:/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/lib64:/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/lib -lpng -fopenmp build/mandel_par.o build/pngwriter.o build/walltime.o -o build/mandel_par
+Running benchmark for 1 threads
+Running benchmark for 3 threads
+Running benchmark for 5 threads
+Running benchmark for 7 threads
+Running benchmark for 9 threads
+Running benchmark for 11 threads
+Running benchmark for 13 threads
+Running benchmark for 15 threads
+Running benchmark for 17 threads
+Running benchmark for 19 threads
+Running benchmark for 21 threads
+Running benchmark for 23 threads
+Running benchmark for 25 threads
+Running benchmark for 27 threads
+Running benchmark for 29 threads
+Running benchmark for 31 threads
+Running benchmark for 33 threads
+Running benchmark for 35 threads
+Running benchmark for 37 threads
+Running benchmark for 39 threads
+Running benchmark for 41 threads
+1 229.043
+
+3 196.969
+
+5 109.596
+
+7 80.4875
+
+9 63.1216
+
+11 52.8673
+
+13 40.715
+
+15 37.1259
+
+17 35.2478
+
+19 29.5072
+
+21 27.7553
+
+23 24.8489
+
+25 23.1459
+
+27 21.413
+
+29 20.4386
+
+31 19.5326
+
+33 18.7991
+
+35 17.7932
+
+37 16.6603
+
+39 15.4788
+
+41 15.0904
+
