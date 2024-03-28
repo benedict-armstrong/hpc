@@ -1,0 +1,30 @@
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+*.out
+
+# minted
+_minted-*
+
+## Intermediate documents:
+*.dvi
+*.xdv
+*-converted-to.*
+
+## Build tool auxiliary files:
+*.fdb_latexmk
+*.synctex
+*.synctex.gz
+*.pdfsync
+
+# gummi
+.*.swp
