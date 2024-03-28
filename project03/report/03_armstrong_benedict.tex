@@ -1,5 +1,9 @@
 \documentclass[unicode,11pt,a4paper,oneside,numbers=endperiod,openany]{scrartcl}
 
+\usepackage{minted}
+\usepackage{amsmath}
+\usepackage{listings}
+
 \input{assignment.sty}
 
 \begin{document}
@@ -9,16 +13,88 @@
 \setduedate{Monday 15 April 2024, 23:59 (midnight)}
 
 \serieheader{High-Performance Computing Lab for CSE}{2024}
-            {Student: FULL NAME}
-            {Discussed with: FULL NAME}{Solution for Project 3}{}
+{Student: Benedict Armstrong}
+{Discussed with: Tristan Gabl}{Solution for Project 3}{}
 \newline
 
-\assignmentpolicy
 
-\section{Task: Implementing the linear algebra functions and the stencil
-         operators [40 Points]}
+\section{Implementing the linear algebra functions and the stencil
+  operators}
 
-\section{Task:  Adding OpenMP to the nonlinear PDE mini-app [60 Points]}
+\subsection{Linalg functions}
+Implementing the eight linalg function outlined in \texttt{linalg.cpp} was relatively straighforward. Each followed a similar pattern of component wise iteration over the input array(s) and then performing the required operation. An example of the \texttt{copy} function is shown in Listing \ref{lst:linalg_copy}.
+
+\begin{listing}[h!t]
+    \begin{minted}{cpp}
+    for (int i = 0; i < N; i++)
+    {
+        y[i] = x[i];
+    }
+    \end{minted}
+    \caption{Linalg copy function}
+    \label{lst:linalg_copy}
+\end{listing}
+
+\subsection{Stencil operators}
+
+The next task was Implementing the stencil operator. Listing \ref*{lst:stencil_operator} shows how we calculate the value for each grid cell.
+
+\begin{listing}[h!t]
+    \begin{minted}{cpp}
+    f(i, j) = -(4. + alpha) * s_new(i, j) 
+            + s_new(i - 1, j) + s_new(i + 1, j) 
+            + s_new(i, j - 1) + s_new(i, j + 1) 
+            + beta * s_new(i, j) * (1.0 - s_new(i, j)) 
+            + alpha * s_old(i, j);
+    \end{minted}
+    \caption{Stencil operator}
+    \label{lst:stencil_operator}
+\end{listing}
+
+\subsection{Plotting the results}
+
+Finally we can plot the results with the following parameters:
+\begin{itemize}
+    \item $nx = ny = 128$
+    \item $nt = 100$
+    \item $t = 0.005$
+\end{itemize}
+
+The output of the serial version is shown in Listing \ref{lst:run_serial}.
+
+\begin{listing}[h]
+    \begin{minted}{bash}
+$ ./build/main 128 100 0.005
+================================================================================
+                        Welcome to mini-stencil!
+version   :: C++ Serial
+mesh      :: 128 * 128 dx = 0.00787402
+time      :: 100 time steps from 0 .. 0.005
+iteration :: CG 300, Newton 50, tolerance 1e-06
+================================================================================
+--------------------------------------------------------------------------------
+simulation took 0.15112 seconds
+1514 conjugate gradient iterations, at rate of 10018.5 iters/second
+300 newton iterations
+--------------------------------------------------------------------------------
+### 1, 128, 100, 1514, 300, 0.15112 ###
+Goodbye!
+    \end{minted}
+    \caption{Running the serial version of the mini-app}
+    \label{lst:run_serial}
+\end{listing}
+
+The results are shown in Figure \ref{fig:output_serial}.
+
+\begin{figure}[h!t]
+    \centering
+    \includegraphics[width=0.5\textwidth]{plots/output_serial.png}
+    \caption{Results of the nonlinear PDE mini-app}
+    \label{fig:output_serial}
+\end{figure}
+
+
+\section{Adding OpenMP to the nonlinear PDE mini-app}
 
 
 \end{document}
