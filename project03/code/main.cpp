@@ -24,6 +24,10 @@
 #include "walltime.h"
 #include "stats.h"
 
+#ifndef _OPENMP
+#include <omp.h>
+#endif
+
 using namespace data;
 using namespace linalg;
 using namespace operators;
@@ -32,11 +36,13 @@ using namespace stats;
 // =============================================================================
 
 // read command line arguments
-static void readcmdline(Discretization& options, int argc, char* argv[]) {
-    if (argc<4 || argc>5) {
+static void readcmdline(Discretization &options, int argc, char *argv[])
+{
+    if (argc < 4 || argc > 5)
+    {
         printf("Usage: main nx nt t verbose\n");
         printf("  nx        number of gridpoints in x-direction and "
-                           "y-direction, respectively\n");
+               "y-direction, respectively\n");
         printf("  nt        number of timesteps\n");
         printf("  t         total time\n");
         printf("  verbose   (optional) verbose output\n");
@@ -45,28 +51,32 @@ static void readcmdline(Discretization& options, int argc, char* argv[]) {
 
     // read nx
     options.nx = atoi(argv[1]);
-    if (options.nx < 1) {
+    if (options.nx < 1)
+    {
         fprintf(stderr, "nx must be positive integer\n");
         exit(-1);
     }
 
     // read nt
     options.nt = atoi(argv[2]);
-    if (options.nt < 1) {
+    if (options.nt < 1)
+    {
         fprintf(stderr, "nt must be positive integer\n");
         exit(-1);
     }
 
     // read total time
     double t = atof(argv[3]);
-    if (t < 0) {
+    if (t < 0)
+    {
         fprintf(stderr, "t must be positive real value\n");
         exit(-1);
     }
 
     // set verbosity if requested
     verbose_output = false;
-    if (argc==5) {
+    if (argc == 5)
+    {
         verbose_output = true;
     }
 
@@ -85,49 +95,51 @@ static void readcmdline(Discretization& options, int argc, char* argv[]) {
 
     // set beta, assume diffusion coefficient D=1, reaction coefficient R=1000
     double R = 500.;
-    options.beta = (R * options.dx * options.dx)/1.;
+    options.beta = (R * options.dx * options.dx) / 1.;
 }
 
 // =============================================================================
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     // read command line arguments
     readcmdline(options, argc, argv);
     int nx = options.nx;
-    int N  = options.N;
+    int N = options.N;
     int nt = options.nt;
 
     // set iteration parameters
-    int max_cg_iters     = 300;
+    int max_cg_iters = 300;
     int max_newton_iters = 50;
-    double tolerance     = 1.e-6;
+    double tolerance = 1.e-6;
 
     // get number of threads
     int threads = 1; // serial case
 
-   // welcome message
+    // welcome message
     std::cout << std::string(80, '=') << std::endl;
     std::cout << "                      Welcome to mini-stencil!" << std::endl;
     std::cout << "version   :: C++ Serial" << std::endl;
     std::cout << "mesh      :: " << options.nx << " * " << options.nx
-                                 << " dx = " << options.dx << std::endl;
+              << " dx = " << options.dx << std::endl;
     std::cout << "time      :: " << nt << " time steps from 0 .. "
-                                       << options.nt*options.dt << std::endl;
-    std::cout << "iteration :: " << "CG "          << max_cg_iters
-                                 << ", Newton "    << max_newton_iters
-                                 << ", tolerance " << tolerance << std::endl;
+              << options.nt * options.dt << std::endl;
+    std::cout << "iteration :: "
+              << "CG " << max_cg_iters
+              << ", Newton " << max_newton_iters
+              << ", tolerance " << tolerance << std::endl;
     std::cout << std::string(80, '=') << std::endl;
 
     // allocate global fields
-    y_new.init(nx,nx);
-    y_old.init(nx,nx);
-    bndN.init(nx,1);
-    bndS.init(nx,1);
-    bndE.init(nx,1);
-    bndW.init(nx,1);
+    y_new.init(nx, nx);
+    y_old.init(nx, nx);
+    bndN.init(nx, 1);
+    bndS.init(nx, 1);
+    bndE.init(nx, 1);
+    bndW.init(nx, 1);
 
-    Field f(nx,nx);
-    Field deltay(nx,nx);
+    Field f(nx, nx);
+    Field deltay(nx, nx);
 
     // set dirichlet boundary conditions to 0 all around
     double const_bdy = 0.1;
@@ -141,16 +153,18 @@ int main(int argc, char* argv[]) {
     // no larger than 1/8 of both xdim and ydim
     double const_fill = 0.1;
     double inner_circle = 0.2;
-    hpc_fill(y_new, const_fill, nx*nx);
+    hpc_fill(y_new, const_fill, nx * nx);
     double xc = 1.0 / 4.0;
     double yc = 1.0 / 4.0;
     double radius = fmin(xc, yc) / 2.0;
-    for (int j = 0; j < nx; j++) {
+    for (int j = 0; j < nx; j++)
+    {
         double y = (j - 1) * options.dx;
-        for (int i = 0; i < nx; i++) {
+        for (int i = 0; i < nx; i++)
+        {
             double x = (i - 1) * options.dx;
             if ((x - xc) * (x - xc) + (y - yc) * (y - yc) < radius * radius)
-                y_new(i,j) = inner_circle;
+                y_new(i, j) = inner_circle;
         }
     }
 
@@ -161,20 +175,23 @@ int main(int argc, char* argv[]) {
     double time_start = walltime();
 
     // main timeloop
-    for (int timestep = 1; timestep <= nt; timestep++) {
+    for (int timestep = 1; timestep <= nt; timestep++)
+    {
         // set y_new and y_old to be the solution
         hpc_copy(y_old, y_new, N);
 
         double residual;
         bool converged = false;
         int it;
-        for (it = 0; it < max_newton_iters; it++) {
+        for (it = 0; it < max_newton_iters; it++)
+        {
             // compute residual
             diffusion(y_old, y_new, f);
             residual = hpc_norm2(f, N);
 
             // check for convergence
-            if (residual < tolerance) {
+            if (residual < tolerance)
+            {
                 converged = true;
                 break;
             }
@@ -185,21 +202,24 @@ int main(int argc, char* argv[]) {
                    cg_converged);
 
             // check that the CG solver converged
-            if (!cg_converged) break;
+            if (!cg_converged)
+                break;
 
             // update solution
             hpc_axpy(y_new, -1.0, deltay, N);
         }
-        iters_newton += it+1;
+        iters_newton += it + 1;
 
         // output some statistics
-        if (converged && verbose_output) {
+        if (converged && verbose_output)
+        {
             std::cout << "step " << timestep
                       << " required " << it
                       << " iterations for residual " << residual
                       << std::endl;
         }
-        if (!converged) {
+        if (!converged)
+        {
             std::cerr << "step " << timestep
                       << " ERROR : nonlinear iterations failed to converge"
                       << std::endl;
@@ -216,13 +236,13 @@ int main(int argc, char* argv[]) {
 
     // binary data
     {
-        FILE* output = fopen("output.bin", "w");
+        FILE *output = fopen("output.bin", "w");
         fwrite(y_new.data(), sizeof(double), nx * nx, output);
         fclose(output);
     }
 
     std::ofstream fid("output.bov");
-    fid << "TIME: " << options.nt*options.dt << std::endl;
+    fid << "TIME: " << options.nt * options.dt << std::endl;
     fid << "DATA_FILE: output.bin" << std::endl;
     fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
         << std::endl;
@@ -230,10 +250,11 @@ int main(int argc, char* argv[]) {
     fid << "VARIABLE: phi" << std::endl;
     fid << "DATA_ENDIAN: LITTLE" << std::endl;
     fid << "CENTERING: nodal" << std::endl;
-    fid << "BRICK_ORIGIN: " << "0. 0. 0." << std::endl;
-    fid << "BRICK_SIZE: " << (options.nx-1)*options.dx << ' '
-                          << (options.nx-1)*options.dx << ' '
-                          << " 1.0"
+    fid << "BRICK_ORIGIN: "
+        << "0. 0. 0." << std::endl;
+    fid << "BRICK_SIZE: " << (options.nx - 1) * options.dx << ' '
+        << (options.nx - 1) * options.dx << ' '
+        << " 1.0"
         << std::endl;
 
     // print table sumarizing results
@@ -241,15 +262,15 @@ int main(int argc, char* argv[]) {
     std::cout << std::string(80, '-') << std::endl;
     std::cout << "simulation took " << timespent << " seconds" << std::endl;
     std::cout << int(iters_cg) << " conjugate gradient iterations, at rate of "
-              << float(iters_cg)/timespent << " iters/second" << std::endl;
+              << float(iters_cg) / timespent << " iters/second" << std::endl;
     std::cout << iters_newton << " newton iterations" << std::endl;
     std::cout << std::string(80, '-') << std::endl;
     std::cout << "### " << threads << ", "
-                        << options.nx << ", "
-                        << options.nt << ", "
-                        << iters_cg   << ", "
-                        << iters_newton <<  ", "
-                        << timespent
+              << options.nx << ", "
+              << options.nt << ", "
+              << iters_cg << ", "
+              << iters_newton << ", "
+              << timespent
               << " ###" << std::endl;
     std::cout << "Goodbye!" << std::endl;
 
