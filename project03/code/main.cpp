@@ -24,7 +24,7 @@
 #include "walltime.h"
 #include "stats.h"
 
-#ifndef _OPENMP
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -115,11 +115,19 @@ int main(int argc, char *argv[])
 
     // get number of threads
     int threads = 1; // serial case
+#ifdef _OPENMP
+    threads = omp_get_max_threads();
+#endif
 
     // welcome message
     std::cout << std::string(80, '=') << std::endl;
     std::cout << "                      Welcome to mini-stencil!" << std::endl;
+#ifdef _OPENMP
+    std::cout << "version   :: C++ OpenMP" << std::endl;
+    std::cout << "threads   :: " << threads << std::endl;
+#else
     std::cout << "version   :: C++ Serial" << std::endl;
+#endif
     std::cout << "mesh      :: " << options.nx << " * " << options.nx
               << " dx = " << options.dx << std::endl;
     std::cout << "time      :: " << nt << " time steps from 0 .. "
