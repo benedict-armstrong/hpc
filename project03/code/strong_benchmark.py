@@ -60,8 +60,8 @@ def run(n_threads: int, size=128, times_steps=100, final_time=0.005) -> float:
 
 if __name__ == "__main__":
 
-    threads = [1, 2, 4, 8]
-    sizes = [64, 128, 256]  # , 512, 1024]
+    threads = [1, 2, 4, 8, 16]
+    sizes = [64, 128, 256, 512, 1024]
 
     # run the benchmark for each type and number of iterations
     # create 3D plot results as a 3d plane
