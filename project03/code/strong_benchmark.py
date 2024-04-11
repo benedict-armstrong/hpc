@@ -1,6 +1,7 @@
 import argparse
 import re
 import subprocess
+from typing import List
 import matplotlib.pyplot as plt
 
 
@@ -60,39 +61,67 @@ def run(n_threads: int, size=128, times_steps=100, final_time=0.005) -> float:
 
 if __name__ == "__main__":
 
-    threads = [1, 2, 4, 8, 16]
-    sizes = [64, 128, 256, 512, 1024]
+    argparser = argparse.ArgumentParser()
 
-    # run the benchmark for each type and number of iterations
-    # create 3D plot results as a 3d plane
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    argparser.add_argument(
+        "--sizes", help="List of sizes to run the benchmark for", type=int, nargs="+", default=[128, 256, 512, 1024])
+    argparser.add_argument(
+        "--runs", help="Number of runs", type=int, default=3)
+    argparser.add_argument(
+        "--threads", help="Number of threads to run the benchmark for", type=int, nargs="+", default=[1, 2, 4, 8])
+    argparser.add_argument(
+        "--plot_from", help="Plot from the given file", type=str, default=None)
 
-    times = []
+    args = argparser.parse_args()
 
-    for size in sizes:
-        temp = []
-        print(f"Running benchmark for size {size}")
-        for thread in threads:
-            time = run(thread, size)
-            temp.append(time)
-        times.append(temp)
+    threads = args.threads
+    sizes = args.sizes
+    runs = args.runs
 
-    # plot the results (lines and points)
+    if not args.plot_from:
+        # print config
+        print(f"Running benchmark for sizes: {sizes}")
+        print(f"Running benchmark for threads: {threads}")
+        print(f"Number of runs: {runs}")
+
+        times = []
+
+        for size in sizes:
+            temp = []
+            print(f"Running benchmark for size {size}")
+            for thread in threads:
+                r = []
+                for _ in range(runs):
+                    r.append(run(thread, size))
+                temp.append(r)
+            times.append(temp)
+
+        # save time results to a file
+        with open("strong_scaling_results.csv", "w") as f:
+            f.write(f"size,{','.join(map(str, threads))}\n")
+            for i, size in enumerate(sizes):
+                f.write(f"{size},{','.join(map(str, times[i]))}\n")
+
+    else:
+
+        print(f"Plotting from {args.plot_from}")
+
+        times = []
+        with open(args.plot_from, "r") as f:
+            f.readline()
+            for line in f:
+                size, *t = map(float, line.strip().split(","))
+                times.append(t)
+
+    # plot each threadcount as a line (different color) and each size as a point with error bars
     for i, size in enumerate(sizes):
-        ax.plot(threads, [size]*len(threads), times[i], marker='o')
-        ax.scatter(threads, [size]*len(threads), times[i])
+        plt.errorbar(threads, [sum(t) / len(t) for t in times[i]],
+                     yerr=[max(t) - min(t) for t in times[i]], label=f"size {size}")
 
-    ax.set_xlabel('Threads')
-    ax.set_ylabel('Size')
-    ax.set_zlabel('Time')
+    plt.xlabel("Number of threads")
+    plt.ylabel("Time (s)")
+    plt.legend()
 
-    plt.title("Strong scaling benchmark")
-    plt.savefig("strong_scaling.png")
+    plt.savefig("strong_scaling_plot.svg")
+
     plt.show()
-
-    # save time results to a file
-    with open("strong_scaling_results.csv", "w") as f:
-        f.write(f"size,{','.join(map(str, threads))}\n")
-        for i, size in enumerate(sizes):
-            f.write(f"{size},{','.join(map(str, times[i]))}\n")

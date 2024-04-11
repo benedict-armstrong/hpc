@@ -37,7 +37,7 @@ Implementing the eight linalg function outlined in \texttt{linalg.cpp} was relat
 
 \subsection{Stencil operators}
 
-The next task was Implementing the stencil operator. Listing \ref*{lst:stencil_operator} shows how we calculate the value for each grid cell.
+The next task was Implementing the stencil operator. Listing \ref{lst:stencil_operator} shows how we calculate the value for each grid cell.
 
 \begin{listing}[h!t]
     \begin{minted}{cpp}
@@ -96,5 +96,55 @@ The results are shown in Figure \ref{fig:output_serial}.
 
 \section{Adding OpenMP to the nonlinear PDE mini-app}
 
+First I reconfigured the project welcome message. If \mintinline{cpp}{_OPENMP} is defined, we use \mintinline{cpp}{omp_get_max_threads()} to get the number of threads. The code welcome message is shown in Listing \ref{lst:openmp_welcome}.
+
+\begin{listing}[h!t]
+    \begin{minted}{bash}
+#ifdef _OPENMP
+    std::cout << "version   :: C++ OpenMP" << std::endl;
+    std::cout << "threads   :: " << threads << std::endl;
+#else
+    std::cout << "version   :: C++ Serial" << std::endl;
+#endif
+    \end{minted}
+    \caption{New OpenMP welcome message}
+    \label{lst:openmp_welcome}
+\end{listing}
+
+
+Next I added parallelised versions of the linalg functions. For most of the functions, I simply added the \mintinline{cpp}{#pragma omp parallel for} directive before the loop. For the dot product and the norm functions, I used the \mintinline{cpp}{reduction} clause to ensure the correct result. An example of the copy function is shown in Listing \ref{lst:openmp_copy}.
+
+\begin{listing}[h!t]
+    \begin{minted}{cpp}
+#pragma omp parallel for shared(y, x)
+    for (int i = 0; i < N; i++)
+    {
+        y[i] = x[i];
+    }
+    \end{minted}
+    \caption{OpenMP copy function}
+    \label{lst:openmp_copy}
+\end{listing}
+
+Finally, I added the \mintinline{cpp}{#pragma omp parallel for collapse(2)} directive to the stencil operator to parallelise the nested loops. The updated stencil operator is shown in Listing \ref{lst:openmp_stencil}.
+
+\begin{listing}[h!t]
+    \begin{minted}{cpp}
+#pragma omp parallel for collapse(2) shared(s_new, s_old, f)
+        for (int j = 1; j < jend; j++)
+        {
+            for (int i = 1; i < iend; i++)
+            {
+                f(i, j) = -(4. + alpha) * s_new(i, j) 
+                    + s_new(i - 1, j) + s_new(i + 1, j) 
+                    + s_new(i, j - 1) + s_new(i, j + 1) 
+                    + beta * s_new(i, j) * (1.0 - s_new(i, j)) 
+                    + alpha * s_old(i, j);    
+            }
+        }
+    \end{minted}
+    \caption{OpenMP stencil operator}
+    \label{lst:openmp_stencil}
+\end{listing}
 
 \end{document}
