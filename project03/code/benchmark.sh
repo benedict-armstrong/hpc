@@ -18,4 +18,4 @@ make clean
 make
 
 # Run the program
-srun python3 strong_benchmark.py
+srun python3 strong_benchmark.py --sizes 64 128 256 512 1024 --threads 1 2 4 8 16 --runs 5
