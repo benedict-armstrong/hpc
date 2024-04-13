@@ -5,8 +5,10 @@ name = "pypi"
 
 [packages]
 matplotlib = "*"
+pandas = "*"
 
 [dev-packages]
+ipykernel = "*"
 
 [requires]
 python_version = "3.11"

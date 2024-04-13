@@ -1,4 +1,5 @@
 import argparse
+import json
 import re
 import subprocess
 from typing import List
@@ -96,32 +97,77 @@ if __name__ == "__main__":
                 temp.append(r)
             times.append(temp)
 
-        # save time results to a file
-        with open("strong_scaling_results.csv", "w") as f:
-            f.write(f"size,{','.join(map(str, threads))}\n")
-            for i, size in enumerate(sizes):
-                f.write(f"{size},{','.join(map(str, times[i]))}\n")
+        # save time results to a json file
+        data = {
+            "threads": threads,
+            "sizes": sizes,
+            "runs": runs,
+            "times": times,
+        }
+        json.dump(data, open("strong_scaling.json", "w"))
 
     else:
 
         print(f"Plotting from {args.plot_from}")
 
-        times = []
         with open(args.plot_from, "r") as f:
-            f.readline()
-            for line in f:
-                size, *t = map(float, line.strip().split(","))
-                times.append(t)
+            data = json.load(f)
 
     # plot each threadcount as a line (different color) and each size as a point with error bars
-    for i, size in enumerate(sizes):
-        plt.errorbar(threads, [sum(t) / len(t) for t in times[i]],
-                     yerr=[max(t) - min(t) for t in times[i]], label=f"size {size}")
+    plt.Figure(figsize=(15, 10))
 
-    plt.xlabel("Number of threads")
-    plt.ylabel("Time (s)")
+    for i, size in enumerate(data["sizes"]):
+        times_for_size = []
+
+        for t in data["times"][i]:
+            times_for_size.append(t[1:])
+
+        plt.errorbar(
+            data["threads"],
+            [sum(t) / len(t) for t in times_for_size],
+            yerr=[max(t) - min(t) for t in times_for_size],
+            label=f"size {size}",
+            capsize=3,
+        )
+
+    plt.xlabel("Number of OpenMP threads")
+    plt.yscale("log")
+    plt.ylabel("Time [s]")
+    plt.grid()
     plt.legend()
 
-    plt.savefig("strong_scaling_plot.svg")
+    plt.title(f"Strong benchmark ({data['runs']} runs, first removed)")
 
-    plt.show()
+    plt.savefig("../report/plots/strong_scaling.pdf")
+
+    plt.clf()
+
+    # plot speedup
+
+    for i, size in enumerate(data["sizes"]):
+
+        times_for_size = []
+
+        for t in data["times"][i]:
+            times_for_size.append(t[1:])
+
+        t_1 = [sum(t) / len(t) for t in times_for_size][0]
+        x_values = data["threads"]
+        y_values = [t_1 / (sum(t) / len(t)) for t in times_for_size]
+        plt.errorbar(
+            x_values,
+            y_values,
+            yerr=[max(t) - min(t) for t in times_for_size],
+            capsize=3,
+            label=f"size {size}")
+
+    plt.plot(data["threads"], data["threads"], "--", label="ideal speedup")
+
+    plt.xlabel("Number of OpenMP threads")
+    plt.ylabel("Speedup")
+    plt.grid()
+    plt.legend()
+
+    plt.title(f"Strong benchmark speedup ({data['runs']} runs, first removed)")
+
+    plt.savefig("../report/plots/strong_speedup.pdf")

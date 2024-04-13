@@ -18,7 +18,7 @@ def read_bov_header(fname):
     brick_origin = [float(i) for i in header[7].split()[1:]]
     brick_size = [float(i) for i in header[8].split()[1:]]
     return time, data_file, data_size, data_format, var_names, data_endian, \
-           centering, brick_origin, brick_size
+        centering, brick_origin, brick_size
 
 
 def read_bov_data(header):
@@ -56,10 +56,10 @@ def plot_data(fname, save=True):
     if save:
         fname = fname.split(".")
         fname[-1] = "png"
-        plt.savefig(".".join(fname), dpi=300, bbox_inches='tight')
+        plt.savefig("out/" + ".".join(fname), dpi=300, bbox_inches='tight')
     else:
         plt.show()
 
 
 if __name__ == "__main__":
-    plot_data("output.bov", save=True)
+    plot_data("out/output.bov", save=True)

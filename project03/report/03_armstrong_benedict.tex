@@ -3,6 +3,7 @@
 \usepackage{minted}
 \usepackage{amsmath}
 \usepackage{listings}
+\usepackage{subcaption}
 
 \input{assignment.sty}
 
@@ -146,5 +147,33 @@ Finally, I added the \mintinline{cpp}{#pragma omp parallel for collapse(2)} dire
     \caption{OpenMP stencil operator}
     \label{lst:openmp_stencil}
 \end{listing}
+
+\subsection{Strong Scaling Benchmark}
+
+To evaluate the strong scaling performance of the OpenMP version I ran it on Euler VII — phase 2 (AMD EPYC 7763) using $CPUs=1,2,4,8,16$ and increasing image size $N=64,128,256,512,1024$. The run configuration I used can be found in the \texttt{code} directory. For each configuration I ran 20 runs, excluded the first (warmup) and then took the average of the remaining times. The strong benchmark results are plotted in Figure \ref{fig:strong_scaling} and the speedup relative to the average serial time is shown in Figure \ref{fig:strong_speedup}.
+
+\begin{figure}[h!t]
+    \begin{subfigure}{.5\textwidth}
+        \includegraphics[width=\textwidth]{plots/strong_scaling.pdf}
+        \caption{Strong scaling benchmark of PDE mini app}
+        \label{fig:strong_scaling}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \includegraphics[width=\textwidth]{plots/strong_speedup.pdf}
+        \caption{Speedup of PDE mini app}
+        \label{fig:strong_speedup}
+    \end{subfigure}
+    \caption{Strong scaling and speedup of the PDE mini app}
+\end{figure}
+
+We can observe a decent speedup for sizes $256$ and up. As expected for all sizes the curve flattens out as we increase the number of threads. A $10$ fold speedup with $16$ threads is achieved for $N=1024$ which is a good result.
+
+The full benchmarking code can be found in the \texttt{code} directory and the resulting data in the \texttt{code/out} directory.
+
+\subsection{Weak Scaling Benchmark}
+
+To evaluate the weak scaling performance of the OpenMP version I ran it on Euler VII — phase 2 (AMD EPYC 7763) using $CPUs=1, 4, 16, 64$ and base image size $N=64, 128, 256$ increasing it to keep the load per CPU constant. The run configuration I used can be found in the \texttt{code} directory. For each configuration I ran 20 runs, excluded the first (warmup) and then took the average of the remaining times. The weak benchmark results are plotted in Figure \ref{fig:weak_scaling} and the speedup relative to the average serial time is shown in Figure \ref{fig:weak_speedup}.
+
+Again the full benchmarking code can be found in the \texttt{code} directory and the resulting data in the \texttt{code/out} directory.
 
 \end{document}

@@ -244,12 +244,12 @@ int main(int argc, char *argv[])
 
     // binary data
     {
-        FILE *output = fopen("output.bin", "w");
+        FILE *output = fopen("out/output.bin", "w");
         fwrite(y_new.data(), sizeof(double), nx * nx, output);
         fclose(output);
     }
 
-    std::ofstream fid("output.bov");
+    std::ofstream fid("out/output.bov");
     fid << "TIME: " << options.nt * options.dt << std::endl;
     fid << "DATA_FILE: output.bin" << std::endl;
     fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
