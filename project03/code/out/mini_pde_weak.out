@@ -1,0 +1,266 @@
+rm -f build/walltime.o   build/stats.o   build/data.o   build/operators.o   build/linalg.o   build/main.o output.* build/main
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp -c walltime.cpp -o build/walltime.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp -c stats.cpp -o build/stats.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp -c data.cpp -o build/data.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp -c operators.cpp -o build/operators.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp -c linalg.cpp -o build/linalg.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp -c main.cpp -o build/main.o
+/cluster/apps/gcc-4.8.5/gcc-11.4.0-xxnwhndqaqpuzs4l4ty4yj5tg2cexcg4/bin/g++ -O3 -fopenmp build/walltime.o   build/stats.o   build/data.o   build/operators.o   build/linalg.o   build/main.o -o build/main
+Running benchmark for sizes: [64, 128, 256]
+Running benchmark for threads: [1, 4, 16, 64]
+Number of runs: 20
+Running benchmark for size 64x64
+	Running benchmark for 1 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 4 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 16 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 64 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+Running benchmark for size 128x128
+	Running benchmark for 1 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 4 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 16 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 64 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+Running benchmark for size 256x256
+	Running benchmark for 1 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 4 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 16 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
+	Running benchmark for 64 threads
+		Run 0
+		Run 1
+		Run 2
+		Run 3
+		Run 4
+		Run 5
+		Run 6
+		Run 7
+		Run 8
+		Run 9
+		Run 10
+		Run 11
+		Run 12
+		Run 13
+		Run 14
+		Run 15
+		Run 16
+		Run 17
+		Run 18
+		Run 19
