@@ -1,5 +1,6 @@
 import argparse
 import json
+import math
 import re
 import subprocess
 
@@ -88,7 +89,9 @@ if __name__ == "__main__":
         for thread in threads:
             print(f"\tRunning benchmark for {thread} threads")
             r = []
-            size_per_thread = base_size * thread
+            base_size_operations = base_size * base_size
+            operations_per_thread = base_size_operations * thread
+            size_per_thread = math.ceil(math.sqrt(operations_per_thread))
             for i in range(runs):
                 print(f"\t\tRun {i}")
                 r.append(run(thread, size_per_thread))

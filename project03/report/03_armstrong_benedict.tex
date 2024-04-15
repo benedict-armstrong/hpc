@@ -172,7 +172,8 @@ The full benchmarking code can be found in the \texttt{code} directory and the r
 
 \subsection{Weak Scaling Benchmark}
 
-To evaluate the weak scaling performance of the OpenMP version I ran it on Euler VII — phase 2 (AMD EPYC 7763) using $CPUs=1, 4, 16, 64$ and base image size $N=64, 128, 256$ increasing it to keep the load per CPU constant. The run configuration I used can be found in the \texttt{code} directory. For each configuration I ran 20 runs, excluded the first (warmup) and then took the average of the remaining times. The weak benchmark results are plotted in Figure \ref{fig:weak_scaling} and the efficiency relative to the average serial time is shown in Figure \ref{fig:weak_efficiency}.
+To evaluate the weak scaling performance of the OpenMP version I ran it on Euler VII — phase 2 (AMD EPYC 7763) using $CPUs=1, 4, 16, 64$ and base image size $N=64, 128, 256$ increasing it to keep the load per CPU constant. For example, for $CPUs=4$ and $N=64$ we would use $N=128$ for $CPUs=16$ and so on.
+The run configuration I used can be found in the \texttt{code} directory. For each configuration I ran 20 runs, excluded the first (warmup) and then took the average of the remaining times. The weak benchmark results are plotted in Figure \ref{fig:weak_scaling} and the efficiency relative to the average serial time is shown in Figure \ref{fig:weak_efficiency}.
 
 \begin{figure}[h!t]
     \includegraphics[width=\textwidth]{plots/weak_scaling.pdf}
@@ -185,6 +186,8 @@ To evaluate the weak scaling performance of the OpenMP version I ran it on Euler
     \caption{Efficiency of PDE mini app}
     \label{fig:weak_efficiency}
 \end{figure}
+
+For the weak benchmark we would ideally see a flat line. This is however rarely the case and indeed, especially in the beginning we observe a relatively strong time increase (notice the log time scale). For higher thread counts however, the increase is not nearly as strong. A similar picture can be seen in the efficiency as we increase the number of CPUs.
 
 Again the full benchmarking code can be found in the \texttt{code} directory and the resulting data in the \texttt{code/out} directory.
 

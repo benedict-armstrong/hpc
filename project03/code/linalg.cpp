@@ -70,7 +70,7 @@ namespace linalg
         double result = 0;
 
 // TODO
-#pragma omp parallel for reduction(+ : result)
+#pragma omp parallel for reduction(+ : result) shared(x)
         for (int i = 0; i < N; i++)
         {
 
@@ -89,7 +89,7 @@ namespace linalg
 
         // std::cout << "Threads available: " << omp_get_max_threads() << std::endl;
 
-#pragma omp parallel for
+#pragma omp parallel for shared(x, value)
         for (int i = 0; i < N; i++)
         {
             x[i] = value;
