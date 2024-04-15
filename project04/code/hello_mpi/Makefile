@@ -1,9 +1,10 @@
-CC     = mpicc
-CFLAGS =
+MPI_CC = mpicc
+CFLAGS = 
 
-hello_mpi: hello_mpi.c
-	$(CC) $(CFLAGS) $^ -o $@
+build/hello_mpi: hello_mpi.c
+	echo $(origin MPI_CC) 
+	$(MPI_CC) $(CFLAGS) $^ -o $@
 
 .PHONY: clean
 clean:
-	$(RM) hello_mpi
+	$(MPI_CC) build/hello_mpi

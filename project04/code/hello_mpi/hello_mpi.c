@@ -1,7 +1,8 @@
 #include <mpi.h> // MPI
 #include <stdio.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
   // Initialize MPI and get info
   int size, rank, len;

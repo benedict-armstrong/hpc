@@ -1,11 +1,11 @@
-CC=mpicc
-CFLAGS=-O3 -lpng
+CC = mpicc
+CFLAGS = -O3 -lpng
 
-all: mandel_mpi
+all: build/mandel_mpi
 
-mandel_mpi:  mandel_mpi.c pngwriter.c
+build/mandel_mpi:  mandel_mpi.c pngwriter.c
 	$(CC) $^ $(CFLAGS) -o $@
 
 clean:
-	rm -f mandel_mpi
+	rm -f build/mandel_mpi
 

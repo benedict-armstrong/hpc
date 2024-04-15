@@ -1,9 +1,9 @@
 CC     = mpicc
 CFLAGS =
 
-ghost: ghost.c
+build/ghost: ghost.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 .PHONY: clean
 clean:
-	$(RM) ghost
+	$(RM) build/ghost

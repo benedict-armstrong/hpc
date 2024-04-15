@@ -2,17 +2,17 @@ CC      = mpicc
 CFLAGS  = -O3 # Useful flags for debgging -Wall -g -fsanitize=address
 LDFLAGS = -lm # -fsanitize=address
 
-all: powermethod_rows
+all: build/powermethod_rows
 
-powermethod_rows: powermethod_rows.o walltime.o
+build/powermethod_rows: build/powermethod_rows.o build/walltime.o
 	$(CC) $(LDFLAGS) $^ -o $@
 
-powermethod_rows.o: powermethod_rows.c
-	$(CC) -c $(CFLAGS) $<
+build/powermethod_rows.o: powermethod_rows.c
+	$(CC) -c $(CFLAGS) $< -o $@
 
-walltime.o: walltime.c walltime.h
-	$(CC) -c $(CFLAGS) $<
+build/walltime.o: walltime.c walltime.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
-	$(RM) *.o powermethod_rows
+	$(RM) build/*.o build/powermethod_rows
