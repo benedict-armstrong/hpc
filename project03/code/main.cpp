@@ -249,6 +249,8 @@ int main(int argc, char *argv[])
         fclose(output);
     }
 
+    std::size_t hash = std::hash<std::string>{}(std::string((char *)f.data(), nx * nx * sizeof(double)));
+
     std::ofstream fid("out/output.bov");
     fid << "TIME: " << options.nt * options.dt << std::endl;
     fid << "DATA_FILE: output.bin" << std::endl;
@@ -280,6 +282,7 @@ int main(int argc, char *argv[])
               << iters_newton << ", "
               << timespent
               << " ###" << std::endl;
+    std::cout << "Checksum: " << hash << std::endl;
     std::cout << "Goodbye!" << std::endl;
 
     return 0;

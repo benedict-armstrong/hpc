@@ -131,7 +131,7 @@ Finally, I added the \mintinline{cpp}{#pragma omp parallel for collapse(2)} dire
 
 \begin{listing}[h!t]
     \begin{minted}{cpp}
-#pragma omp parallel for collapse(2) shared(s_new, s_old, f)
+#pragma omp parallel for collapse(2)
         for (int j = 1; j < jend; j++)
         {
             for (int i = 1; i < iend; i++)
@@ -146,6 +146,22 @@ Finally, I added the \mintinline{cpp}{#pragma omp parallel for collapse(2)} dire
     \end{minted}
     \caption{OpenMP stencil operator}
     \label{lst:openmp_stencil}
+\end{listing}
+
+\subsection{Bitwise identical results}
+
+Because we use the OpenMP \mintinline{cpp}{reduction} clause in \mintinline{cpp}{hpc_dot} and \mintinline{cpp}{hpc_norm2} we cannot guarantee bitwise identical results. This is because the order of operations is not guaranteed by the standard and can vary between runs. If required be could calculate a tolerance and compare the results within this tolerance. See \href{https://www.openmp.org/spec-html/5.2/openmpsu50.html}{OpenMP docs} for more information.
+
+To test this quickly I calculated a quick checksum of the binary data using the \mintinline{cpp}{std::hash} function. The code is shown in Listing \ref{lst:checksum}. Runnning the programm with different thread counts and comparing the checksums showed that the results are indeed not bitwise identical.
+
+\begin{listing}[h!t]
+    \begin{minted}{cpp}
+std::size_t hash = std::hash<std::string>{}(
+    std::string((char *)f.data(), nx * nx * sizeof(double))
+);
+    \end{minted}
+    \caption{Checksum calculation}
+    \label{lst:checksum}
 \end{listing}
 
 \subsection{Strong Scaling Benchmark}
@@ -172,8 +188,7 @@ The full benchmarking code can be found in the \texttt{code} directory and the r
 
 \subsection{Weak Scaling Benchmark}
 
-To evaluate the weak scaling performance of the OpenMP version I ran it on Euler VII — phase 2 (AMD EPYC 7763) using $CPUs=1, 4, 16, 64$ and base image size $N=64, 128, 256$ increasing it to keep the load per CPU constant. For example, for $CPUs=4$ and $N=64$ we would use $N=128$ for $CPUs=16$ and so on.
-The run configuration I used can be found in the \texttt{code} directory. For each configuration I ran 20 runs, excluded the first (warmup) and then took the average of the remaining times. The weak benchmark results are plotted in Figure \ref{fig:weak_scaling} and the efficiency relative to the average serial time is shown in Figure \ref{fig:weak_efficiency}.
+To evaluate the weak scaling performance of the OpenMP version I ran it on Euler VII — phase 2 (AMD EPYC 7763) using $CPUs=1, 4, 16, 64$ and base image size $N=64, 128, 256$ increasing it to keep the load per CPU constant. For example, for $CPUs=4$ and $N=64$ we would use $N=128$ for $CPUs=16$ and so on. The run configuration I used can be found in the \texttt{code} directory. For each configuration I ran 20 runs, excluded the first (warmup) and then took the average of the remaining times. The weak benchmark results are plotted in Figure \ref{fig:weak_scaling} and the efficiency relative to the average serial time is shown in Figure \ref{fig:weak_efficiency}.
 
 \begin{figure}[h!t]
     \includegraphics[width=\textwidth]{plots/weak_scaling.pdf}
@@ -187,8 +202,9 @@ The run configuration I used can be found in the \texttt{code} directory. For ea
     \label{fig:weak_efficiency}
 \end{figure}
 
-For the weak benchmark we would ideally see a flat line. This is however rarely the case and indeed, especially in the beginning we observe a relatively strong time increase (notice the log time scale). For higher thread counts however, the increase is not nearly as strong. A similar picture can be seen in the efficiency as we increase the number of CPUs.
+For the weak benchmark we would ideally see a flat line. This is however rarely the case and indeed, especially in the beginning we observe a relatively strong time increase (notice the log time scale). For higher thread counts however, the increase is not nearly as strong. A similar picture can be seen in the efficiency as we increase the number of CPUs. Unfortunately for all three $N$ and $CPUs=64$ the variance is quite high and the efficiency results are not reliable. We can however see that we get a sligthly better efficiency for larger $N$. For $CPUs=16$ we still achieve around $14\%$ efficiency with the largest base size.
 
 Again the full benchmarking code can be found in the \texttt{code} directory and the resulting data in the \texttt{code/out} directory.
 
+All source code can be found in \texttt{code/}.
 \end{document}

@@ -89,9 +89,7 @@ if __name__ == "__main__":
         for thread in threads:
             print(f"\tRunning benchmark for {thread} threads")
             r = []
-            base_size_operations = base_size * base_size
-            operations_per_thread = base_size_operations * thread
-            size_per_thread = math.ceil(math.sqrt(operations_per_thread))
+            size_per_thread = math.floor(base_size * math.sqrt(threads))
             for i in range(runs):
                 print(f"\t\tRun {i}")
                 r.append(run(thread, size_per_thread))
