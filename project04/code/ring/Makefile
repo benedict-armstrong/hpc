@@ -1,8 +1,8 @@
-CC     = mpicc
+MPI_CC     = mpicc
 CFLAGS =
 
-rbuild/ring_sum: ring_sum.c
-	$(CC) $(CFLAGS) $^ -o $@
+build/ring_sum: ring_sum.c
+	$(MPI_CC) $(CFLAGS) $^ -o $@
 
 .PHONY: clean
 clean:
