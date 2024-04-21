@@ -1,0 +1,161 @@
+Processor grid size (4, 4)
+[Process 0]: Coordinates [0, 0]
+[Process 0] Domain X: 0 -> 1023
+[Process 0] Domain Y: 0 -> 1023
+[Process 2]: Coordinates [2, 0]
+[Process 2] Domain X: 2048 -> 3071
+[Process 2] Domain Y: 0 -> 1023
+[Process 8]: Coordinates [0, 2]
+[Process 8] Domain X: 0 -> 1023
+[Process 8] Domain Y: 2048 -> 3071
+[Process 6]: Coordinates [2, 1]
+[Process 6] Domain X: 2048 -> 3071
+[Process 6] Domain Y: 1024 -> 2047
+[Process 1]: Coordinates [1, 0]
+[Process 1] Domain X: 1024 -> 2047
+[Process 1] Domain Y: 0 -> 1023
+[Process 10]: Coordinates [2, 2]
+[Process 10] Domain X: 2048 -> 3071
+[Process 10] Domain Y: 2048 -> 3071
+[Process 0] Total time: 1.763 ms
+[Process 0] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 0] Total number of iterations: 592579
+[Process 0] Avg. time per pixel: 0.00168133 µs
+[Process 0] Avg. time per iteration: 0.00297513 µs
+[Process 0] Iterations/second: 3.3612e+08
+[Process 0] MFlop/s:                    2688.96
+[Process 5]: Coordinates [1, 1]
+[Process 5] Domain X: 1024 -> 2047
+[Process 5] Domain Y: 1024 -> 2047
+[Process 3]: Coordinates [3, 0]
+[Process 3] Domain X: 3072 -> 4095
+[Process 3] Domain Y: 0 -> 1023
+[Process 1] Total time: 4.439 ms
+[Process 1] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 1] Total number of iterations: 1936758
+[Process 1] Avg. time per pixel: 0.00423336 µs
+[Process 1] Avg. time per iteration: 0.00229197 µs
+[Process 1] Iterations/second: 4.36305e+08
+[Process 1] MFlop/s:                    3490.44
+[Process 4]: Coordinates [0, 1]
+[Process 4] Domain X: 0 -> 1023
+[Process 4] Domain Y: 1024 -> 2047
+[Process 14]: Coordinates [2, 3]
+[Process 14] Domain X: 2048 -> 3071
+[Process 14] Domain Y: 3072 -> 4095
+[Process 7]: Coordinates [3, 1]
+[Process 7] Domain X: 3072 -> 4095
+[Process 7] Domain Y: 1024 -> 2047
+[Process 15]: Coordinates [3, 3]
+[Process 15] Domain X: 3072 -> 4095
+[Process 15] Domain Y: 3072 -> 4095
+[Process 11]: Coordinates [3, 2]
+[Process 11] Domain X: 3072 -> 4095
+[Process 11] Domain Y: 2048 -> 3071
+[Process 12]: Coordinates [0, 3]
+[Process 12] Domain X: 0 -> 1023
+[Process 12] Domain Y: 3072 -> 4095
+[Process 3] Total time: 12.016 ms
+[Process 3] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 3] Total number of iterations: 2583248
+[Process 3] Avg. time per pixel: 0.0114594 µs
+[Process 3] Avg. time per iteration: 0.00465151 µs
+[Process 3] Iterations/second: 2.14984e+08
+[Process 3] MFlop/s:                    1719.87
+[Process 9]: Coordinates [1, 2]
+[Process 9] Domain X: 1024 -> 2047
+[Process 9] Domain Y: 2048 -> 3071
+[Process 12] Total time: 1.676 ms
+[Process 12] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 12] Total number of iterations: 593783
+[Process 12] Avg. time per pixel: 0.00159836 µs
+[Process 12] Avg. time per iteration: 0.00282258 µs
+[Process 12] Iterations/second: 3.54286e+08
+[Process 12] MFlop/s:                    2834.29
+[Process 13]: Coordinates [1, 3]
+[Process 13] Domain X: 1024 -> 2047
+[Process 13] Domain Y: 3072 -> 4095
+[Process 13] Total time: 5.63 ms
+[Process 13] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 13] Total number of iterations: 1938377
+[Process 13] Avg. time per pixel: 0.00536919 µs
+[Process 13] Avg. time per iteration: 0.00290449 µs
+[Process 13] Iterations/second: 3.44294e+08
+[Process 13] MFlop/s:                    2754.35
+[Process 15] Total time: 17.019 ms
+[Process 15] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 15] Total number of iterations: 2587282
+[Process 15] Avg. time per pixel: 0.0162306 µs
+[Process 15] Avg. time per iteration: 0.00657795 µs
+[Process 15] Iterations/second: 1.52023e+08
+[Process 15] MFlop/s:                    1216.19
+[Process 4] Total time: 130.722 ms
+[Process 4] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 4] Total number of iterations: 23111363
+[Process 4] Avg. time per pixel: 0.124666 µs
+[Process 4] Avg. time per iteration: 0.00565618 µs
+[Process 4] Iterations/second: 1.76798e+08
+[Process 4] MFlop/s:                    1414.38
+[Process 8] Total time: 352.15 ms
+[Process 8] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 8] Total number of iterations: 53986661
+[Process 8] Avg. time per pixel: 0.335836 µs
+[Process 8] Avg. time per iteration: 0.00652291 µs
+[Process 8] Iterations/second: 1.53306e+08
+[Process 8] MFlop/s:                    1226.45
+[Process 14] Total time: 9148.05 ms
+[Process 14] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 14] Total number of iterations: 1912705782
+[Process 14] Avg. time per pixel: 8.72426 µs
+[Process 14] Avg. time per iteration: 0.00478278 µs
+[Process 14] Iterations/second: 2.09084e+08
+[Process 14] MFlop/s:                    1672.67
+[Process 2] Total time: 9397.51 ms
+[Process 2] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 2] Total number of iterations: 1903795984
+[Process 2] Avg. time per pixel: 8.96217 µs
+[Process 2] Avg. time per iteration: 0.0049362 µs
+[Process 2] Iterations/second: 2.02585e+08
+[Process 2] MFlop/s:                    1620.68
+[Process 9] Total time: 37721.2 ms
+[Process 9] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 9] Total number of iterations: 8944944257
+[Process 9] Avg. time per pixel: 35.9737 µs
+[Process 9] Avg. time per iteration: 0.00421704 µs
+[Process 9] Iterations/second: 2.37133e+08
+[Process 9] MFlop/s:                    1897.07
+[Process 5] Total time: 37836.3 ms
+[Process 5] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 5] Total number of iterations: 8908953236
+[Process 5] Avg. time per pixel: 36.0835 µs
+[Process 5] Avg. time per iteration: 0.004247 µs
+[Process 5] Iterations/second: 2.3546e+08
+[Process 5] MFlop/s:                    1883.68
+[Process 7] Total time: 61557.1 ms
+[Process 7] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 7] Total number of iterations: 15316138845
+[Process 7] Avg. time per pixel: 58.7054 µs
+[Process 7] Avg. time per iteration: 0.0040191 µs
+[Process 7] Iterations/second: 2.48812e+08
+[Process 7] MFlop/s:                    1990.5
+[Process 11] Total time: 61780.3 ms
+[Process 11] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 11] Total number of iterations: 15329044777
+[Process 11] Avg. time per pixel: 58.9183 µs
+[Process 11] Avg. time per iteration: 0.00403028 µs
+[Process 11] Iterations/second: 2.48122e+08
+[Process 11] MFlop/s:                    1984.97
+[Process 6] Total time: 116351 ms
+[Process 6] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 6] Total number of iterations: 30604461610
+[Process 6] Avg. time per pixel: 110.961 µs
+[Process 6] Avg. time per iteration: 0.00380176 µs
+[Process 6] Iterations/second: 2.63036e+08
+[Process 6] MFlop/s:                    2104.29
+[Process 10] Total time: 116397 ms
+[Process 10] Image size: 1024 x 1024 = 1048576 Pixels
+[Process 10] Total number of iterations: 30631791653
+[Process 10] Avg. time per pixel: 111.005 µs
+[Process 10] Avg. time per iteration: 0.00379987 µs
+[Process 10] Iterations/second: 2.63167e+08
+[Process 10] MFlop/s:                    2105.34
