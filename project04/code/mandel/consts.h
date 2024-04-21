@@ -57,7 +57,7 @@ Partition createPartition(int mpi_rank, int mpi_size)
 
     // TODO: Determine the coordinates in the Cartesian grid (p.x, p.y), see MPI_Cart_coords()
     int coords[2] = {0, 0};
-    MPI_Cart_coords(p.comm, mpi_rank, 2, &coords);
+    MPI_Cart_coords(p.comm, mpi_rank, 2, (void *)&coords);
     p.y = coords[0];
     p.x = coords[1];
 
@@ -84,7 +84,7 @@ Partition updatePartition(Partition p_old, int mpi_rank)
 
     // TODO: update the coordinates in the cartesian grid (p.x, p.y) for given mpi_rank, see MPI_Cart_coords()
     int coords[2] = {0, 0};
-    MPI_Cart_coords(p.comm, mpi_rank, 2, &coords);
+    MPI_Cart_coords(p.comm, mpi_rank, 2, (void *)&coords);
     p.y = coords[0];
     p.x = coords[1];
 

@@ -40,8 +40,8 @@ int main(int argc, char **argv)
 		printf("Processor grid size (%d, %d)\n", p.nx, p.ny);
 	printf("[Process %d]: Coordinates [%d, %d]\n", mpi_rank, p.x, p.y);
 
-	printf("[Process %d] Domain X: %d -> %d\n", mpi_rank, d.startx, d.endx);
-	printf("[Process %d] Domain Y: %d -> %d\n", mpi_rank, d.starty, d.endy);
+	printf("[Process %d] Domain X: %ld -> %ld\n", mpi_rank, d.startx, d.endx);
+	printf("[Process %d] Domain Y: %ld -> %ld\n", mpi_rank, d.starty, d.endy);
 
 	/****************************************************************************/
 	// create image at the MASTER only
