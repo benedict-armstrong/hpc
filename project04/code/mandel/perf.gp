@@ -1,5 +1,5 @@
-set terminal postscript color
-set output "perf.ps"
+set terminal pdf color
+set output "perf.pdf"
 set style line 1 linetype 2
 set style line 2 linetype 3
 set style line 3 linetype 1

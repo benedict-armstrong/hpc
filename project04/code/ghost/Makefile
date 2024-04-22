@@ -1,8 +1,8 @@
-CC     = mpicc
+MPICC     = mpicc
 CFLAGS =
 
 build/ghost: ghost.c
-	$(CC) $(CFLAGS) $^ -o $@
+	$(MPICC) $(CFLAGS) $^ -o $@
 
 .PHONY: clean
 clean:

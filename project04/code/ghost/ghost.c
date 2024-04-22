@@ -50,12 +50,12 @@
 #include <mpi.h>
 
 #define SUBDOMAIN 6
-#define DOMAINSIZE (SUBDOMAIN+2)
+#define DOMAINSIZE (SUBDOMAIN + 2)
 
 int main(int argc, char *argv[])
 {
     int rank, size, i, j, dims[2], periods[2], rank_top, rank_bottom, rank_left, rank_right;
-    double data[DOMAINSIZE*DOMAINSIZE];
+    double data[DOMAINSIZE * DOMAINSIZE];
     MPI_Request request;
     MPI_Status status;
     MPI_Comm comm_cart;
@@ -67,52 +67,81 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    if (size!=16) {
+    if (size != 16)
+    {
         printf("please run this with 16 processors\n");
         MPI_Finalize();
         exit(1);
     }
 
     // initialize the domain
-    for (i=0; i<DOMAINSIZE*DOMAINSIZE; i++) {
-        data[i]=rank;
+    for (i = 0; i < DOMAINSIZE * DOMAINSIZE; i++)
+    {
+        data[i] = rank;
     }
 
     // TODO: set the dimensions of the processor grid and periodic boundaries in both dimensions
-    //dims[0]=
-    //dims[1]=
-    //periods[0]=
-    //periods[1]=
+    dims[0] = 4;
+    dims[1] = 4;
+    periods[0] = 1;
+    periods[1] = 1;
 
     // TODO: Create a Cartesian communicator (4*4) with periodic boundaries (we do not allow
     // the reordering of ranks) and use it to find your neighboring
     // ranks in all dimensions in a cyclic manner.
-    
+    MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 0, &comm_cart);
+
     // TODO: find your top/bottom/left/right neighbor using the new communicator, see MPI_Cart_shift()
-    // rank_top, rank_bottom
-    // rank_left, rank_right
+    // int rank_top, rank_bottom;
+    // int rank_left, rank_right;
+    MPI_Cart_shift(comm_cart, 1, 1, &rank_left, &rank_right);
+    MPI_Cart_shift(comm_cart, 0, 1, &rank_top, &rank_bottom);
+
+    if (rank == 0)
+    {
+        printf("rank_top: %d, rank_bottom: %d, rank_left: %d, rank_right: %d\n", rank_top, rank_bottom, rank_left, rank_right);
+    }
 
     //  TODO: create derived datatype data_ghost, create a datatype for sending the column, see MPI_Type_vector() and MPI_Type_commit()
     // data_ghost
+    MPI_Type_vector(SUBDOMAIN, 1, DOMAINSIZE, MPI_DOUBLE, &data_ghost);
+    MPI_Type_commit(&data_ghost);
 
     //  TODO: ghost cell exchange with the neighbouring cells in all directions
     //  use MPI_Irecv(), MPI_Send(), MPI_Wait() or other viable alternatives
 
     //  to the top
-    
-    //  to the bottom
-    
-    //  to the left
-    
-    //  to the right
-    
+    int top_start = DOMAINSIZE + 2;
+    MPI_Isend(&data[top_start], SUBDOMAIN, MPI_DOUBLE, rank_top, 0, comm_cart, &request);
+    MPI_Irecv(&data[1], SUBDOMAIN, MPI_DOUBLE, rank_top, 0, comm_cart, &request);
 
-    if (rank==9) {
+    //  to the bottom
+    int bottom_start = DOMAINSIZE * (DOMAINSIZE - 2) + 1;
+    MPI_Isend(&data[bottom_start], SUBDOMAIN, MPI_DOUBLE, rank_bottom, 0, comm_cart, &request);
+    MPI_Irecv(&data[bottom_start + DOMAINSIZE], SUBDOMAIN, MPI_DOUBLE, rank_bottom, 0, comm_cart, &request);
+
+    //  to the left
+    int left_start = DOMAINSIZE + 1;
+    MPI_Isend(&data[left_start], 1, data_ghost, rank_left, 0, comm_cart, &request);
+    MPI_Irecv(&data[left_start - 1], 1, data_ghost, rank_left, 0, comm_cart, &request);
+
+    //  to the right
+    int right_start = 2 * DOMAINSIZE - 2;
+    MPI_Isend(&data[right_start], 1, data_ghost, rank_right, 0, comm_cart, &request);
+    MPI_Irecv(&data[right_start + 1], 1, data_ghost, rank_right, 0, comm_cart, &request);
+
+    //  wait for all communication to finish
+    MPI_Wait(&request, &status);
+
+    if (rank == 9)
+    {
         printf("data of rank 9 after communication\n");
-        for (j=0; j<DOMAINSIZE; j++) {
-            for (i=0; i<DOMAINSIZE; i++) {
-                printf("%.1f ", data[i+j*DOMAINSIZE]);
-                printf("%4.1f ", data[i+j*DOMAINSIZE]);
+        for (j = 0; j < DOMAINSIZE; j++)
+        {
+            for (i = 0; i < DOMAINSIZE; i++)
+            {
+                printf("%.1f ", data[i + j * DOMAINSIZE]);
+                // printf("%4.1f ", data[i + j * DOMAINSIZE]);
             }
             printf("\n");
         }
@@ -120,6 +149,8 @@ int main(int argc, char *argv[])
 
     // Free MPI resources (e.g., types and communicators)
     // TODO
+    MPI_Type_free(&data_ghost);
+    MPI_Comm_free(&comm_cart);
 
     // Finalize MPI
     MPI_Finalize();
