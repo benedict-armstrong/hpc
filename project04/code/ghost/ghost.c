@@ -52,6 +52,8 @@
 #define SUBDOMAIN 6
 #define DOMAINSIZE (SUBDOMAIN + 2)
 
+#define RANK_TO_WATCH 9
+
 int main(int argc, char *argv[])
 {
     int rank, size, i, j, dims[2], periods[2], rank_top, rank_bottom, rank_left, rank_right;
@@ -97,9 +99,41 @@ int main(int argc, char *argv[])
     MPI_Cart_shift(comm_cart, 1, 1, &rank_left, &rank_right);
     MPI_Cart_shift(comm_cart, 0, 1, &rank_top, &rank_bottom);
 
-    if (rank == 0)
+    // BONUS: diagonal neighbors
+    int rank_left_top, rank_right_top, rank_left_bottom, rank_right_bottom;
+    int coords[2];
+    MPI_Cart_coords(comm_cart, rank, 2, coords);
+
+    MPI_Cart_rank(
+        comm_cart,
+        (int[]){(coords[0] - 1 + dims[0]) % dims[0], (coords[1] - 1 + dims[1]) % dims[1]},
+        &rank_left_top);
+
+    MPI_Cart_rank(
+        comm_cart,
+        (int[]){(coords[0] - 1 + dims[0]) % dims[0], (coords[1] + 1) % dims[1]},
+        &rank_right_top);
+
+    MPI_Cart_rank(
+        comm_cart,
+        (int[]){(coords[0] + 1) % dims[0], (coords[1] - 1 + dims[1]) % dims[1]},
+        &rank_left_bottom);
+
+    MPI_Cart_rank(
+        comm_cart,
+        (int[]){(coords[0] + 1) % dims[0], (coords[1] + 1) % dims[1]},
+        &rank_right_bottom);
+
+    if (rank == RANK_TO_WATCH)
     {
-        printf("rank_top: %d, rank_bottom: %d, rank_left: %d, rank_right: %d\n", rank_top, rank_bottom, rank_left, rank_right);
+        printf("Neighbors of rank %d\n", rank);
+        printf("+-----------+\n");
+        printf("| %2.d| %2.d| %2.d|\n", rank_left_top, rank_top, rank_right_top);
+        printf("|-----------|\n");
+        printf("| %2.d| %2.d| %2.d|\n", rank_left, rank, rank_right);
+        printf("|-----------|\n");
+        printf("| %2.d| %2.d| %2.d|\n", rank_left_bottom, rank_bottom, rank_right_bottom);
+        printf("+-----------+\n");
     }
 
     //  TODO: create derived datatype data_ghost, create a datatype for sending the column, see MPI_Type_vector() and MPI_Type_commit()
@@ -111,7 +145,7 @@ int main(int argc, char *argv[])
     //  use MPI_Irecv(), MPI_Send(), MPI_Wait() or other viable alternatives
 
     //  to the top
-    int top_start = DOMAINSIZE + 2;
+    int top_start = DOMAINSIZE + 1;
     MPI_Isend(&data[top_start], SUBDOMAIN, MPI_DOUBLE, rank_top, 0, comm_cart, &request);
     MPI_Irecv(&data[1], SUBDOMAIN, MPI_DOUBLE, rank_top, 0, comm_cart, &request);
 
@@ -130,17 +164,32 @@ int main(int argc, char *argv[])
     MPI_Isend(&data[right_start], 1, data_ghost, rank_right, 0, comm_cart, &request);
     MPI_Irecv(&data[right_start + 1], 1, data_ghost, rank_right, 0, comm_cart, &request);
 
+    // diagonal neighbors
+    // Send all non blocking
+    MPI_Isend(&data[top_start], 1, MPI_DOUBLE, rank_left_top, 0, comm_cart, &request);
+    MPI_Isend(&data[top_start + SUBDOMAIN - 1], 1, MPI_DOUBLE, rank_right_top, 0, comm_cart, &request);
+    MPI_Isend(&data[bottom_start], 1, MPI_DOUBLE, rank_left_bottom, 0, comm_cart, &request);
+    MPI_Isend(&data[bottom_start + SUBDOMAIN - 1], 1, MPI_DOUBLE, rank_right_bottom, 0, comm_cart, &request);
+
+    // Receive all non blocking
+    MPI_Irecv(&data[0], 1, MPI_DOUBLE, rank_left_top, 0, comm_cart, &request);
+    MPI_Irecv(&data[DOMAINSIZE - 1], 1, MPI_DOUBLE, rank_right_top, 0, comm_cart, &request);
+    MPI_Irecv(&data[DOMAINSIZE * (DOMAINSIZE - 1)], 1, MPI_DOUBLE, rank_left_bottom, 0, comm_cart, &request);
+    MPI_Irecv(&data[DOMAINSIZE * DOMAINSIZE - 1], 1, MPI_DOUBLE, rank_right_bottom, 0, comm_cart, &request);
+
     //  wait for all communication to finish
     MPI_Wait(&request, &status);
 
-    if (rank == 9)
+    MPI_Barrier(comm_cart);
+
+    if (rank == RANK_TO_WATCH)
     {
-        printf("data of rank 9 after communication\n");
+        printf("data of rank %d after communication\n", rank);
         for (j = 0; j < DOMAINSIZE; j++)
         {
             for (i = 0; i < DOMAINSIZE; i++)
             {
-                printf("%.1f ", data[i + j * DOMAINSIZE]);
+                printf("%2.f ", data[i + j * DOMAINSIZE]);
                 // printf("%4.1f ", data[i + j * DOMAINSIZE]);
             }
             printf("\n");
