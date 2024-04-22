@@ -10,7 +10,7 @@
  *
  * Implement the power method for an n x n matrix A, stored in row-major order,
  * and rows distributed across "size" MPI processes. Your task is to complete
- * the "TODO" items, and perform a strong and weak scaling study.
+ * the "To do" items, and perform a strong and weak scaling study.
  *
  * To test your implementation, test cases 1, 2 and 3 have known largest absolute
  * eigenvalue.
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   {
     if (rank == 0)
     {
-      printf("Usage: powermethod_rows n niter tol test_case\n");
+      printf("Usage: powermethod_rows test_case n niter tol\n");
       printf("       test_case: test case to run");
       printf("       n        : matrix size");
       printf("       niter    : maximum number of iterations");
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   int row_end_local = row_beg_local + nrows_local - 1;
   printf("[Proc %3d] Doing rows %d to %d\n", rank, row_beg_local,
          row_end_local);
-  // TODO: Partition the "n" rows of the matrix evenly among the "size" MPI
+  // To do: Partition the "n" rows of the matrix evenly among the "size" MPI
   //        processes.
   // Hint : The first "n % size" processes get "n / size + 1" rows, while the
   //        remaining processes get "n / size".
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
         //              theta = n
         if (i_global == j_global)
         {
-          A[i_local * n + j_global] = i_global;
+          A[i_local * n + j_global] = i_global + 1;
         }
         else
         {
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
       y[i_global] /= norm;
     }
   }
-  // TODO: Broadcast the random initial guess vector to all MPI processes.
+  // To do: Broadcast the random initial guess vector to all MPI processes.
   // Hint : MPI_Bcast.
 
   // Power method
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
   double time_start = walltime();
   for (iter = 0; iter < niter; ++iter)
   {
-    // TODO: Implement parallel power method here.
+    // To do: Implement parallel power method here.
     // Hint : Do the matrix-vector multiply y = A v below over the local
     //        (to the process) rows, and use MPI_Allgather / MPI_Allgatherv
     //        to synchronize the result.
