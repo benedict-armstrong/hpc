@@ -9,20 +9,31 @@
 \setduedate{Monday 29 April 2024, 23:59 (midnight).}
 
 \serieheader{High-Performance Computing Lab for CSE}{2024}
-{Student: FULL NAME}
-{Discussed with: FULL NAME}{Solution for Project 4}{}
+{Student: Benedict Armstrong}
+{Discussed with: Tristan Gabl}{Solution for Project 4}{}
 \newline
 
 % \assignmentpolicy
 
 \section{Ring sum using MPI [10 Points]}
+For this task we are asked to implement a ring sum using MPI. We calculate the sum of all MPI ranks in a communicator. To do this each process starts by sending its rank to the next process in the ring adds it to an internal sum and then sends the message on to the next process. This is done until each message has made a full loop of the ring. We notice that by the end the sum should be equal to the sum of all ranks in the communicator.
+
+$$
+      \sum_{i=0}^{n-1} i = \frac{n(n-1)}{2}
+$$
+
+
+To avoid avoid deadlocks we can make every process send before they receive.
+
 
 \section{Cartesian domain decomposition and ghost cells exchange [20 Points]}
+
+The implementation of this task was relatively straightforward after doing the MPI tutorial. The main difficulty was not making any errors with the indexing into the data array. I've also implemented the exchange with the diagonal neighbors.
 
 \section{Parallelizing the Mandelbrot set using MPI [30 Points]}
 
 \section{Parallel matrix-vector multiplication and the power method
-      [40 Points]}
+        [40 Points]}
 
 
 \end{document}
