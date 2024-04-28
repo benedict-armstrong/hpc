@@ -89,6 +89,26 @@ int main(int argc, char *argv[])
   printf("[Proc %3d] Doing rows %d to %d\n", rank, row_beg_local,
          row_end_local);
 
+  // Calculate offsets and counts for MPI_Allgatherv
+  int offsets[size];
+  int counts[size];
+  int disp = 0;
+  for (int i = 0; i < size; i++)
+  {
+    if (i < n % size)
+    {
+      offsets[i] = disp;
+      counts[i] = n / size + 1;
+      disp += n / size + 1;
+    }
+    else
+    {
+      offsets[i] = disp;
+      counts[i] = n / size;
+      disp += n / size;
+    }
+  }
+
   // Initialize matrix A
   double *A = (double *)calloc(nrows_local * n, sizeof(double));
   for (int i_local = 0; i_local < nrows_local; ++i_local)
@@ -207,7 +227,7 @@ int main(int argc, char *argv[])
     }
 
     // Synchronize y
-    MPI_Allgather(y_local, nrows_local, MPI_DOUBLE, y, nrows_local, MPI_DOUBLE, MPI_COMM_WORLD);
+    MPI_Allgatherv(y_local, nrows_local, MPI_DOUBLE, y, counts, offsets, MPI_DOUBLE, MPI_COMM_WORLD);
 
     // Compute eigenvalue: theta = v^T y
     theta = 0.;

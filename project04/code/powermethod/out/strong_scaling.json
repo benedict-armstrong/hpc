@@ -1,0 +1,1 @@
+{"processes": [2, 4, 8], "runs": 2, "times": [[18.355636, 18.127692], [9.401625, 11.360143], [11.641252, 15.741955]], "sizes": [3000, 3000, 3000], "host": "Benedicts-MacBook-Pro.local", "base_size": 3000, "type": "strong"}
