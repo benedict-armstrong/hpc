@@ -9,7 +9,7 @@
 #SBATCH --time=10:00:00          # Wall clock time limit
 
 # Load some modules & list loaded modules
-module load gcc python
+module load gcc python openmpi
 module list
 
 # Compile
