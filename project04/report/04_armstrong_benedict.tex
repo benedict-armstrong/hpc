@@ -71,30 +71,22 @@ For the diagonal neighbors I used the \texttt{MPI\_Cart\_coords} function to get
 
 \section{Parallelizing the Mandelbrot set using MPI [30 Points]}
 
-To start I implemented the partitioning as outlined in the assignment handout. The MPI documentation at \href{https://rookiehpc.org/mpi/docs/} was very helpful for this. After each process has calculated its part of the Mandelbrot set we need to gather the data back to the root process. This is done using the \texttt{MPI\_Gather} function. The root process then writes the data to a file. The output of the program can be seen in \ref{lst:mandelbrot_output}. The output is as expected and the image can be seen in \ref{fig:mandelbrot}.
+To start I implemented the partitioning as outlined in the assignment handout. The MPI documentation at \href{https://rookiehpc.org/mpi/docs/} was very helpful for this. After each process has calculated its part of the Mandelbrot set we need to gather the data back to the root process. This is implemented by simply receiving the data from each process in the root process (rank 0) and writing the data to a png file. There is no danger of a deadlock here as there are no dependencies between the processes. Only the root process writes the data to a file. The output image is shown in figure \ref{fig:mandelbrot}.
 
-\begin{listing}[h!t]
-      \begin{minted}{bash}
-      mpirun -np 16 ./build/mandelbrot
-      \end{minted}
-      \caption{Running the Mandelbrot set program}
-      \label{lst:mandelbrot_run}
-\end{listing}
-
-\begin{listing}[h!t]
-      \begin{minted}{bash}
-      Writing Mandelbrot set to mandelbrot.ppm
-      \end{minted}
-      \caption{Output of the Mandelbrot set program}
-      \label{lst:mandelbrot_output}
-\end{listing}
+To evaluate the performance I ran the program with $p = 1, 2, 4, 8, 16$ processes and an image size of $4096 \times 4096$. Figure \ref{fig:mandelbrot_perf} shows the time taken by each processes (rank) for different number of processes.
 
 \begin{figure}
-      \centering
       \centering
       \includegraphics[width=.5\linewidth]{plots/mandel.png}
       \caption{Mandelbrot set}
       \label{fig:mandelbrot}
+\end{figure}
+
+\begin{figure}
+      \centering
+      \includegraphics[width=.8\linewidth]{plots/mandel_perf.pdf}
+      \caption{Performance of the Mandelbrot set program}
+      \label{fig:mandelbrot_perf}
 \end{figure}
 
 

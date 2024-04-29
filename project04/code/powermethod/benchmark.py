@@ -22,6 +22,9 @@ if __name__ == "__main__":
     argparser.add_argument(
         "--base_size", help="Base size", type=int, default=3_000
     )
+    argparser.add_argument(
+        "--name", help="Name of the run", default="powermethod"
+    )
 
     args = argparser.parse_args()
 
@@ -29,6 +32,7 @@ if __name__ == "__main__":
     runs = args.runs
     benchmark_type = args.type
     base_size = args.base_size
+    name = args.name
 
     # print config
     print(f"Running {benchmark_type} benchmark for processes: {processes}")
@@ -65,7 +69,7 @@ if __name__ == "__main__":
             "times": r,
             "size": size
         }
-        json.dump(data, open(f"out/{benchmark_type}_{p}.json", "w"))
+        json.dump(data, open(f"out/{benchmark_type}_{name}_{p}.json", "w"))
 
     # save time results to a json file
     data = {
@@ -77,4 +81,4 @@ if __name__ == "__main__":
         "base_size": base_size,
         "type": benchmark_type
     }
-    json.dump(data, open(f"out/{benchmark_type}_scaling.json", "w"))
+    json.dump(data, open(f"out/{benchmark_type}_{name}_scaling.json", "w"))
