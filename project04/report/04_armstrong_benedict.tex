@@ -2,6 +2,11 @@
 
 \input{assignment.sty}
 
+\usepackage{minted}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{subcaption}
+
 \begin{document}
 
 
@@ -28,9 +33,70 @@ To avoid avoid deadlocks we can make every process send before they receive.
 
 \section{Cartesian domain decomposition and ghost cells exchange [20 Points]}
 
-The implementation of this task was relatively straightforward after doing the MPI tutorial. The main difficulty was not making any errors with the indexing into the data array. I've also implemented the exchange with the diagonal neighbors.
+The implementation of this task was relatively straightforward after doing the MPI tutorial. The main difficulty was not making any errors with the indexing into the data array. The convenient \texttt{MPI\_Cart\_shift} function makes it easy to get the rank of the cartesian up/down/left/right neighbors. To avoid deadlocks I used the asynchronous \texttt{MPI\_Isend} and \texttt{MPI\_Irecv} functions and then waited for all the communication to finish using \texttt{MPI\_Waitall} at the end.
+For the diagonal neighbors I used the \texttt{MPI\_Cart\_coords} function to get the coordinates of the current rank and then added/subtracted 1 from each coordinate to get the coordinates of the diagonal neighbors. This was then converted back into a rank using \texttt{MPI\_Cart\_rank}. Running the program using \ref{lst:ghost_run} produces the output in \ref{lst:ghost_output}. For debugging purposes I also printed the neighbors of each rank. Below that we can see that the output data from rank 9 indeed matches the expected result outlined in the assignment.
+
+\begin{listing}[h!t]
+      \begin{minted}{bash}
+      mpirun -np 16 ./build/ghost
+      \end{minted}
+      \caption{Running the ghost cell exchange program}
+      \label{lst:ghost_run}
+\end{listing}
+
+\begin{listing}[h!t]
+      \begin{minted}{bash}
+      Neighbors of rank 9
+      +-----------+
+      |  4|  5|  6|
+      |-----------|
+      |  8|  9| 10|
+      |-----------|
+      | 12| 13| 14|
+      +-----------+
+      data of rank 9 after communication
+      4  5  5  5  5  5  5  6 
+      8  9  9  9  9  9  9 10 
+      8  9  9  9  9  9  9 10 
+      8  9  9  9  9  9  9 10 
+      8  9  9  9  9  9  9 10 
+      8  9  9  9  9  9  9 10 
+      8  9  9  9  9  9  9 10 
+      12 13 13 13 13 13 13 14 
+      \end{minted}
+      \caption{Output of the ghost cell exchange program}
+      \label{lst:ghost_output}
+\end{listing}
+
 
 \section{Parallelizing the Mandelbrot set using MPI [30 Points]}
+
+To start I implemented the partitioning as outlined in the assignment handout. The MPI documentation at \href{https://rookiehpc.org/mpi/docs/} was very helpful for this. After each process has calculated its part of the Mandelbrot set we need to gather the data back to the root process. This is done using the \texttt{MPI\_Gather} function. The root process then writes the data to a file. The output of the program can be seen in \ref{lst:mandelbrot_output}. The output is as expected and the image can be seen in \ref{fig:mandelbrot}.
+
+\begin{listing}[h!t]
+      \begin{minted}{bash}
+      mpirun -np 16 ./build/mandelbrot
+      \end{minted}
+      \caption{Running the Mandelbrot set program}
+      \label{lst:mandelbrot_run}
+\end{listing}
+
+\begin{listing}[h!t]
+      \begin{minted}{bash}
+      Writing Mandelbrot set to mandelbrot.ppm
+      \end{minted}
+      \caption{Output of the Mandelbrot set program}
+      \label{lst:mandelbrot_output}
+\end{listing}
+
+\begin{figure}
+      \centering
+      \centering
+      \includegraphics[width=.5\linewidth]{plots/mandel.png}
+      \caption{Mandelbrot set}
+      \label{fig:mandelbrot}
+\end{figure}
+
 
 \section{Parallel matrix-vector multiplication and the power method
         [40 Points]}
