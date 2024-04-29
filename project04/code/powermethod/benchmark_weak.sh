@@ -20,4 +20,4 @@ make clean
 make
 
 # Run the program
-srun python3 benchmark.py --runs 25 --processes 1 2 4 8 16 32 64 --type weak --base_size 10000
+srun python3 benchmark.py --runs 5 --processes 1 2 4 8 16 32 64 --type weak --base_size 10000

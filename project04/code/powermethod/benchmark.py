@@ -4,6 +4,9 @@ import math
 import os
 from lib import powermethod
 
+N_ITER = 3000
+TOL = -1e-6
+TEST_CASE = 3
 
 if __name__ == "__main__":
 
@@ -41,20 +44,28 @@ if __name__ == "__main__":
             size = math.ceil(math.sqrt(p) * base_size)
         else:
             size = base_size
-        print(f"{p} processes ({runs} runs) and size {size}")
+        print(f"{p} processes ({runs} runs) and size {size} ({size//p} per process)")
 
         for i in range(runs):
             time, theta = powermethod.run(
                 n_processes=p,
                 n=size,
-                niter=3000,
-                tol=-1e-6,
-                test_case=3
+                niter=N_ITER,
+                tol=TOL,
+                test_case=TEST_CASE
             )
             r.append(time)
             print(f"\t{i}: time: {time}")
         times.append(r)
         sizes.append(size)
+
+        # write to intermediate file
+        data = {
+            "processes": p,
+            "times": r,
+            "size": size
+        }
+        json.dump(data, open(f"out/{benchmark_type}_{p}.json", "w"))
 
     # save time results to a json file
     data = {

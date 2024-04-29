@@ -1,1 +1,1 @@
-{"processes": [2, 4, 8], "runs": 2, "times": [[18.355636, 18.127692], [9.401625, 11.360143], [11.641252, 15.741955]], "sizes": [3000, 3000, 3000], "host": "Benedicts-MacBook-Pro.local", "base_size": 3000, "type": "strong"}
+{"processes": [4], "runs": 1, "times": [[106.16493]], "sizes": [10000], "host": "student-net-vpn-1939.intern.ethz.ch", "base_size": 10000, "type": "strong"}
