@@ -75,6 +75,8 @@ To start I implemented the partitioning as outlined in the assignment handout. T
 
 To evaluate the performance I ran the program with $p = 1, 2, 4, 8, 16$ processes and an image size of $4096 \times 4096$. Figure \ref{fig:mandelbrot_perf} shows the time taken by each processes (rank) for different number of processes.
 
+In Figure \ref{fig:mandelbrot_perf} we can see that for two processes we get a pretty good speedup with both taking around half the time of the serial version. However, as we increase the number of processes the time taken doesn't decrease equally for all processes. This is likely due to the fact that the Mandelbrot set is not evenly distributed across the image. This means that some processes will have more work to do than others. To fix this we would need to implement a better work distribution algorithm. We could start by calculating a low resolution version of the Mandelbrot set and then splitting the chunks based on how many colored pixels we have in each chuck.
+
 \begin{figure}
       \centering
       \includegraphics[width=.5\linewidth]{plots/mandel.png}
@@ -93,5 +95,42 @@ To evaluate the performance I ran the program with $p = 1, 2, 4, 8, 16$ processe
 \section{Parallel matrix-vector multiplication and the power method
         [40 Points]}
 
+The last task was to implement the power method for calculating the largest eigenvalue of a matrix. The main changes required from the serial version are the partitioning of the matrix and then the matrix-vector multiplication. The only new concept for this task was using the \texttt{MPI\_Allgatherv} function to gather the data from all processes back to the root process. The code for this be found in \texttt{code/powermethod/powermethod\_rows.c}.
+
+To evaluate the performance I ran the program with $p = 1, 2, 4, 8, 16, 32, 64$ processes and a square matrix with $1e4$ rows for the strong and $3000 * \sqrt{p}$ rows for the weak benchmark. The program was evaluated both on a single node running all processes and multiple nodes with each processes running on a separate node.
+
+TODO: Add discussion of the results
+
+
+\begin{figure}
+      \begin{subfigure}{.5\textwidth}
+            \centering
+            \includegraphics[width=1\linewidth]{plots/power_strong_scaling.pdf}
+            \caption{Strong scaling}
+            \label{fig:powermethod_strong}
+      \end{subfigure}
+      \begin{subfigure}{.5\textwidth}
+            \centering
+            \includegraphics[width=1\linewidth]{plots/power_strong_speedup.pdf}
+            \caption{Strong scaling speedup}
+            \label{fig:powermethod_speedup}
+      \end{subfigure}
+\end{figure}
+
+
+\begin{figure}
+      \begin{subfigure}{.5\textwidth}
+            \centering
+            \includegraphics[width=1\linewidth]{plots/power_weak_scaling.pdf}
+            \caption{Weak scaling}
+            \label{fig:powermethod_weak}
+      \end{subfigure}
+      \begin{subfigure}{.5\textwidth}
+            \centering
+            \includegraphics[width=1\linewidth]{plots/power_weak_scaling_efficiency.pdf}
+            \caption{Weak scaling efficiency}
+            \label{fig:powermethod_efficiency}
+      \end{subfigure}
+\end{figure}
 
 \end{document}
