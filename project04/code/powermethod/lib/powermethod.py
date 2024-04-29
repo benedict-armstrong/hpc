@@ -22,6 +22,9 @@ def run(n_processes: int, test_case: int = 3, n: int = 1_000, niter: int = 3000,
 
     """
 
+    print(
+        f"\t\tRunning benchmark for {n_processes} processes, {n} size, {niter} iterations, tol={tol}")
+
     # run the benchmark with the given type and number of iterations set
     # n_processes, test_case, n, niter, tol
     try:

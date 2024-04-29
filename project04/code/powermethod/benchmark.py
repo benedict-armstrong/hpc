@@ -44,7 +44,7 @@ if __name__ == "__main__":
             size = math.ceil(math.sqrt(p) * base_size)
         else:
             size = base_size
-        print(f"{p} processes ({runs} runs) and size {size} ({size//p} per process)")
+        print(f"{p} processes ({runs} runs) and size {size} ({size//p} per process) host: {os.uname().nodename}")
 
         for i in range(runs):
             time, theta = powermethod.run(
