@@ -22,4 +22,4 @@ make clean
 make
 
 # Run the program
-python3 benchmark.py --runs 5 --processes 1 2 4 8 16 32 64 --type strong --base_size 10000
+python3 benchmark.py --runs 2 --processes 1 2 4 --type strong --base_size 1000
