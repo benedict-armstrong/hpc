@@ -1,5 +1,5 @@
 set terminal pdf color
-set output "perf.pdf"
+set output "mandel_perf.pdf"
 set style line 1 linetype 2
 set style line 2 linetype 3
 set style line 3 linetype 1

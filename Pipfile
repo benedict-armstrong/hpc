@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 matplotlib = "*"
 pandas = "*"
+mpi4py = "*"
 
 [dev-packages]
 ipykernel = "*"
