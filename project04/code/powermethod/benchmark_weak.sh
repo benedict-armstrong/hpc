@@ -3,6 +3,7 @@
 #SBATCH --output=out/power_weak.out # Output file
 #SBATCH --error=out/power_weak.err  # Error file
 #SBATCH --ntasks=64               # Number of tasks
+#SBATCH --nodes=64              # Number of nodes
 #SBATCH --constraint=EPYC_7763   # Select node with CPU
 #SBATCH --cpus-per-task=1        # Number of CPUs per task
 #SBATCH --mem-per-cpu=1000       # Memory per CPU
