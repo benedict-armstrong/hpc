@@ -20,6 +20,10 @@
 
 % \assignmentpolicy
 
+\section{Introduction}
+
+All benchmarks and programs were run on the Euler VII — phase 2 cluster with AMD EPYC 7763 cpus.
+
 \section{Ring sum using MPI [10 Points]}
 For this task we are asked to implement a ring sum using MPI. We calculate the sum of all MPI ranks in a communicator. To do this each process starts by sending its rank to the next process in the ring adds it to an internal sum and then sends the message on to the next process. This is done until each message has made a full loop of the ring. We notice that by the end the sum should be equal to the sum of all ranks in the communicator.
 
@@ -71,7 +75,7 @@ For the diagonal neighbors I used the \texttt{MPI\_Cart\_coords} function to get
 
 \section{Parallelizing the Mandelbrot set using MPI [30 Points]}
 
-To start I implemented the partitioning as outlined in the assignment handout. The MPI documentation at \href{https://rookiehpc.org/mpi/docs/} was very helpful for this. After each process has calculated its part of the Mandelbrot set we need to gather the data back to the root process. This is implemented by simply receiving the data from each process in the root process (rank 0) and writing the data to a png file. There is no danger of a deadlock here as there are no dependencies between the processes. Only the root process writes the data to a file. The output image is shown in figure \ref{fig:mandelbrot}.
+To start I implemented the partitioning as outlined in the assignment handout. The MPI documentation at \href{https://rookiehpc.org/mpi/docs/}{Rookiehpc} was very helpful for this. After each process has calculated its part of the Mandelbrot set we need to gather the data back to the root process. This is implemented by simply receiving the data from each process in the root process (rank 0) and writing the data to a png file. There is no danger of a deadlock here as there are no dependencies between the processes. Only the root process writes the data to a file. The output image is shown in figure \ref{fig:mandelbrot}.
 
 To evaluate the performance I ran the program with $p = 1, 2, 4, 8, 16$ processes and an image size of $4096 \times 4096$. Figure \ref{fig:mandelbrot_perf} shows the time taken by each processes (rank) for different number of processes.
 
@@ -99,38 +103,30 @@ The last task was to implement the power method for calculating the largest eige
 
 To evaluate the performance I ran the program with $p = 1, 2, 4, 8, 16, 32, 64$ processes and a square matrix with $1e4$ rows for the strong and $3000 * \sqrt{p}$ rows for the weak benchmark. The program was evaluated both on a single node running all processes and multiple nodes with each processes running on a separate node.
 
-TODO: Add discussion of the results
+In Figure \ref{fig:powermethod_speedup} we can see the strong scaling speedup of the program. The single node version slightly outperforms the multi-node version. The multi-node version achieves a speedup over the sequential version of around 15x with 64 processes. The single node version achieves a speedup of around 25x with 64 processes. The weak scaling efficiency is shown in Figure \ref{fig:powermethod_efficiency}. Here we can see quite a large drop initial drop for the multi-node version. The single node version efficiency remains relatively constant at around 90\% up to 16 processes and then drops to 35\%. The multi-node version drops to around 50\% efficiency with 2 processes and then drops to 25\% at 64 processes.
 
+In conclusion it is probably advisable to use as many processes as possible on a single node for this program. The multi-node version is less efficient than the single node version. This is underlined by the strong scaling time in Figure \ref{fig:powermethod_time} where the single node version is consistently faster than the multi-node version for all process counts.
 
 \begin{figure}
-      \begin{subfigure}{.5\textwidth}
-            \centering
-            \includegraphics[width=1\linewidth]{plots/power_strong_scaling.pdf}
-            \caption{Strong scaling}
-            \label{fig:powermethod_strong}
-      \end{subfigure}
-      \begin{subfigure}{.5\textwidth}
-            \centering
-            \includegraphics[width=1\linewidth]{plots/power_strong_speedup.pdf}
-            \caption{Strong scaling speedup}
-            \label{fig:powermethod_speedup}
-      \end{subfigure}
+      \centering
+      \includegraphics[width=1\linewidth]{plots/power_strong_speedup.pdf}
+      \caption{Strong scaling speedup}
+      \label{fig:powermethod_speedup}
 \end{figure}
 
 
 \begin{figure}
-      \begin{subfigure}{.5\textwidth}
-            \centering
-            \includegraphics[width=1\linewidth]{plots/power_weak_scaling.pdf}
-            \caption{Weak scaling}
-            \label{fig:powermethod_weak}
-      \end{subfigure}
-      \begin{subfigure}{.5\textwidth}
-            \centering
-            \includegraphics[width=1\linewidth]{plots/power_weak_scaling_efficiency.pdf}
-            \caption{Weak scaling efficiency}
-            \label{fig:powermethod_efficiency}
-      \end{subfigure}
+      \centering
+      \includegraphics[width=1\linewidth]{plots/power_weak_efficiency.pdf}
+      \caption{Weak scaling efficiency}
+      \label{fig:powermethod_efficiency}
+\end{figure}
+
+\begin{figure}
+      \centering
+      \includegraphics[width=1\linewidth]{plots/power_strong_scaling.pdf}
+      \caption{Strong scaling time}
+      \label{fig:powermethod_time}
 \end{figure}
 
 \end{document}
