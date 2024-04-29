@@ -9,5 +9,3 @@ Currently Loaded Modules:
 
  
 
-slurmstepd: error: *** STEP 56917604.0 ON eu-a2p-309 CANCELLED AT 2024-04-29T02:34:24 DUE TO TIME LIMIT ***
-slurmstepd: error: *** JOB 56917604 ON eu-a2p-309 CANCELLED AT 2024-04-29T02:34:24 DUE TO TIME LIMIT ***
