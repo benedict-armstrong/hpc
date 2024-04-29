@@ -1,0 +1,4 @@
+rm -f build/*.o build/powermethod_rows
+mpicc -c -O3  powermethod_rows.c -o build/powermethod_rows.o
+mpicc -c -O3  walltime.c -o build/walltime.o
+mpicc -lm  build/powermethod_rows.o build/walltime.o -o build/powermethod_rows
