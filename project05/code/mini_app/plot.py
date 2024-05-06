@@ -62,4 +62,4 @@ def plot_data(fname, save=True):
 
 
 if __name__ == "__main__":
-    plot_data("output.bov", save=True)
+    plot_data("./out/output.bov", save=True)

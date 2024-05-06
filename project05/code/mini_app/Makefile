@@ -27,6 +27,7 @@ build/main.o: main.cpp $(HEADERS)
 	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
 build/main: $(OBJ)
+	mkdir -p out
 	$(MPICXX) $(MPICXXFLAGS) $(OBJ) -o $@
 
 .PHONY: clean

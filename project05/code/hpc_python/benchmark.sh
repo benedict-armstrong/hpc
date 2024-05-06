@@ -11,15 +11,12 @@
 #SBATCH --time=00:05:00           # Wall clock time limit
 
 # Load some modules & list loaded modules
-module load gcc openmpi python
+module load gcc openmpi
 module list
 
-# Create a virtual environment & activate it
-python -m venv project05-env
-source project05-env/bin/activate
+# Compile
+make clean
+make
 
-# Install the required Python packages
-pip install numpy scipy matplotlib mpi4py
-
-# Run
-mpirun python3 hello_mpi.py
+# Run the program with 4 MPI processes on 4 different nodes
+mpirun ./hello_mpi

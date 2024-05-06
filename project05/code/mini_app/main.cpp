@@ -264,50 +264,55 @@ int main(int argc, char *argv[])
 
     // binary data
     // TODO: Implement write_binary using MPI-IO
-    write_binary("output.bin", y_old, domain, options);
+    write_binary("out/output.bin", y_old, domain, options);
 
-    // metadata
-    // TODO: Only once process should do the following
+    if (rank == 0)
     {
-        std::ofstream fid("output.bov");
-        fid << "TIME: " << options.nt * options.dt << std::endl;
-        fid << "DATA_FILE: output.bin" << std::endl;
-        fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
-            << std::endl;
-        fid << "DATA_FORMAT: DOUBLE" << std::endl;
-        fid << "VARIABLE: phi" << std::endl;
-        fid << "DATA_ENDIAN: LITTLE" << std::endl;
-        fid << "CENTERING: nodal" << std::endl;
-        fid << "BRICK_ORIGIN: "
-            << "0. 0. 0." << std::endl;
-        fid << "BRICK_SIZE: " << (options.nx - 1) * options.dx << ' '
-            << (options.nx - 1) * options.dx << ' '
-            << " 1.0"
-            << std::endl;
-    }
 
-    // print table summarizing results
-    double timespent = time_end - time_start;
-    // TODO: Only once process should do the following
-    {
-        std::cout << std::string(80, '-') << std::endl;
-        std::cout << "simulation took " << timespent << " seconds" << std::endl;
-        std::cout << int(iters_cg)
-                  << " conjugate gradient iterations, at rate of "
-                  << float(iters_cg) / timespent << " iters/second" << std::endl;
-        std::cout << iters_newton << " newton iterations" << std::endl;
-        std::cout << std::string(80, '-') << std::endl;
-        std::cout << "### " << size << ", "
-                  << options.nx << ", "
-                  << options.nt << ", "
-                  << iters_cg << ", "
-                  << iters_newton << ", "
-                  << timespent
-                  << " ###" << std::endl;
-        std::cout << "Goodbye!" << std::endl;
-    }
+        // metadata
+        // TODO: Only once process should do the following
+        {
+            std::ofstream fid("out/output.bov");
+            fid << "TIME: " << options.nt * options.dt << std::endl;
+            fid << "DATA_FILE: out/output.bin" << std::endl;
+            fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
+                << std::endl;
+            fid << "DATA_FORMAT: DOUBLE" << std::endl;
+            fid << "VARIABLE: phi" << std::endl;
+            fid << "DATA_ENDIAN: LITTLE" << std::endl;
+            fid << "CENTERING: nodal" << std::endl;
+            fid << "BRICK_ORIGIN: "
+                << "0. 0. 0." << std::endl;
+            fid << "BRICK_SIZE: " << (options.nx - 1) * options.dx << ' '
+                << (options.nx - 1) * options.dx << ' '
+                << " 1.0"
+                << std::endl;
+        }
 
+        // print table summarizing results
+        double timespent = time_end - time_start;
+        // TODO: Only once process should do the following
+        {
+            std::cout << std::string(80, '-') << std::endl;
+            std::cout << "simulation took " << timespent << " seconds" << std::endl;
+            std::cout << int(iters_cg)
+                      << " conjugate gradient iterations, at rate of "
+                      << float(iters_cg) / timespent << " iters/second" << std::endl;
+            std::cout << iters_newton << " newton iterations" << std::endl;
+            std::cout << std::string(80, '-') << std::endl;
+            std::cout << "### " << size << ", "
+                      << options.nx << ", "
+                      << options.nt << ", "
+                      << iters_cg << ", "
+                      << iters_newton << ", "
+                      << timespent
+                      << " ###" << std::endl;
+            std::cout << "Goodbye!" << std::endl;
+        }
+    }
     // TODO: finalize MPI
+
+    MPI_Finalize();
 
     return 0;
 }

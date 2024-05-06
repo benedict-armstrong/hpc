@@ -1,5 +1,5 @@
 TIME: 0.005
-DATA_FILE: output.bin
+DATA_FILE: out/output.bin
 DATA_SIZE: 128 128 1
 DATA_FORMAT: DOUBLE
 VARIABLE: phi
