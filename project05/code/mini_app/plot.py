@@ -18,7 +18,7 @@ def read_bov_header(fname):
     brick_origin = [float(i) for i in header[7].split()[1:]]
     brick_size = [float(i) for i in header[8].split()[1:]]
     return time, data_file, data_size, data_format, var_names, data_endian, \
-           centering, brick_origin, brick_size
+        centering, brick_origin, brick_size
 
 
 def read_bov_data(header):

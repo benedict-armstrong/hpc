@@ -5,7 +5,8 @@
 #include <time.h> /* struct timespec, clock_gettime, CLOCK_MONOTONIC */
 #endif
 
-double walltime() {
+double walltime()
+{
 #ifdef GETTIMEOFDAY
   struct timeval t;
   gettimeofday(&t, NULL);

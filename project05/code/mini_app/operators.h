@@ -11,10 +11,11 @@
 
 #include "data.h"
 
-namespace operators {
+namespace operators
+{
 
-void diffusion(data::Field const& s_old, data::Field const& s_new,
-               data::Field& f);
+    void diffusion(data::Field const &s_old, data::Field const &s_new,
+                   data::Field &f);
 
 }
 
