@@ -1,33 +1,34 @@
-CXX      = c++
-CXXFLAGS = -O3
+MPICXX      = mpic++
+MPICXXFLAGS = -O3
 
 SOURCES = walltime.cpp stats.cpp data.cpp operators.cpp linalg.cpp main.cpp
 HEADERS = walltime.h   stats.h   data.h   operators.h   linalg.h
-OBJ     = walltime.o   stats.o   data.o   operators.o   linalg.o   main.o
+OBJ     = build/walltime.o   build/stats.o   build/data.o   build/operators.o   build/linalg.o   build/main.o
 
-all: main
+all: build/main
 
-walltime.o: walltime.cpp walltime.h
-	$(CXX) $(CXXFLAGS) -c $<
+build/walltime.o: walltime.cpp walltime.h
+	mkdir -p build
+	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
-stats.o: stats.cpp stats.h
-	$(CXX) $(CXXFLAGS) -c $<
+build/stats.o: stats.cpp stats.h
+	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
-data.o: data.cpp data.h
-	$(CXX) $(CXXFLAGS) -c $<
+build/data.o: data.cpp data.h
+	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
-operators.o: operators.cpp operators.h
-	$(CXX) $(CXXFLAGS) -c $<
+build/operators.o: operators.cpp operators.h
+	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
-linalg.o: linalg.cpp linalg.h
-	$(CXX) $(CXXFLAGS) -c $<
+build/linalg.o: linalg.cpp linalg.h
+	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
-main.o: main.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) -c $<
+build/main.o: main.cpp $(HEADERS)
+	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
-main: $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $@
+build/main: $(OBJ)
+	$(MPICXX) $(MPICXXFLAGS) $(OBJ) -o $@
 
 .PHONY: clean
 clean:
-	$(RM) main $(OBJ) output.*
+	$(RM) build/main build/$(OBJ) output.*
