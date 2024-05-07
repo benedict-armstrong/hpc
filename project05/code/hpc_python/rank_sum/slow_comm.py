@@ -1,8 +1,7 @@
 from mpi4py import MPI
 
-comm = MPI.COMM_WORLD
-rank = comm.Get_rank()
-size = comm.Get_size()
+rank = MPI.COMM_WORLD.Get_rank()
+size = MPI.COMM_WORLD.Get_size()
 
 sum = 0
 
@@ -13,8 +12,8 @@ send_sum = rank
 recv_sum = 0
 
 for i in range(size):
-    comm.send(send_sum, dest=next_rank)
-    recv_sum = comm.recv(source=prev_rank)
+    MPI.COMM_WORLD.send(send_sum, dest=next_rank)
+    recv_sum = MPI.COMM_WORLD.recv(source=prev_rank)
 
     print(f"{rank} sum: {sum} + {recv_sum} = {sum + recv_sum}")
 
