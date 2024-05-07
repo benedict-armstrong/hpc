@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 
     // TODO: initialize sub-domain (data.{h,cpp})
     domain.init(rank, size, options);
-    if (verbose_output && rank == 0)
+    if (verbose_output)
     {
         domain.print();
     }
@@ -199,6 +199,8 @@ int main(int argc, char *argv[])
     iters_cg = 0;
     iters_newton = 0;
 
+    MPI_Barrier(MPI_COMM_WORLD);
+
     // start timer
     double time_start = walltime();
 
@@ -258,13 +260,20 @@ int main(int argc, char *argv[])
     // get times
     double time_end = walltime();
 
+    std::cout << "rank " << rank << " done" << std::endl;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (rank == 0)
+    {
+        std::cout << "rank " << rank << " all done" << std::endl;
+    }
+
     ////////////////////////////////////////////////////////////////////
     // write final solution to BOV file for visualization
     ////////////////////////////////////////////////////////////////////
 
     // binary data
     // TODO: Implement write_binary using MPI-IO
-    write_binary("out/output.bin", y_old, domain, options);
+    // write_binary("out/output.bin", y_old, domain, options);
 
     if (rank == 0)
     {
@@ -311,7 +320,6 @@ int main(int argc, char *argv[])
         }
     }
     // TODO: finalize MPI
-
     MPI_Finalize();
 
     return 0;

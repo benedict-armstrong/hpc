@@ -10,6 +10,7 @@
 #define OPERATORS_H
 
 #include "data.h"
+#include <iostream>
 
 namespace operators
 {
