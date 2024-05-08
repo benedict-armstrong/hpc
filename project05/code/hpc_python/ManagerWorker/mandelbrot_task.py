@@ -1,4 +1,6 @@
+from typing import List
 import numpy as np
+
 
 class mandelbrot():
     """
@@ -21,19 +23,20 @@ class mandelbrot():
     ntasks : int
         Number of tasks/(sub)sets/patches
     """
-    def __init__(self, x_min, x_max, nx_global,
-                       y_min, y_max, ny_global, ntasks):
-        self._x_min     = x_min
-        self._x_max     = x_max
-        self._nx_global = nx_global
-        self._dx        = (x_max - x_min)/(nx_global - 1)
-        self._y_min     = y_min
-        self._y_max     = y_max
-        self._ny_global = ny_global
-        self._dy        = (y_max - y_min)/(ny_global - 1)
-        self._ntasks    = ntasks
 
-    def get_tasks(self):
+    def __init__(self, x_min, x_max, nx_global,
+                 y_min, y_max, ny_global, ntasks):
+        self._x_min = x_min
+        self._x_max = x_max
+        self._nx_global = nx_global
+        self._dx = (x_max - x_min)/(nx_global - 1)
+        self._y_min = y_min
+        self._y_max = y_max
+        self._ny_global = ny_global
+        self._dy = (y_max - y_min)/(ny_global - 1)
+        self._ntasks = ntasks
+
+    def get_tasks(self) -> List:
         """
         Generate list of tasks by decomposing the x-direction into the
         desired number of tasks.
@@ -42,15 +45,15 @@ class mandelbrot():
         dx = self._dx
         dy = self._dy
         for itask in range(self._ntasks):
-            i_start  = itask*(self._nx_global//self._ntasks)
+            i_start = itask*(self._nx_global//self._ntasks)
             if itask == self._ntasks - 1:
                 nx_local = self._nx_global - i_start
             else:
                 nx_local = self._nx_global//self._ntasks
-            x_start  = self._x_min + i_start*dx
-            j_start  = 0
+            x_start = self._x_min + i_start*dx
+            j_start = 0
             ny_local = self._ny_global
-            y_start  = self._y_min
+            y_start = self._y_min
             tasks += [mandelbrot_patch(i_start, nx_local, x_start, dx,
                                        j_start, ny_local, y_start, dy, 100)]
         return tasks
@@ -73,8 +76,9 @@ class mandelbrot():
         for task in tasks:
             ibeg = task._i_start
             iend = task._i_start + task._nx_local
-            mandelbrot_set[ibeg:iend,:] = task._patch[:,:]
+            mandelbrot_set[ibeg:iend, :] = task._patch[:, :]
         return mandelbrot_set
+
 
 class mandelbrot_patch():
     """
@@ -101,17 +105,19 @@ class mandelbrot_patch():
     Nmax : int
         Maximum number of iterations
     """
+
     def __init__(self, i_start, nx_local, x_start, dx,
-                       j_start, ny_local, y_start, dy, Nmax):
-        self._i_start  = i_start
+                 j_start, ny_local, y_start, dy, Nmax):
+        self._i_start = i_start
         self._nx_local = nx_local
-        self._x_start  = x_start
-        self._dx       = dx
-        self._j_start  = j_start
+        self._x_start = x_start
+        self._dx = dx
+        self._j_start = j_start
         self._ny_local = ny_local
-        self._y_start  = y_start
-        self._dy       = dy
+        self._y_start = y_start
+        self._dy = dy
         self._Nmax = Nmax
+        self.work_done = False
 
     def do_work(self):
         """Compute Mandelbrot (sub)set/patch."""
@@ -125,15 +131,17 @@ class mandelbrot_patch():
             z[mask] = z[mask]**2 + c[mask]
             mask[np.abs(z) > 2.] = False
         self._patch = (np.abs(z) <= 2.)
+        self.work_done = True
+
 
 def main():
     import matplotlib.pyplot as plt
-    x_min  = -2.
-    x_max  = +1.
-    nx     = 201
-    y_min  = -1.5
-    y_max  = +1.5
-    ny     = 301
+    x_min = -2.
+    x_max = +1.
+    nx = 201
+    y_min = -1.5
+    y_max = +1.5
+    ny = 301
     ntasks = 33
     M = mandelbrot(x_min, x_max, nx, y_min, y_max, ny, ntasks)
     tasks = M.get_tasks()
@@ -142,6 +150,7 @@ def main():
     m = M.combine_tasks(tasks)
     plt.imshow(m.T, cmap="gray", extent=[x_min, x_max, y_min, y_max])
     plt.show()
+
 
 if __name__ == "__main__":
     main()
