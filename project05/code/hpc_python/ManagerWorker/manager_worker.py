@@ -1,7 +1,6 @@
 import time
 import sys
 from typing import List
-from PIL import Image
 import numpy as np
 from mpi4py import MPI  # MPI_Init and MPI_Finalize automatically called
 import matplotlib.pyplot as plt
