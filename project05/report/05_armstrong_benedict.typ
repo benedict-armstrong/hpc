@@ -8,7 +8,7 @@
   doc,
 )
 
-= Introductio
+= Introduction
 
 All benchmarks and programs were run on the *Euler VII — phase 2 cluster* with
 *AMD EPYC 7763* cpus.
@@ -34,10 +34,10 @@ For this task I translated the cpp code from #link(
 communicates using python objects and another version which uses `NumPy` arrays.
 To test the code I ran the following commands:
 
-#figure(```sh
+```sh
 mpirun -np 8 python3 slow_comm.py | sort > slow_comm.txt
 mpirun -np 8 python3 fast_comm.py | sort > fast_comm.txt
-```, caption: "run sum of ranks") <sum_of_ranks>
+```
 
 The respective code and text files with the output can be found in
 `code/hpc_python/rank_sum`.
@@ -53,35 +53,35 @@ columns. As far as I could tell `mpi4py` doesn't really support sending non
 memory contiguous data. To work around this I created a copy of the data I
 wanted to send as a contiguous array.
 
-#figure(```py
+```py
 left_s = data[1, 1:-1].copy()
 right_s = data[-2, 1:-1].copy()
-```)
+```
 
 We also need to create a contiguous receiving buffer for the ghost cells.
 
-#figure(```py
+```py
 left_r = np.zeros(SUBDOMAIN, dtype=np.int64)
 right_r = np.zeros(SUBDOMAIN, dtype=np.int64)
-```)
+```
 
 After sending the ghost cells we can receive them and copy them into the correct
 position.
 
-#figure(```py
+```py
 data[1:-1, 0] = left_r
 data[1:-1, -1] = right_r
-```)
+```
 
 To test the code I ran the following commands:
 
-#figure(```sh
+```sh
 mpirun -np 16 python3 ghost.py
-```)
+```
 
-Which as expected prints the correct output shown in @ghost_output.
+Which as expected prints the correct output:
 
-#figure(```txt
+```txt
 [[ 9  5  5  5  5  5  5  9]
  [ 8  9  9  9  9  9  9 10]
  [ 8  9  9  9  9  9  9 10]
@@ -90,6 +90,6 @@ Which as expected prints the correct output shown in @ghost_output.
  [ 8  9  9  9  9  9  9 10]
  [ 8  9  9  9  9  9  9 10]
  [ 9 13 13 13 13 13 13  9]]
-```, caption: "Ghost cell exchange between neighboring processes") <ghost_output>
+```
 
 == A self-scheduling example: Parallel Mandelbrot [30 Points]

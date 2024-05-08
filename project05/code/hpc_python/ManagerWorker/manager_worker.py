@@ -1,6 +1,7 @@
 import time
 import sys
 from typing import List
+from PIL import Image
 import numpy as np
 from mpi4py import MPI  # MPI_Init and MPI_Finalize automatically called
 import matplotlib.pyplot as plt
@@ -179,6 +180,10 @@ if __name__ == "__main__":
         TasksDoneByWorker, tasks = manager(comm, tasks)
 
         m = M.combine_tasks(tasks)
+
+        # save as image using PIL for full resolution
+        # Image.fromarray(m.T).save("mandelbrot_full.png")
+
         plt.imshow(m.T, cmap="gray", extent=[x_min, x_max, y_min, y_max])
         plt.savefig("mandelbrot.png")
     else:

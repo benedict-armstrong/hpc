@@ -12,7 +12,7 @@
 #set text(font: "New Computer Modern")
 #show math.equation: set text(font: "New Computer Modern Math")
 
-#show raw.where(block: true): it => block(fill: rgb("#EFEFEF"), inset: 8pt, radius: 2pt, text(it))
+#show raw.where(block: true): it => block(fill: rgb("#EFEFEF"), width: 100%, inset: 8pt, radius: 2pt, text(it))
 
 #set heading(numbering: "1.1.")
 #show heading: text.with(size: 0.9em, weight: "bold")
@@ -52,7 +52,7 @@ Due date: #h(1em) #due-date.
 
 - Assignments must be submitted to #link(
     "https://moodle-app2.let.ethz.ch/
-                                                        course/view.php?id=22516",
+                                                                course/view.php?id=22516",
   )[Moodle] (i.e. in electronic format).
 - Provide both executable package and sources (e.g. C/C++ files, Matlab). If you
   are using libraries, please add them in the file. Sources must be organized in
