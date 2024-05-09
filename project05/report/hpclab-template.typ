@@ -16,6 +16,8 @@
 
 #set heading(numbering: "1.1.")
 #show heading: text.with(size: 0.9em, weight: "bold")
+#show par: set block(spacing: 1.5em)
+#show heading: set block(spacing: 1.5em)
 
 #image("ethz.svg", width: 36%)
 
@@ -27,11 +29,11 @@ Student: #student-name
 #h(1fr)
 Discussed with: #partner-names
 
-#line(length: 100%)
+#line(length: 100%, stroke: 0.5pt)
 #text(15pt)[*Solution for Project #project-nr*]
 #h(1fr)
 Due date: #h(1em) #due-date.
-#line(length: 100%)
+#line(length: 100%, stroke: 0.5pt)
 
 #if show_disclaimer [
 #align(
@@ -52,7 +54,7 @@ Due date: #h(1em) #due-date.
 
 - Assignments must be submitted to #link(
     "https://moodle-app2.let.ethz.ch/
-                                                                course/view.php?id=22516",
+                                                                                            course/view.php?id=22516",
   )[Moodle] (i.e. in electronic format).
 - Provide both executable package and sources (e.g. C/C++ files, Matlab). If you
   are using libraries, please add them in the file. Sources must be organized in

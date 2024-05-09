@@ -1,11 +1,12 @@
 MPICXX      = mpic++
-MPICXXFLAGS = -O3
+MPICXXFLAGS = -g -Wall 
+# MPICXXFLAGS = -O3 
 
 SOURCES = walltime.cpp stats.cpp data.cpp operators.cpp linalg.cpp main.cpp
 HEADERS = walltime.h   stats.h   data.h   operators.h   linalg.h
 OBJ     = build/walltime.o   build/stats.o   build/data.o   build/operators.o   build/linalg.o   build/main.o
 
-all: build/main
+all: build/mini_app
 
 build/walltime.o: walltime.cpp walltime.h
 	mkdir -p build
@@ -26,10 +27,10 @@ build/linalg.o: linalg.cpp linalg.h
 build/main.o: main.cpp $(HEADERS)
 	$(MPICXX) $(MPICXXFLAGS) -c $< -o $@
 
-build/main: $(OBJ)
+build/mini_app: $(OBJ)
 	mkdir -p out
 	$(MPICXX) $(MPICXXFLAGS) $(OBJ) -o $@
 
 .PHONY: clean
 clean:
-	$(RM) build/main build/$(OBJ) output.*
+	$(RM) build/mini_app build/$(OBJ) out/output.*

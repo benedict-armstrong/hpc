@@ -25,6 +25,7 @@
 #include "operators.h"
 #include "walltime.h"
 #include "stats.h"
+#include "unistd.h"
 
 using namespace data;
 using namespace linalg;
@@ -199,6 +200,14 @@ int main(int argc, char *argv[])
     iters_cg = 0;
     iters_newton = 0;
 
+    // TODO: Remove (for debugging purposes only)
+    // if (rank == 0)
+    // {
+    //     int i = 0;
+    //     while (0 == i)
+    //         sleep(5);
+    // }
+
     MPI_Barrier(MPI_COMM_WORLD);
 
     // start timer
@@ -273,7 +282,7 @@ int main(int argc, char *argv[])
 
     // binary data
     // TODO: Implement write_binary using MPI-IO
-    // write_binary("out/output.bin", y_old, domain, options);
+    write_binary("out/output.bin", y_old, domain, options);
 
     if (rank == 0)
     {
@@ -320,6 +329,8 @@ int main(int argc, char *argv[])
         }
     }
     // TODO: finalize MPI
+    // delete sub-domain
+    delete &domain;
     MPI_Finalize();
 
     return 0;
