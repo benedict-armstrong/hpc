@@ -2,82 +2,36 @@ rm -f build/*.o build/powermethod_rows
 mpicc -c -O3  powermethod_rows.c -o build/powermethod_rows.o
 mpicc -c -O3  walltime.c -o build/walltime.o
 mpicc -lm  build/powermethod_rows.o build/walltime.o -o build/powermethod_rows
-Running weak benchmark for processes: [1, 2, 4, 8, 16, 32, 64]
-Number of runs: 5
-1 processes (5 runs) and size 3000 (3000 per process) host: eu-a2p-323
-		Running benchmark for 1 processes, 3000 size, 3000 iterations, tol=-1e-06
-	0: time: 27.137035
-		Running benchmark for 1 processes, 3000 size, 3000 iterations, tol=-1e-06
-	1: time: 26.884045
-		Running benchmark for 1 processes, 3000 size, 3000 iterations, tol=-1e-06
-	2: time: 27.064362
-		Running benchmark for 1 processes, 3000 size, 3000 iterations, tol=-1e-06
-	3: time: 26.797736
-		Running benchmark for 1 processes, 3000 size, 3000 iterations, tol=-1e-06
-	4: time: 26.779416
-2 processes (5 runs) and size 4243 (2121 per process) host: eu-a2p-323
-		Running benchmark for 2 processes, 4243 size, 3000 iterations, tol=-1e-06
-	0: time: 26.997791
-		Running benchmark for 2 processes, 4243 size, 3000 iterations, tol=-1e-06
-	1: time: 26.762595
-		Running benchmark for 2 processes, 4243 size, 3000 iterations, tol=-1e-06
-	2: time: 26.934894
-		Running benchmark for 2 processes, 4243 size, 3000 iterations, tol=-1e-06
-	3: time: 26.661213
-		Running benchmark for 2 processes, 4243 size, 3000 iterations, tol=-1e-06
-	4: time: 26.713136
-4 processes (5 runs) and size 6000 (1500 per process) host: eu-a2p-323
-		Running benchmark for 4 processes, 6000 size, 3000 iterations, tol=-1e-06
-	0: time: 29.431774
-		Running benchmark for 4 processes, 6000 size, 3000 iterations, tol=-1e-06
-	1: time: 29.331342
-		Running benchmark for 4 processes, 6000 size, 3000 iterations, tol=-1e-06
-	2: time: 28.889025
-		Running benchmark for 4 processes, 6000 size, 3000 iterations, tol=-1e-06
-	3: time: 29.202809
-		Running benchmark for 4 processes, 6000 size, 3000 iterations, tol=-1e-06
-	4: time: 28.444064
-8 processes (5 runs) and size 8486 (1060 per process) host: eu-a2p-323
-		Running benchmark for 8 processes, 8486 size, 3000 iterations, tol=-1e-06
-	0: time: 28.034393
-		Running benchmark for 8 processes, 8486 size, 3000 iterations, tol=-1e-06
-	1: time: 28.114324
-		Running benchmark for 8 processes, 8486 size, 3000 iterations, tol=-1e-06
-	2: time: 27.986409
-		Running benchmark for 8 processes, 8486 size, 3000 iterations, tol=-1e-06
-	3: time: 27.995172
-		Running benchmark for 8 processes, 8486 size, 3000 iterations, tol=-1e-06
-	4: time: 27.908683
-16 processes (5 runs) and size 12000 (750 per process) host: eu-a2p-323
-		Running benchmark for 16 processes, 12000 size, 3000 iterations, tol=-1e-06
-	0: time: 28.409118
-		Running benchmark for 16 processes, 12000 size, 3000 iterations, tol=-1e-06
-	1: time: 28.461918
-		Running benchmark for 16 processes, 12000 size, 3000 iterations, tol=-1e-06
-	2: time: 28.510373
-		Running benchmark for 16 processes, 12000 size, 3000 iterations, tol=-1e-06
-	3: time: 29.386411
-		Running benchmark for 16 processes, 12000 size, 3000 iterations, tol=-1e-06
-	4: time: 28.382212
-32 processes (5 runs) and size 16971 (530 per process) host: eu-a2p-323
-		Running benchmark for 32 processes, 16971 size, 3000 iterations, tol=-1e-06
-	0: time: 43.370653
-		Running benchmark for 32 processes, 16971 size, 3000 iterations, tol=-1e-06
-	1: time: 43.261212
-		Running benchmark for 32 processes, 16971 size, 3000 iterations, tol=-1e-06
-	2: time: 43.134979
-		Running benchmark for 32 processes, 16971 size, 3000 iterations, tol=-1e-06
-	3: time: 43.284119
-		Running benchmark for 32 processes, 16971 size, 3000 iterations, tol=-1e-06
-	4: time: 43.597913
-64 processes (5 runs) and size 24000 (375 per process) host: eu-a2p-323
+Running weak benchmark for processes: [64]
+Number of runs: 15
+64 processes (15 runs) and size 24000 (375 per process) host: eu-a2p-277
 		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
-	0: time: 87.35553
+	0: time: 120.848353
 		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
-	1: time: 87.83395
+	1: time: 104.428731
 		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
-	2: time: 88.07502
+	2: time: 80.81887
 		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
-	3: time: 87.681056
+	3: time: 82.811078
 		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
-	4: time: 87.734183
+	4: time: 82.768608
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	5: time: 82.967403
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	6: time: 122.532823
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	7: time: 112.170134
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	8: time: 110.990135
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	9: time: 108.323109
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	10: time: 98.433547
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	11: time: 110.365613
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	12: time: 123.419256
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	13: time: 121.753959
+		Running benchmark for 64 processes, 24000 size, 3000 iterations, tol=-1e-06
+	14: time: 131.79661
