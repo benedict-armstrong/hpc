@@ -28,11 +28,11 @@ pip list
 runs=10
 
 # add header to the output file
-echo "workers,tasks,time,run" >out/results.csv
+# echo "workers,tasks,time,run" >out/results.csv
 
 # run with 3-33 workers and 100/50 tasks
 for task in 100 50; do
-    for i in {3..33}; do
+    for i in {2..3}; do
         echo "Running with $i workers and $task tasks and $runs runs"
         for j in $(seq 1 $runs); do
             time=$(mpirun -np $i python3 manager_worker.py 4001 4001 $task | grep "Run took" | awk '{print $3}')
