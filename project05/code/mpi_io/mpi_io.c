@@ -1,19 +1,21 @@
 /*******************************************************************************
-* MPI-IO demo: Given a number of grid points in x and y direction, it creates
-*              a domain distribution over the MPI processes, allocates and
-*              initializes (to the rank) the local portion of the grid on each
-*              process, and writes the grid in a single file using MPI-IO.
-*******************************************************************************/
+ * MPI-IO demo: Given a number of grid points in x and y direction, it creates
+ *              a domain distribution over the MPI processes, allocates and
+ *              initializes (to the rank) the local portion of the grid on each
+ *              process, and writes the grid in a single file using MPI-IO.
+ *******************************************************************************/
 #include <mpi.h> // MPI
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 // Structs to hold domain decomposition
-typedef struct {
+typedef struct
+{
   int nx, ny; // global grid points in x and y dimension of domain
 } Domain;
-typedef struct {
+typedef struct
+{
   // local grid points in x and y dimension of sub-domain
   int nx, ny;
   // MPI info
@@ -26,41 +28,49 @@ typedef struct {
 } SubDomain;
 
 // Read command line arguments
-void readcmdline(Domain* domain, int argc, char* argv[]) {
-  if (argc < 3) {
+void readcmdline(Domain *domain, int argc, char *argv[])
+{
+  if (argc < 3)
+  {
     printf("Usage: main nx ny\n");
     printf("  nx, ny number of grid points in x-direction and "
-                    "y-direction, respectively\n");
+           "y-direction, respectively\n");
     exit(1);
   }
 
   // Read nx
   domain->nx = atoi(argv[1]);
-  if (domain->nx < 1) {
+  if (domain->nx < 1)
+  {
     fprintf(stderr, "nx must be positive integer\n");
     exit(-1);
   }
 
   // Read ny
   domain->ny = atoi(argv[2]);
-  if (domain->ny < 1) {
+  if (domain->ny < 1)
+  {
     fprintf(stderr, "ny must be positive integer\n");
     exit(-1);
   }
 }
 
 // Domain decomposition
-void decomp1d(int n, int size, int rank, int* s, int* e) {
+void decomp1d(int n, int size, int rank, int *s, int *e)
+{
   int n_local = n / size;
   int deficit = n % size;
   *s = rank * n_local;
   *s = *s + ((rank < deficit) ? rank : deficit);
-  if (rank < deficit) ++n_local;
+  if (rank < deficit)
+    ++n_local;
   *e = *s + n_local - 1;
-  if (*e > n || rank == size - 1) *e = n - 1;
+  if (*e > n || rank == size - 1)
+    *e = n - 1;
 }
-void domain_decomposition(Domain const* domain, int size, int rank,
-                          SubDomain* subdomain) {
+void domain_decomposition(Domain const *domain, int size, int rank,
+                          SubDomain *subdomain)
+{
   // Set size and rank
   subdomain->size = size;
   subdomain->rank = rank;
@@ -82,7 +92,7 @@ void domain_decomposition(Domain const* domain, int size, int rank,
   subdomain->ny = subdomain->endy - subdomain->starty + 1;
   // Print
   printf("[Process %2d (%2d, %2d)] global dims: %d x %d; "
-                                  "local dims: %d x %d (%d:%d, %d:%d);\n",
+         "local dims: %d x %d (%d:%d, %d:%d);\n",
          rank, coords[0], coords[1],
          domain->nx, domain->ny,
          subdomain->nx, subdomain->ny,
@@ -91,10 +101,11 @@ void domain_decomposition(Domain const* domain, int size, int rank,
 }
 
 // Output using MPI-IO
-void output(char fname[], Domain const* domain, SubDomain const* subdomain,
-            double* data) {
+void output(char fname[], Domain const *domain, SubDomain const *subdomain,
+            double *data)
+{
   // Generate *.bin file name
-  char* fname_bin = (char*) malloc((strlen(fname) + 1 + 4)*sizeof(char));
+  char *fname_bin = (char *)malloc((strlen(fname) + 1 + 4) * sizeof(char));
   strcpy(fname_bin, fname);
   strcat(fname_bin, ".bin");
 
@@ -106,9 +117,14 @@ void output(char fname[], Domain const* domain, SubDomain const* subdomain,
   // Create sub-array type (each process writes its sub-domain part into the
   // file containing (full!) domain)
   // Note the row-major order storage format (C order)
-  int sizes[2]    = {domain->nx, domain->ny};
+  int sizes[2] = {domain->nx, domain->ny};
   int subsizes[2] = {subdomain->nx, subdomain->ny};
-  int start[2]    = {subdomain->startx, subdomain->starty};
+  int start[2] = {subdomain->startx, subdomain->starty};
+
+  printf("[Process %2d] sizes: %d x %d; subsizes: %d x %d; start: %d x %d\n",
+         subdomain->rank, sizes[0], sizes[1], subsizes[0], subsizes[1],
+         start[0], start[1]);
+
   MPI_Datatype filetype;
   MPI_Type_create_subarray(2, sizes, subsizes, start, MPI_ORDER_C, MPI_DOUBLE,
                            &filetype);
@@ -118,7 +134,7 @@ void output(char fname[], Domain const* domain, SubDomain const* subdomain,
   MPI_Offset disp = 0;
   MPI_File_set_view(filehandle, disp, MPI_DOUBLE, filetype, "native",
                     MPI_INFO_NULL);
-  MPI_File_write_all(filehandle, data, subdomain->nx*subdomain->ny, MPI_DOUBLE,
+  MPI_File_write_all(filehandle, data, subdomain->nx * subdomain->ny, MPI_DOUBLE,
                      MPI_STATUS_IGNORE);
 
   // Free file type
@@ -129,13 +145,14 @@ void output(char fname[], Domain const* domain, SubDomain const* subdomain,
 
   // Write BOV header file
   // (see format details here https://visit-sphinx-github-user-manual.readthedocs.io/en/develop/data_into_visit/BOVFormat.html#the-bov-file-format)
-  if ( subdomain->rank == 0 ) {
+  if (subdomain->rank == 0)
+  {
     // Generate *.bov file name
-    char* fname_bov = (char*) malloc((strlen(fname) + 1 + 4)*sizeof(char));
+    char *fname_bov = (char *)malloc((strlen(fname) + 1 + 4) * sizeof(char));
     strcpy(fname_bov, fname);
     strcat(fname_bov, ".bov");
     // Write BOV header file
-    FILE* fp = fopen(fname_bov, "w+");
+    FILE *fp = fopen(fname_bov, "w+");
     free(fname_bov);
     fprintf(fp, "TIME: %f\n", 0.);
     fprintf(fp, "DATA_FILE: %s\n", fname_bin);
@@ -155,7 +172,8 @@ void output(char fname[], Domain const* domain, SubDomain const* subdomain,
 }
 
 // main
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
   // Read command line arguments
   Domain domain;
   readcmdline(&domain, argc, argv);
@@ -173,10 +191,12 @@ int main(int argc, char* argv[]) {
   // Allocate and initialize (to this process' rank) array holding local
   // (to this process) portion of the grid
   // Note the row-major order storage format (C order)
-  double* data = (double*) calloc(subdomain.nx*subdomain.ny, sizeof(double));
-  for (int i = 0; i < subdomain.nx; i++) {
-    for (int j = 0; j < subdomain.ny; j++) {
-      data[i*subdomain.ny + j] = rank;
+  double *data = (double *)calloc(subdomain.nx * subdomain.ny, sizeof(double));
+  for (int i = 0; i < subdomain.nx; i++)
+  {
+    for (int j = 0; j < subdomain.ny; j++)
+    {
+      data[i * subdomain.ny + j] = rank;
     }
   }
 
@@ -187,7 +207,8 @@ int main(int argc, char* argv[]) {
   free(data);
 
   // Free MPI Cart communicator
-  if (subdomain.comm_cart!=NULL) MPI_Comm_free(&subdomain.comm_cart);
+  if (subdomain.comm_cart != NULL)
+    MPI_Comm_free(&subdomain.comm_cart);
 
   // Finalize MPI
   MPI_Finalize();

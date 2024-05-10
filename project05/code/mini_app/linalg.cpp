@@ -62,6 +62,8 @@ namespace linalg
             result += x[i] * y[i];
         }
 
+        MPI_Allreduce(MPI_IN_PLACE, &result, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
         return result;
     }
 
@@ -71,12 +73,8 @@ namespace linalg
     {
         double result = 0;
         int N = x.length();
-// compute local result
-#pragma omp parallel for reduction(+ : result) shared(x)
-        for (int i = 0; i < N; i++)
-        {
-            result += x[i] * x[i];
-        }
+
+        result = hpc_dot(x, x);
 
         return sqrt(result);
     }

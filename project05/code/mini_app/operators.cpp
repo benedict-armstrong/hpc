@@ -31,17 +31,56 @@ namespace operators
         using data::buffN;
         using data::buffS;
         using data::buffW;
-
         double alpha = options.alpha;
         double beta = options.beta;
 
         int nx = domain.nx;
         int ny = domain.ny;
-        int iend = nx - 1;
-        int jend = ny - 1;
+        int iend = ny - 1;
+        int jend = nx - 1;
 
         // TODO: exchange the ghost cells using non-blocking point-to-point
         //       communication
+
+        // copy the boundary values into the buffers
+        for (int i = 0; i <= iend; ++i)
+        {
+            buffN[i] = s_new(i, jend);
+            buffS[i] = s_new(i, 0);
+        }
+        for (int i = 0; i <= jend; ++i)
+        {
+            buffW[i] = s_new(0, i);
+            buffE[i] = s_new(iend, i);
+        }
+
+        // create MPI_Request objects for the non-blocking communication
+        MPI_Request reqs[8];
+        int count = 0;
+
+        if (domain.neighbour_north >= 0)
+        {
+            MPI_Isend(&buffN[0], nx, MPI_DOUBLE, domain.neighbour_north, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndN[0], nx, MPI_DOUBLE, domain.neighbour_north, 0, domain.comm_cart, &reqs[count++]);
+        }
+        if (domain.neighbour_south >= 0)
+        {
+            MPI_Isend(&buffS[0], nx, MPI_DOUBLE, domain.neighbour_south, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndS[0], nx, MPI_DOUBLE, domain.neighbour_south, 0, domain.comm_cart, &reqs[count++]);
+        }
+        if (domain.neighbour_east >= 0)
+        {
+            MPI_Isend(&buffE[0], ny, MPI_DOUBLE, domain.neighbour_east, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndE[0], ny, MPI_DOUBLE, domain.neighbour_east, 0, domain.comm_cart, &reqs[count++]);
+        }
+        if (domain.neighbour_west >= 0)
+        {
+            MPI_Isend(&buffW[0], ny, MPI_DOUBLE, domain.neighbour_west, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndW[0], ny, MPI_DOUBLE, domain.neighbour_west, 0, domain.comm_cart, &reqs[count++]);
+        }
+
+        // wait for all non-blocking communication to complete
+        MPI_Waitall(count, reqs, MPI_STATUSES_IGNORE);
 
         // the interior grid points
         for (int j = 1; j < jend; j++)

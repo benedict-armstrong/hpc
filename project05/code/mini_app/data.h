@@ -25,15 +25,6 @@ namespace data
         // initialize a sub-domain
         void init(int, int, Discretization &);
 
-        // destructor
-        ~SubDomain()
-        {
-            if (rank == 0)
-            {
-                MPI_Comm_free(&comm_cart);
-            }
-        }
-
         // print sub-domain information
         void print();
 

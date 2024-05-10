@@ -35,12 +35,12 @@ void write_binary(std::string fname, Field &u, SubDomain &domain,
                   Discretization &options)
 {
     // TODO: Implement output with MPI-IO
-    // FILE *output = fopen(fname.c_str(), "w");
-    // fwrite(u.data(), sizeof(double), options.nx * options.nx, output);
-    // fclose(output);
 
+    char *cstr = const_cast<char *>(fname.c_str());
+
+    // Open file
     MPI_File filehandle;
-    MPI_File_open(domain.comm_cart, fname.c_str(), MPI_MODE_CREATE | MPI_MODE_WRONLY,
+    MPI_File_open(MPI_COMM_WORLD, cstr, MPI_MODE_CREATE | MPI_MODE_WRONLY,
                   MPI_INFO_NULL, &filehandle);
 
     // Create sub-array type (each process writes its sub-domain part into the
@@ -48,23 +48,19 @@ void write_binary(std::string fname, Field &u, SubDomain &domain,
     // Note the row-major order storage format (C order)
     int sizes[2] = {options.nx, options.nx};
     int subsizes[2] = {domain.nx, domain.ny};
-    int start[2] = {domain.startx, domain.starty};
+    int start[2] = {domain.startx - 1, domain.starty - 1};
 
     MPI_Datatype filetype;
-    MPI_Type_create_subarray(
-        2, sizes, subsizes, start, MPI_ORDER_FORTRAN, MPI_DOUBLE,
-        &filetype);
+    MPI_Type_create_subarray(2, sizes, subsizes, start, MPI_ORDER_FORTRAN, MPI_DOUBLE,
+                             &filetype);
     MPI_Type_commit(&filetype);
 
     // Set view and write file
     MPI_Offset disp = 0;
-    MPI_File_set_view(filehandle, disp, MPI_DOUBLE, filetype, "native", MPI_INFO_NULL);
-
-    MPI_File_write_all(
-        filehandle,
-        u.data(),
-        domain.nx * domain.ny, MPI_DOUBLE,
-        MPI_STATUS_IGNORE);
+    MPI_File_set_view(filehandle, disp, MPI_DOUBLE, filetype, "native",
+                      MPI_INFO_NULL);
+    MPI_File_write_all(filehandle, &y_new[0], domain.nx * domain.ny, MPI_DOUBLE,
+                       MPI_STATUS_IGNORE);
 
     // Free file type
     MPI_Type_free(&filetype);
@@ -150,17 +146,14 @@ int main(int argc, char *argv[])
     double tolerance = 1.e-6;
 
     // TODO: initialize MPI
-    int size, rank;
+    int size = 1, rank = 0;
     MPI_Init(&argc, &argv);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     // TODO: initialize sub-domain (data.{h,cpp})
     domain.init(rank, size, options);
-    if (verbose_output)
-    {
-        domain.print();
-    }
+    domain.print(); // for debugging
     int nx = domain.nx;
     int ny = domain.ny;
     int N = domain.N;
@@ -177,8 +170,7 @@ int main(int argc, char *argv[])
                   << " dx = " << options.dx << std::endl;
         std::cout << "time      :: " << nt << " time steps from 0 .. "
                   << options.nt * options.dt << std::endl;
-        std::cout << "iteration :: "
-                  << "CG " << max_cg_iters
+        std::cout << "iteration :: " << "CG " << max_cg_iters
                   << ", Newton " << max_newton_iters
                   << ", tolerance " << tolerance << std::endl;
         std::cout << std::string(80, '=') << std::endl;
@@ -271,18 +263,16 @@ int main(int argc, char *argv[])
         iters_newton += it + 1;
 
         // output some statistics
-        if (converged && verbose_output)
+        if (converged && verbose_output && rank == 0)
         {
-            std::cout << "rank " << rank
-                      << " step " << timestep
+            std::cout << "step " << timestep
                       << " required " << it
                       << " iterations for residual " << residual
                       << std::endl;
         }
         if (!converged)
         {
-            std::cerr << "rank " << rank
-                      << "step " << timestep
+            std::cerr << "step " << timestep
                       << " ERROR : nonlinear iterations failed to converge" << std::endl;
             ;
             break;
@@ -296,61 +286,55 @@ int main(int argc, char *argv[])
     // write final solution to BOV file for visualization
     ////////////////////////////////////////////////////////////////////
 
-    std::cout << "rank: " << rank << " Writing output files" << std::endl;
-
+    // binary data
     // TODO: Implement write_binary using MPI-IO
-    write_binary("out/output.bin", y_old, domain, options);
+    if (verbose_output)
+        write_binary("output.bin", y_new, domain, options);
 
+    // metadata
+    // TODO: Only once process should do the following
     if (rank == 0)
     {
-        // metadata
-        {
-            std::ofstream fid("out/output.bov");
-            fid << "TIME: " << options.nt * options.dt << std::endl;
-            fid << "DATA_FILE: out/output.bin" << std::endl;
-            fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
-                << std::endl;
-            fid << "DATA_FORMAT: DOUBLE" << std::endl;
-            fid << "VARIABLE: phi" << std::endl;
-            fid << "DATA_ENDIAN: LITTLE" << std::endl;
-            fid << "CENTERING: nodal" << std::endl;
-            fid << "BRICK_ORIGIN: " << "0. 0. 0." << std::endl;
-            fid << "BRICK_SIZE: " << (options.nx - 1) * options.dx << ' '
-                << (options.nx - 1) * options.dx << ' '
-                << " 1.0"
-                << std::endl;
-        }
-
-        // print table summarizing results
-        double timespent = time_end - time_start;
-        // TODO: Only once process should do the following
-        {
-            std::cout << std::string(80, '-') << std::endl;
-            std::cout << "simulation took " << timespent << " seconds" << std::endl;
-            std::cout << int(iters_cg)
-                      << " conjugate gradient iterations, at rate of "
-                      << float(iters_cg) / timespent << " iters/second" << std::endl;
-            std::cout << iters_newton << " newton iterations" << std::endl;
-            std::cout << std::string(80, '-') << std::endl;
-            std::cout << "### " << size << ", "
-                      << options.nx << ", "
-                      << options.nt << ", "
-                      << iters_cg << ", "
-                      << iters_newton << ", "
-                      << timespent
-                      << " ###" << std::endl;
-            std::cout << "Goodbye!" << std::endl;
-        }
+        std::ofstream fid("output.bov");
+        fid << "TIME: " << options.nt * options.dt << std::endl;
+        fid << "DATA_FILE: output.bin" << std::endl;
+        fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
+            << std::endl;
+        fid << "DATA_FORMAT: DOUBLE" << std::endl;
+        fid << "VARIABLE: phi" << std::endl;
+        fid << "DATA_ENDIAN: LITTLE" << std::endl;
+        fid << "CENTERING: nodal" << std::endl;
+        fid << "BRICK_ORIGIN: " << "0. 0. 0." << std::endl;
+        fid << "BRICK_SIZE: " << (options.nx - 1) * options.dx << ' '
+            << (options.nx - 1) * options.dx << ' '
+            << " 1.0"
+            << std::endl;
     }
-    // TODO: finalize MPI
-    // MPI_Barrier(domain.comm_cart);
 
-    // Free domain.comm_cart
-    if (rank == 0 && domain.comm_cart != NULL)
+    // print table summarizing results
+    double timespent = time_end - time_start;
+    // TODO: Only once process should do the following
+    if (rank == 0)
     {
-        MPI_Comm_free(&domain.comm_cart);
+        std::cout << std::string(80, '-') << std::endl;
+        std::cout << "simulation took " << timespent << " seconds" << std::endl;
+        std::cout << int(iters_cg)
+                  << " conjugate gradient iterations, at rate of "
+                  << float(iters_cg) / timespent << " iters/second" << std::endl;
+        std::cout << iters_newton << " newton iterations" << std::endl;
+        std::cout << std::string(80, '-') << std::endl;
+        std::cout << "### " << size << ", "
+                  << options.nx << ", "
+                  << options.nt << ", "
+                  << iters_cg << ", "
+                  << iters_newton << ", "
+                  << timespent
+                  << " ###" << std::endl;
+        std::cout << "Goodbye!" << std::endl;
     }
 
+    // TODO: finalize MPI
+    MPI_Comm_free(&domain.comm_cart);
     MPI_Finalize();
 
     return 0;
