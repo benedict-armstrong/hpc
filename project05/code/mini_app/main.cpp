@@ -19,13 +19,11 @@
 #include <cstring>
 #include <stdio.h>
 
-#include <mpi.h> // MPI
 #include "data.h"
 #include "linalg.h"
 #include "operators.h"
 #include "walltime.h"
 #include "stats.h"
-#include "unistd.h"
 
 using namespace data;
 using namespace linalg;
@@ -200,16 +198,6 @@ int main(int argc, char *argv[])
     iters_cg = 0;
     iters_newton = 0;
 
-    // TODO: Remove (for debugging purposes only)
-    // if (rank == 0)
-    // {
-    //     int i = 0;
-    //     while (0 == i)
-    //         sleep(5);
-    // }
-
-    MPI_Barrier(MPI_COMM_WORLD);
-
     // start timer
     double time_start = walltime();
 
@@ -227,8 +215,6 @@ int main(int argc, char *argv[])
             // compute residual
             diffusion(y_old, y_new, f);
             residual = hpc_norm2(f);
-
-            std::cout << "residual: " << residual << std::endl;
 
             // check for convergence
             if (residual < tolerance)
@@ -271,13 +257,6 @@ int main(int argc, char *argv[])
     // get times
     double time_end = walltime();
 
-    std::cout << "rank " << rank << " done" << std::endl;
-    MPI_Barrier(MPI_COMM_WORLD);
-    if (rank == 0)
-    {
-        std::cout << "rank " << rank << " all done" << std::endl;
-    }
-
     ////////////////////////////////////////////////////////////////////
     // write final solution to BOV file for visualization
     ////////////////////////////////////////////////////////////////////
@@ -286,54 +265,47 @@ int main(int argc, char *argv[])
     // TODO: Implement write_binary using MPI-IO
     write_binary("out/output.bin", y_old, domain, options);
 
-    if (rank == 0)
+    // metadata
+    // TODO: Only once process should do the following
     {
-
-        // metadata
-        // TODO: Only once process should do the following
-        {
-            std::ofstream fid("out/output.bov");
-            fid << "TIME: " << options.nt * options.dt << std::endl;
-            fid << "DATA_FILE: out/output.bin" << std::endl;
-            fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
-                << std::endl;
-            fid << "DATA_FORMAT: DOUBLE" << std::endl;
-            fid << "VARIABLE: phi" << std::endl;
-            fid << "DATA_ENDIAN: LITTLE" << std::endl;
-            fid << "CENTERING: nodal" << std::endl;
-            fid << "BRICK_ORIGIN: "
-                << "0. 0. 0." << std::endl;
-            fid << "BRICK_SIZE: " << (options.nx - 1) * options.dx << ' '
-                << (options.nx - 1) * options.dx << ' '
-                << " 1.0"
-                << std::endl;
-        }
-
-        // print table summarizing results
-        double timespent = time_end - time_start;
-        // TODO: Only once process should do the following
-        {
-            std::cout << std::string(80, '-') << std::endl;
-            std::cout << "simulation took " << timespent << " seconds" << std::endl;
-            std::cout << int(iters_cg)
-                      << " conjugate gradient iterations, at rate of "
-                      << float(iters_cg) / timespent << " iters/second" << std::endl;
-            std::cout << iters_newton << " newton iterations" << std::endl;
-            std::cout << std::string(80, '-') << std::endl;
-            std::cout << "### " << size << ", "
-                      << options.nx << ", "
-                      << options.nt << ", "
-                      << iters_cg << ", "
-                      << iters_newton << ", "
-                      << timespent
-                      << " ###" << std::endl;
-            std::cout << "Goodbye!" << std::endl;
-        }
+        std::ofstream fid("out/output.bov");
+        fid << "TIME: " << options.nt * options.dt << std::endl;
+        fid << "DATA_FILE: out/output.bin" << std::endl;
+        fid << "DATA_SIZE: " << options.nx << " " << options.nx << " 1"
+            << std::endl;
+        fid << "DATA_FORMAT: DOUBLE" << std::endl;
+        fid << "VARIABLE: phi" << std::endl;
+        fid << "DATA_ENDIAN: LITTLE" << std::endl;
+        fid << "CENTERING: nodal" << std::endl;
+        fid << "BRICK_ORIGIN: " << "0. 0. 0." << std::endl;
+        fid << "BRICK_SIZE: " << (options.nx - 1) * options.dx << ' '
+            << (options.nx - 1) * options.dx << ' '
+            << " 1.0"
+            << std::endl;
     }
+
+    // print table summarizing results
+    double timespent = time_end - time_start;
+    // TODO: Only once process should do the following
+    {
+        std::cout << std::string(80, '-') << std::endl;
+        std::cout << "simulation took " << timespent << " seconds" << std::endl;
+        std::cout << int(iters_cg)
+                  << " conjugate gradient iterations, at rate of "
+                  << float(iters_cg) / timespent << " iters/second" << std::endl;
+        std::cout << iters_newton << " newton iterations" << std::endl;
+        std::cout << std::string(80, '-') << std::endl;
+        std::cout << "### " << size << ", "
+                  << options.nx << ", "
+                  << options.nt << ", "
+                  << iters_cg << ", "
+                  << iters_newton << ", "
+                  << timespent
+                  << " ###" << std::endl;
+        std::cout << "Goodbye!" << std::endl;
+    }
+
     // TODO: finalize MPI
-    // delete sub-domain
-    delete &domain;
-    MPI_Finalize();
 
     return 0;
 }
