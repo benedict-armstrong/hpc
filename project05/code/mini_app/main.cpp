@@ -24,6 +24,9 @@
 #include "operators.h"
 #include "walltime.h"
 #include "stats.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 using namespace data;
 using namespace linalg;
@@ -191,6 +194,9 @@ int main(int argc, char *argv[])
                   << "CG " << max_cg_iters
                   << ", Newton " << max_newton_iters
                   << ", tolerance " << tolerance << std::endl;
+#ifdef _OPENMP
+        std::cout << "OpenMP    :: threads " << omp_get_max_threads() << std::endl;
+#endif
         std::cout << std::string(80, '=') << std::endl;
     }
 

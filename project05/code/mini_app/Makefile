@@ -1,6 +1,6 @@
 MPICXX      = mpic++
-MPICXXFLAGS = -I$(INCLUDE) -fopenmp -g -Wall
-# MPICXXFLAGS = -O3 -I$(INCLUDE)-fopenmp
+# MPICXXFLAGS = $(INCLUDES) -fopenmp -g -Wall
+MPICXXFLAGS = -O3 -openmp
 
 SOURCES = walltime.cpp stats.cpp data.cpp operators.cpp linalg.cpp main.cpp
 HEADERS = walltime.h   stats.h   data.h   operators.h   linalg.h
