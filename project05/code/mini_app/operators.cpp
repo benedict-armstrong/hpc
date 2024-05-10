@@ -57,7 +57,7 @@ namespace operators
         }
 
         // debug
-        std::cout << "rank: " << domain.rank << std::endl;
+        // std::cout << "rank: " << domain.rank << std::endl;
 
         // create MPI_Request objects for the non-blocking communication
         MPI_Request reqs[8];
@@ -67,6 +67,15 @@ namespace operators
         MPI_Isend(&buffS, ny, MPI_DOUBLE, domain.neighbour_south, 0, MPI_COMM_WORLD, &reqs[1]);
         MPI_Isend(&buffE, nx, MPI_DOUBLE, domain.neighbour_east, 0, MPI_COMM_WORLD, &reqs[2]);
         MPI_Isend(&buffW, nx, MPI_DOUBLE, domain.neighbour_west, 0, MPI_COMM_WORLD, &reqs[3]);
+
+        // receive buffers into bndX from neighbours
+        MPI_Irecv(&bndN, ny, MPI_DOUBLE, domain.neighbour_north, 0, MPI_COMM_WORLD, &reqs[4]);
+        MPI_Irecv(&bndS, ny, MPI_DOUBLE, domain.neighbour_south, 0, MPI_COMM_WORLD, &reqs[5]);
+        MPI_Irecv(&bndE, nx, MPI_DOUBLE, domain.neighbour_east, 0, MPI_COMM_WORLD, &reqs[6]);
+        MPI_Irecv(&bndW, nx, MPI_DOUBLE, domain.neighbour_west, 0, MPI_COMM_WORLD, &reqs[7]);
+
+        // wait for all non-blocking communication to complete
+        MPI_Waitall(8, reqs, MPI_STATUSES_IGNORE);
 
         // the interior grid points
         for (int j = 1; j < jend; j++)
@@ -144,15 +153,6 @@ namespace operators
         stats::flops_diff += 12 * (nx - 2) * (ny - 2) // interior points
                              + 11 * (nx - 2 + ny - 2) // NESW boundary points
                              + 11 * 4;                // corner points
-
-        // receive buffers into bndX from neighbours
-        MPI_Irecv(&bndN, ny, MPI_DOUBLE, domain.neighbour_north, 0, MPI_COMM_WORLD, &reqs[4]);
-        MPI_Irecv(&bndS, ny, MPI_DOUBLE, domain.neighbour_south, 0, MPI_COMM_WORLD, &reqs[5]);
-        MPI_Irecv(&bndE, nx, MPI_DOUBLE, domain.neighbour_east, 0, MPI_COMM_WORLD, &reqs[6]);
-        MPI_Irecv(&bndW, nx, MPI_DOUBLE, domain.neighbour_west, 0, MPI_COMM_WORLD, &reqs[7]);
-
-        // wait for all non-blocking communication to complete
-        MPI_Waitall(8, reqs, MPI_STATUSES_IGNORE);
     }
 
 }

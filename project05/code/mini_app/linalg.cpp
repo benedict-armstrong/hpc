@@ -11,6 +11,10 @@
 #include "stats.h"
 #include "data.h"
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 namespace linalg
 {
 
@@ -51,7 +55,8 @@ namespace linalg
     {
         double result = 0;
         int N = y.length();
-        // compute local result
+// compute local result
+#pragma omp parallel for reduction(+ : result)
         for (int i = 0; i < N; i++)
         {
             result += x[i] * y[i];
@@ -66,7 +71,8 @@ namespace linalg
     {
         double result = 0;
         int N = x.length();
-        // compute local result
+// compute local result
+#pragma omp parallel for reduction(+ : result) shared(x)
         for (int i = 0; i < N; i++)
         {
             result += x[i] * x[i];
@@ -81,6 +87,7 @@ namespace linalg
     void hpc_fill(Field &x, const double value)
     {
         int N = x.length();
+#pragma omp parallel for shared(x, value)
         for (int i = 0; i < N; i++)
         {
             x[i] = value;
@@ -97,6 +104,7 @@ namespace linalg
     void hpc_axpy(Field &y, const double alpha, Field const &x)
     {
         int N = y.length();
+#pragma omp parallel for shared(y, x, alpha)
         for (int i = 0; i < N; i++)
         {
             y[i] += alpha * x[i];
@@ -110,6 +118,7 @@ namespace linalg
                              Field const &l, Field const &r)
     {
         int N = y.length();
+#pragma omp parallel for shared(y, x, l, r, alpha)
         for (int i = 0; i < N; i++)
         {
             y[i] = x[i] + alpha * (l[i] - r[i]);
@@ -119,6 +128,8 @@ namespace linalg
     // computes y = alpha*(l-r)
     // y, l and r are vectors of length N
     // alpha is a scalar
+
+#pragma omp parallel for shared(y, l, r, alpha)
     void hpc_scaled_diff(Field &y, const double alpha,
                          Field const &l, Field const &r)
     {
@@ -134,6 +145,7 @@ namespace linalg
     void hpc_scale(Field &y, const double alpha, Field const &x)
     {
         int N = y.length();
+#pragma omp parallel for shared(y, x, alpha)
         for (int i = 0; i < N; i++)
         {
             y[i] = alpha * x[i];
@@ -147,6 +159,7 @@ namespace linalg
                    Field const &z)
     {
         int N = y.length();
+#pragma omp parallel for shared(y, x, z, alpha, beta)
         for (int i = 0; i < N; i++)
         {
             y[i] = alpha * x[i] + beta * z[i];
@@ -158,6 +171,7 @@ namespace linalg
     void hpc_copy(Field &y, Field const &x)
     {
         int N = y.length();
+#pragma omp parallel for shared(y, x)
         for (int i = 0; i < N; i++)
         {
             y[i] = x[i];

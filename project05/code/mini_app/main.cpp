@@ -228,6 +228,8 @@ int main(int argc, char *argv[])
             diffusion(y_old, y_new, f);
             residual = hpc_norm2(f);
 
+            std::cout << "residual: " << residual << std::endl;
+
             // check for convergence
             if (residual < tolerance)
             {

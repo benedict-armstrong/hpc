@@ -22,6 +22,10 @@ say here.
 
 == Domain decomposition [10 Points]
 == Linear algebra kernels [5 Points]
+
+I parallelized the linear algebra kernels using the same OMP pragma directives
+as in `project03`.
+
 == The diffusion stencil: Ghost cells exchange [10 Points]
 == Implement parallel I/O [10 Points]
 == Strong scaling [10 Points]
