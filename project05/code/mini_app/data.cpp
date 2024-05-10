@@ -33,8 +33,8 @@ namespace data
         //       using MPI_Dims_create
         int dims[2] = {0, 0};
         MPI_Dims_create(mpi_size, 2, dims);
-        ndomx = dims[0];
-        ndomy = dims[1];
+        ndomy = dims[0];
+        ndomx = dims[1];
 
         // TODO: create a 2D non-periodic Cartesian topology using MPI_Cart_create
         int periods[2] = {0, 0};
@@ -82,24 +82,24 @@ namespace data
                 //           << " local dims " << nx << " x " << ny
                 //           << std::endl;
 
-                printf("Neighbors of rank %d\n", rank);
-                printf("+-----------+\n");
-                printf("| %2.d| %2.d| %2.d|\n", 0, neighbour_north, 0);
-                printf("|-----------|\n");
-                printf("| %2.d| %2.d| %2.d|\n", neighbour_west, rank, neighbour_east);
-                printf("|-----------|\n");
-                printf("| %2.d| %2.d| %2.d|\n", 0, neighbour_south, 0);
-                printf("+-----------+\n");
+                // printf("Neighbors of rank %d\n", rank);
+                // printf("+-----------+\n");
+                // printf("| %2.d| %2.d| %2.d|\n", 0, neighbour_north, 0);
+                // printf("|-----------|\n");
+                // printf("| %2.d| %2.d| %2.d|\n", neighbour_west, rank, neighbour_east);
+                // printf("|-----------|\n");
+                // printf("| %2.d| %2.d| %2.d|\n", 0, neighbour_south, 0);
+                // printf("+-----------+\n");
 
                 printf("[Process %2d (%2d, %2d)] global dims: %d x %d; "
-                       "local dims: %d x %d (%d:%d, %d:%d);\n\n\n",
+                       "local dims: %d x %d (%d:%d, %d:%d);\n",
                        rank, domx, domy,
                        ndomx, ndomy,
                        nx, ny,
                        startx, endx,
                        starty, endy);
             }
-            // MPI_Barrier(MPI_COMM_WORLD);
+            MPI_Barrier(MPI_COMM_WORLD);
         }
     }
 

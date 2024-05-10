@@ -50,6 +50,16 @@ void write_binary(std::string fname, Field &u, SubDomain &domain,
     int subsizes[2] = {domain.nx, domain.ny};
     int start[2] = {domain.startx, domain.starty};
 
+    // if (verbose_output)
+    // {
+    //     if (domain.rank == 0)
+    //     {
+    //         std::cout << "rank: " << domain.rank << " sizes: " << sizes[0] << " " << sizes[1] << std::endl;
+    //         std::cout << "rank: " << domain.rank << " subsizes: " << subsizes[0] << " " << subsizes[1] << std::endl;
+    //     }
+    //     std::cout << "rank: " << domain.rank << " start: " << start[0] << " " << start[1] << std::endl;
+    // }
+
     MPI_Datatype filetype;
     MPI_Type_create_subarray(
         2, sizes, subsizes, start, MPI_ORDER_FORTRAN, MPI_DOUBLE,
@@ -163,7 +173,7 @@ int main(int argc, char *argv[])
     }
     int nx = domain.nx;
     int ny = domain.ny;
-    int N = domain.N;
+    // int N = domain.N;
     int nt = options.nt;
 
     // TODO: Modify welcome message
@@ -247,6 +257,7 @@ int main(int argc, char *argv[])
         {
             // compute residual
             diffusion(y_old, y_new, f);
+
             residual = hpc_norm2(f);
 
             // check for convergence
@@ -268,16 +279,17 @@ int main(int argc, char *argv[])
             // update solution
             hpc_axpy(y_new, -1.0, deltay);
         }
+
         iters_newton += it + 1;
 
         // output some statistics
         if (converged && verbose_output)
         {
-            std::cout << "rank " << rank
-                      << " step " << timestep
-                      << " required " << it
-                      << " iterations for residual " << residual
-                      << std::endl;
+            // std::cout << "rank " << rank
+            //           << " step " << timestep
+            //           << " required " << it
+            //           << " iterations for residual " << residual
+            //           << std::endl;
         }
         if (!converged)
         {
@@ -296,7 +308,7 @@ int main(int argc, char *argv[])
     // write final solution to BOV file for visualization
     ////////////////////////////////////////////////////////////////////
 
-    std::cout << "rank: " << rank << " Writing output files" << std::endl;
+    // std::cout << "rank: " << rank << " Writing output files" << std::endl;
 
     // TODO: Implement write_binary using MPI-IO
     write_binary("out/output.bin", y_old, domain, options);

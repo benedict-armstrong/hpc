@@ -72,7 +72,6 @@ namespace linalg
     double hpc_norm2(Field const &x)
     {
         double result = 0;
-        int N = x.length();
 
         result = hpc_dot(x, x);
 

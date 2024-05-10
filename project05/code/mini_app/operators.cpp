@@ -36,8 +36,8 @@ namespace operators
 
         int nx = domain.nx;
         int ny = domain.ny;
-        int iend = ny - 1;
-        int jend = nx - 1;
+        int iend = nx - 1;
+        int jend = ny - 1;
 
         // TODO: exchange the ghost cells using non-blocking point-to-point
         //       communication
@@ -60,23 +60,23 @@ namespace operators
 
         if (domain.neighbour_north >= 0)
         {
-            MPI_Isend(&buffN[0], nx, MPI_DOUBLE, domain.neighbour_north, 0, domain.comm_cart, &reqs[count++]);
-            MPI_Irecv(&bndN[0], nx, MPI_DOUBLE, domain.neighbour_north, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Isend(&buffN[0], nx, MPI_DOUBLE, domain.neighbour_north, 1, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndN[0], nx, MPI_DOUBLE, domain.neighbour_north, 2, domain.comm_cart, &reqs[count++]);
         }
         if (domain.neighbour_south >= 0)
         {
-            MPI_Isend(&buffS[0], nx, MPI_DOUBLE, domain.neighbour_south, 0, domain.comm_cart, &reqs[count++]);
-            MPI_Irecv(&bndS[0], nx, MPI_DOUBLE, domain.neighbour_south, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Isend(&buffS[0], nx, MPI_DOUBLE, domain.neighbour_south, 2, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndS[0], nx, MPI_DOUBLE, domain.neighbour_south, 1, domain.comm_cart, &reqs[count++]);
         }
         if (domain.neighbour_east >= 0)
         {
-            MPI_Isend(&buffE[0], ny, MPI_DOUBLE, domain.neighbour_east, 0, domain.comm_cart, &reqs[count++]);
-            MPI_Irecv(&bndE[0], ny, MPI_DOUBLE, domain.neighbour_east, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Isend(&buffE[0], ny, MPI_DOUBLE, domain.neighbour_east, 3, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndE[0], ny, MPI_DOUBLE, domain.neighbour_east, 4, domain.comm_cart, &reqs[count++]);
         }
         if (domain.neighbour_west >= 0)
         {
-            MPI_Isend(&buffW[0], ny, MPI_DOUBLE, domain.neighbour_west, 0, domain.comm_cart, &reqs[count++]);
-            MPI_Irecv(&bndW[0], ny, MPI_DOUBLE, domain.neighbour_west, 0, domain.comm_cart, &reqs[count++]);
+            MPI_Isend(&buffW[0], ny, MPI_DOUBLE, domain.neighbour_west, 4, domain.comm_cart, &reqs[count++]);
+            MPI_Irecv(&bndW[0], ny, MPI_DOUBLE, domain.neighbour_west, 3, domain.comm_cart, &reqs[count++]);
         }
 
         // wait for all non-blocking communication to complete
