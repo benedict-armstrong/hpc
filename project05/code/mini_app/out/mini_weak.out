@@ -1,0 +1,23 @@
+rm -f build/mini_app build/build/walltime.o   build/stats.o   build/data.o   build/operators.o   build/linalg.o   build/main.o out/output.*
+mpic++ -O3 -openmp -c stats.cpp -o build/stats.o
+mpic++ -O3 -openmp -c data.cpp -o build/data.o
+mpic++ -O3 -openmp -c operators.cpp -o build/operators.o
+mpic++ -O3 -openmp -c linalg.cpp -o build/linalg.o
+mpic++ -O3 -openmp -c main.cpp -o build/main.o
+mkdir -p out
+mpic++ -O3 -openmp build/walltime.o   build/stats.o   build/data.o   build/operators.o   build/linalg.o   build/main.o -o build/mini_app
+Running with base size n=64
+Running with 1 workers and size n=64
+Running with 4 workers and size n=128
+Running with 16 workers and size n=256
+Running with 64 workers and size n=512
+Running with base size n=128
+Running with 1 workers and size n=128
+Running with 4 workers and size n=256
+Running with 16 workers and size n=512
+Running with 64 workers and size n=1024
+Running with base size n=256
+Running with 1 workers and size n=256
+Running with 4 workers and size n=512
+Running with 16 workers and size n=1024
+Running with 64 workers and size n=2048
