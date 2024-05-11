@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=out/mini_weak                            # Job name    (default: sbatch)
+#SBATCH --job-name=mini_weak                            # Job name    (default: sbatch)
 #SBATCH --output=out/mini_weak.out                          # Output file (default: slurm-%j.out)
 #SBATCH --error=out/mini_weak.err                           # Error file  (default: slurm-%j.out)
 #SBATCH --nodes=1                                       # Number of nodes
