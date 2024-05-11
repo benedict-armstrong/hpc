@@ -364,11 +364,7 @@ int main(int argc, char *argv[])
     MPI_Barrier(domain.comm_cart);
 
     // Free domain.comm_cart
-    if (rank == 0 && domain.comm_cart != NULL)
-    {
-        MPI_Comm_free(&domain.comm_cart);
-    }
-
+    MPI_Comm_free(&domain.comm_cart);
     MPI_Finalize();
 
     return 0;
