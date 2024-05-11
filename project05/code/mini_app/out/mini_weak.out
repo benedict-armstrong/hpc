@@ -21,3 +21,4 @@ Running with 1 workers and size n=256
 Running with 4 workers and size n=512
 Running with 16 workers and size n=1024
 Running with 64 workers and size n=2048
+Done
