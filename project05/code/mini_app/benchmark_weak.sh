@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=mini_weak                            # Job name    (default: sbatch)
-#SBATCH --output=mini_weak.out                          # Output file (default: slurm-%j.out)
-#SBATCH --error=mini_weak.err                           # Error file  (default: slurm-%j.out)
+#SBATCH --job-name=out/mini_weak                            # Job name    (default: sbatch)
+#SBATCH --output=out/mini_weak.out                          # Output file (default: slurm-%j.out)
+#SBATCH --error=out/mini_weak.err                           # Error file  (default: slurm-%j.out)
 #SBATCH --nodes=1                                       # Number of nodes
 #SBATCH --ntasks=64                                     # Number of tasks
 #SBATCH --constraint=EPYC_7763                          # Select node with CPU
@@ -32,7 +32,7 @@ for base_res in 64 128 256; do
         echo "Running with $cpus workers and size n=$res"
         for j in $(seq 1 $runs); do
             time=$(mpirun -np $cpus ./build/mini_app $res 100 0.005 | grep "simulation took" | awk '{print $3}')
-            echo "$cpus,$res,$base_res,$time,$j" >>out/results.csv
+            echo "$cpus,$res,$base_res,$time,$j" >>out/results_weak.csv
         done
     done
 done

@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=mini_strong                          # Job name    (default: sbatch)
-#SBATCH --output=mini_strong.out                        # Output file (default: slurm-%j.out)
-#SBATCH --error=mini_strong.err                         # Error file  (default: slurm-%j.out)
+#SBATCH --job-name=out/mini_strong                          # Job name    (default: sbatch)
+#SBATCH --output=out/mini_strong.out                        # Output file (default: slurm-%j.out)
+#SBATCH --error=out/mini_strong.err                         # Error file  (default: slurm-%j.out)
 #SBATCH --nodes=1                                       # Number of nodes
 #SBATCH --ntasks=16                                     # Number of tasks
 #SBATCH --constraint=EPYC_7763                          # Select node with CPU
