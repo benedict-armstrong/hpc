@@ -107,22 +107,49 @@ to a final time of 0.005. Each task was run on a separate cpu
 (`--cpus-per-task=1 `) and all tasks on a single node (`--nodes=1`).
 Additionally all runs were repeated at least 10 times. The generated output
 files for all runs can be found in `code/mini_app/out`. The benchmarking scripts
-are in `code/mini_app`.
+are in `code/mini_app`. The results are compared to the OpenMP implementation
+from project03. The full benchmarks for the OpenMP implementation (right in the
+figures below) can be found in the #link(
+  "https://github.com/benedict-armstrong/hpc/tree/main/project03",
+  "project03",
+) repository.
 
 === Strong scaling [10 Points]
 
 To evaluate the performance of the new implementation I ran the code using $p=1, 2, 4, 8, 16$ processes
 and for each process count I ran the code with $s=64, 128, 256, 512, 1024$ mesh
-points (resolution) in each direction. The results are shown in @mini_app_strong
-and @mini_app_speedup.
+points (resolution) in each direction. The results are shown in
+@mini_app_strong_mpi and @mini_app_speedup_mpi.
 
 #grid(
   columns: 2,
-  [#figure(image("plots/mini_app/strong_scaling.svg"), caption: "Strong scaling") <mini_app_strong>],
-  [#figure(image("plots/mini_app/speedup.svg"), caption: "Speedup") <mini_app_speedup>],
+  gutter: 3,
+  [#figure(
+      image("plots/mini_app/strong_scaling.svg"),
+      caption: "Strong scaling MPI",
+    ) <mini_app_strong_mpi>],
+  [#figure(
+      image("plots/mini_app/strong_scaling_omp.svg"),
+      caption: "Strong scaling OpenMP",
+    ) <mini_app_strong_omp>],
+  [#figure(image("plots/mini_app/speedup.svg"), caption: "Speedup MPI") <mini_app_speedup_mpi>],
+  [#figure(image("plots/mini_app/speedup_omp.svg"), caption: "Speedup OpenMP") <mini_app_speedup_omp>],
 )
 
-TODO: *Discussion*
+In @mini_app_speedup_mpi we can see that as expected for the smallest mesh size
+($64$) we get the slowest speedup. This is could be caused by the fact that the
+communication overhead is relatively large compared to the computation time. For
+the larger mesh sizes the communication overhead is less significant and we get
+a better speedup. We can also see for the largest mesh size ($1024$) we get a
+super-linear speedup. One possible explanation for this is that the larger mesh
+we exceed the cache size and the communication overhead becomes less
+significant. A quick calculation shows that the AMD EPYC 7763 has a L2 cache of
+512KiB per core which would allow for a mesh size of about $sqrt((512 "KiB") / 8) approx 256 $ mesh
+points in each direction to fit into the L2 cache.
+
+We can see that both the MPI and OpenMP implementations scale similarly. The MPI
+implementation is consistently faster, especially for the largest mesh
+resolution ($1024$).
 
 === Weak scaling [10 Points]
 
@@ -134,15 +161,37 @@ $
   "# mesh points" = floor("base_size" * sqrt("# processes"))^2
 $
 
-The results are shown in @mini_app_weak and @mini_app_efficiency.
+The results are shown in @mini_app_weak_mpi and @mini_app_efficiency_mpi.
 
 #grid(
   columns: 2,
-  [#figure(image("plots/mini_app/weak.svg"), caption: "Weak scaling") <mini_app_weak>],
-  [#figure(image("plots/mini_app/efficiency.svg"), caption: "Efficiency") <mini_app_efficiency>],
+  [#figure(image("plots/mini_app/weak.svg"), caption: "Weak scaling MPI") <mini_app_weak_mpi>],
+  [#figure(image("plots/mini_app/weak_omp.svg"), caption: "Weak scaling OpenMP") <mini_app_weak_omp>],
+  [#figure(image("plots/mini_app/efficiency.svg"), caption: "Efficiency MPI") <mini_app_efficiency_mpi>],
+  [#figure(
+      image("plots/mini_app/efficiency_omp.svg"),
+      caption: "Efficiency OpenMP",
+    ) <mini_app_efficiency_omp>],
 )
 
-TODO: *Discussion*
+@mini_app_weak_mpi shows us that all three tested base sizes scale very
+similarly. Only for 64 processes and the smallest base size we see a significant
+drop in performance. This is likely due to the communication overhead which
+becomes more significant for a larger number of processes. In
+@mini_app_efficiency_mpi we see an initial drop in efficiency which is likely
+due to the communication overhead when we switch from a single process to
+multiple. When we increase the number of processes the efficiency decreases more
+slowly. However for $64$ processes the efficiency drops below 20% for all base
+sizes.
+
+Again comparing @mini_app_efficiency_mpi and @mini_app_efficiency_omp we can see
+that they scale similarly. The MPI implementation is a little bit faster and we
+can notice a more significant initial drop in efficiency for the OpenMP
+implementation.
+
+To achieve the best performance we should probably implement a hybrid strategy.
+Parallelize the code on one node using OpenMP and share the work among the nodes
+using MPI.
 
 // == Bonus [20 Points]: Overlapping computation/computation details
 
