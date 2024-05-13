@@ -100,7 +100,21 @@ For this part of the task I started by copying the code from the provided
 example. The only thing I had to adjust was the storage order, which I set to
 `MPI_ORDER_FORTRAN`.
 
-== Strong scaling [10 Points]
+== Scaling studies
+
+For both strong and weak scaling benchmarks the code was run for 100 time steps
+to a final time of 0.005. Each task was run on a separate cpu
+(`--cpus-per-task=1 `) and all tasks on a single node (`--nodes=1`).
+Additionally all runs were repeated at least 10 times. The generated output
+files for all runs can be found in `code/mini_app/out`. The benchmarking scripts
+are in `code/mini_app`.
+
+=== Strong scaling [10 Points]
+
+To evaluate the performance of the new implementation I ran the code using $p=1, 2, 4, 8, 16$ processes
+and for each process count I ran the code with $s=64, 128, 256, 512, 1024$ mesh
+points (resolution) in each direction. The results are shown in @mini_app_strong
+and @mini_app_speedup.
 
 #grid(
   columns: 2,
@@ -108,13 +122,27 @@ example. The only thing I had to adjust was the storage order, which I set to
   [#figure(image("plots/mini_app/speedup.svg"), caption: "Speedup") <mini_app_speedup>],
 )
 
-== Weak scaling [10 Points]
+TODO: *Discussion*
+
+=== Weak scaling [10 Points]
+
+For the weak scaling benchmark I ran the code using $p=1, 4, 16, 64$ processes
+and a base sizes of $s=64, 128, 256$ mesh points in each direction. The number
+of mesh points for each configuration was calculated as:
+
+$
+  "# mesh points" = floor("base_size" * sqrt("# processes"))^2
+$
+
+The results are shown in @mini_app_weak and @mini_app_efficiency.
 
 #grid(
   columns: 2,
   [#figure(image("plots/mini_app/weak.svg"), caption: "Weak scaling") <mini_app_weak>],
   [#figure(image("plots/mini_app/efficiency.svg"), caption: "Efficiency") <mini_app_efficiency>],
 )
+
+TODO: *Discussion*
 
 // == Bonus [20 Points]: Overlapping computation/computation details
 
