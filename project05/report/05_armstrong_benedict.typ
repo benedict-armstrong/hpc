@@ -17,21 +17,106 @@ All benchmarks and programs were run on the *Euler VII — phase 2 cluster* with
 
 == Initialize/finalize MPI and welcome message [5 Points]
 
-Changed the welcome message to include the number of processes. Not that much to
-say here.
+Changed the welcome message to include the number of processes. The message now
+reads:
+
+```text
+================================================================================
+                      Welcome to mini-stencil!
+version   :: C++ MPI
+processes :: 16
+mesh      :: 100 * 100 dx = 0.010101
+time      :: 100 time steps from 0 .. 0.005
+iteration :: CG 300, Newton 50, tolerance 1e-06
+================================================================================
+```
 
 == Domain decomposition [10 Points]
+
+For the decomposition I went with the most simple cartesian decomposition. As in
+the last project I used the `MPI_Cart_create` function to create a 2D cartesian
+grid. The number of processes in each dimension is calculated automatically by
+MPI. The Domain is the split up evenly in both dimensions for the given number
+of processes. The code for the decomposition can be found in
+`code/mini_app/data.cpp`.
+
 == Linear algebra kernels [5 Points]
 
-I parallelized the linear algebra kernels using the same OMP pragma directives
-as in `project03`.
+Most operations are local to the process and can be done sequentially. The only
+operations that require communication are the dot product and the norm. I
+implemented the dot product using the `MPI_Allreduce` function and changed the
+norm to use the dot product. We start by calculating the dot product of the
+local vectors and then sum them up using `MPI_Allreduce`.
+
+```cpp
+for (int i = 0; i < N; i++)
+{
+    result += x[i] * y[i];
+}
+
+MPI_Allreduce(MPI_IN_PLACE, &result, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+```
+
+The code for the dot product can be found in `code/mini_app/linalg.cpp`.
 
 == The diffusion stencil: Ghost cells exchange [10 Points]
+
+The only missing part in the implementation here was the exchange of ghost
+cells. The steps are described here using the north/south direction but are
+essentially the same for east/west. As outlined in the task description we first
+need to copy the data from the boundary cells into buffers.
+
+```cpp
+for (int i = 0; i <= iend; ++i)
+{
+    buffN[i] = s_new(i, jend);
+    buffS[i] = s_new(i, 0);
+}
+```
+
+Next we need to send the data to the neighboring processes if they exist. When
+we set up the cartesian grid we also get the rank of the neighboring processes,
+if the process has no neighbor the rank is set to a negative value.
+
+```cpp
+if (domain.neighbour_north >= 0)
+{
+    MPI_Isend(&buffN[0], nx, MPI_DOUBLE, neighbour_north, 1, comm_cart, &reqs[cnt++]);
+    MPI_Irecv(&bndN[0], nx, MPI_DOUBLE, neighbour_north, 2, comm_cart, &reqs[cnt++]);
+}
+```
+We use this to send and receive the ghost cell data from the neighboring
+processes (if they exist).
+
+The last step is to wait for all the communication to finish.
+
+```cpp
+MPI_Waitall(count, reqs, MPI_STATUSES_IGNORE);
+```
+
 == Implement parallel I/O [10 Points]
+
+For this part of the task I started by copying the code from the provided
+example. The only thing I had to adjust was the storage order, which I set to
+`MPI_ORDER_FORTRAN`.
+
 == Strong scaling [10 Points]
+
+#grid(
+  columns: 2,
+  [#figure(image("plots/mini_app/strong_scaling.svg"), caption: "Strong scaling") <mini_app_strong>],
+  [#figure(image("plots/mini_app/speedup.svg"), caption: "Speedup") <mini_app_speedup>],
+)
+
 == Weak scaling [10 Points]
 
-== Bonus [20 Points]: Overlapping computation/computation details
+#grid(
+  columns: 2,
+  [#figure(image("plots/mini_app/weak.svg"), caption: "Weak scaling") <mini_app_weak>],
+  [#figure(image("plots/mini_app/efficiency.svg"), caption: "Efficiency") <mini_app_efficiency>],
+)
+
+// == Bonus [20 Points]: Overlapping computation/computation details
 
 = Python for High-Performance Computing [in total 40 points]
 == Sum of ranks: MPI collectives [5 Points]
