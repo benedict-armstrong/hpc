@@ -18,7 +18,7 @@ module list
 make clean
 make
 
-runs=10
+runs=3
 
 # add header to the output file
 echo "cpus,res,base_res,time,run" >out/results_weak.csv
@@ -26,14 +26,15 @@ echo "cpus,res,base_res,time,run" >out/results_weak.csv
 #
 for base_res in 64 128 256; do
     echo "Running with base size n=$base_res"
-    for cpus in 1 4 16 64; do
+    for cpus in 16 64; do
         # res = base_res * sqrt(cpus)
         res=$(echo "sqrt($cpus) * $base_res" | bc)
         echo "Running with $cpus workers and size n=$res"
         for j in $(seq 1 $runs); do
             time=$(mpirun -np $cpus ./build/mini_app $res 100 0.005 | grep "simulation took" | awk '{print $3}')
             echo "$cpus,$res,$base_res,$time,$j" >>out/results_weak.csv
-        done
+       	    mv out/output.bin "out/output_$cpus_$res_$j.bin"
+	done
     done
 done
 
