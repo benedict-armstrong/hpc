@@ -1,0 +1,17 @@
+Read the ``Getting Started'' Chapter of the PETSc manual:
+
+  https://petsc.org/release/manual/getting_started/
+
+In particular, the section on developing an application program that uses PETSc:
+
+  https://petsc.org/release/manual/getting_started/#writing-c-c-or-fortran-applications
+
+For instance, ex2
+
+  https://petsc.org/release/src/ksp/ksp/tutorials/ex2.c.html
+
+or ex29
+
+  https://petsc.org/release/src/ksp/ksp/tutorials/ex29.c.html
+
+could be of interest.
