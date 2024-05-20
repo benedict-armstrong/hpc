@@ -32,6 +32,6 @@ function coordinate_part(A, coords)
             p[p2] .= 2
         end
     end
-    
+
     return p
 end

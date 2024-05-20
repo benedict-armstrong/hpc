@@ -19,13 +19,39 @@ A, coords = getData(mesh);
 save("images/$mesh.pdf", draw_graph(A, coords));
 
 # Partitioning: Coordinate bisection
-p = coordinate_part(A, coords); 
-print("Edge-cut of $mesh mesh with coordinate bisection: " *
-      "$(count_edge_cut(A, p))\n\n");
-save("images/$(mesh)_coordinate.pdf", draw_graph(A, coords, p));
+# p = coordinate_part(A, coords);
+# print("Edge-cut of $mesh mesh with coordinate bisection: " *
+#       "$(count_edge_cut(A, p))\n\n");
+# save("images/bisection/$(mesh)_coordinate.pdf", draw_graph(A, coords, p));
 
-# Partitioning: METIS
-p = metis_part(A, 4, :KWAY);
-# p = metis_part(A, 4, :RECURSIVE);
-print("Edge-cut of $mesh mesh with METIS: $(count_edge_cut(A, p))\n\n");
-save("images/$(mesh)_metis.pdf", draw_graph(A, coords, p));
+# # Partitioning: METIS
+# p = metis_part(A, 4, :KWAY);
+# # p = metis_part(A, 4, :RECURSIVE);
+# print("Edge-cut of $mesh mesh with METIS: $(count_edge_cut(A, p))\n\n");
+# save("images/bisection/$(mesh)_metis.pdf", draw_graph(A, coords, p));
+
+# # Partitioning: Inertial bisection
+# p = inertial_part(A, coords);
+# print("Edge-cut of $mesh mesh with inertial bisection: " *
+#       "$(count_edge_cut(A, p))\n\n");
+# save("images/bisection/$(mesh)_inertial.pdf", draw_graph(A, coords, p));
+
+# # Partitioning: Spectral bisection (Fiedler false)
+# p = spectral_part(A);
+# print("Edge-cut of $mesh mesh with spectral bisection: " *
+#       "$(count_edge_cut(A, p))\n\n");
+# save("images/bisection/$(mesh)_spectral.pdf", draw_graph(A, coords, p));
+
+# # Partitioning: Spectral bisection (Fiedler true)
+# p = spectral_part(A, fiedler=true);
+# print("Edge-cut of $mesh mesh with spectral bisection (Fiedler): " *
+#       "$(count_edge_cut(A, p))\n\n");
+# save("images/bisection/$(mesh)_spectral_fiedler.pdf", draw_graph(A, coords, p));
+
+# Recursive partitioning: Spectral
+divisions = 3;
+p = rec_bisection(spectral_part, divisions, A);
+print("Edge-cut of $mesh mesh with recursive spectral partitioning: " *
+      "$(count_edge_cut(A, p))\n\n");
+save("images/recursive/$(mesh)_$(divisions)_spectral.pdf", draw_graph(A, coords, p));
+
