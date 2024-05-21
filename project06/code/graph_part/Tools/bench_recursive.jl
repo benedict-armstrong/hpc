@@ -26,6 +26,8 @@ function benchmark_recursive()
 
     # Loop through meshes
     for (i, mesh) in enumerate(meshes)
+        print("Benchmarking $mesh mesh...\n")
+
         # Read data
         A, coords = getData(mesh)
 

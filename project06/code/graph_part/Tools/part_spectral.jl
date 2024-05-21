@@ -25,7 +25,7 @@ function spectral_part(A; fiedler=false)
     L = laplacian(A)
 
     # 2. Compute its eigendecomposition.
-    _, U = Arpack.eigs(L, nev=2, which=:SR, ritzvec=true)
+    _, U = Arpack.eigs(L, nev=2, which=:SR, maxiter=10000)
 
     # 3. Label the vertices with the entries of the Fiedler vector.
     if fiedler

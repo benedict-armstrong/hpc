@@ -12,5 +12,7 @@ using Graphs, SGtSNEpi, Colors, CairoMakie, PrettyTables
 include("./Tools/add_paths.jl");
 
 # Run benchmark
+print("Benchmarking bisection methods...\n")
 benchmark_bisection()
+print("\nBenchmarking recursive bisection...\n")
 benchmark_recursive()

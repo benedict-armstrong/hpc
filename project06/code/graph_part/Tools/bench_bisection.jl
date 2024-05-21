@@ -22,6 +22,7 @@ function benchmark_bisection()
 
     # Loop through meshes
     for (i, mesh) in enumerate(meshes)
+        print("Benchmarking $mesh mesh...\n")
         # Read data
         A, coords = getData(mesh)
 

@@ -12,7 +12,7 @@ using Graphs, SGtSNEpi, Colors, CairoMakie, PrettyTables
 include("./Tools/add_paths.jl");
 
 # Read mesh, generate adjacency matrices and vertices coordinates
-mesh = "airfoil1" # see the mesh folder (e.g., "mesh3e1", "CH-4468", ...)
+mesh = "mesh2e1" # see the mesh folder (e.g., "mesh3e1", "CH-4468", ...)
 A, coords = getData(mesh);
 
 # Draw the mesh
