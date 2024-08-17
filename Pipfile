@@ -8,6 +8,8 @@ matplotlib = "*"
 pandas = "*"
 mpi4py = "*"
 seaborn = "*"
+petsc4py = "*"
+petsc = "*"
 
 [dev-packages]
 ipykernel = "*"

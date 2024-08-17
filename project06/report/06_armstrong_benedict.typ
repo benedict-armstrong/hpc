@@ -39,4 +39,7 @@ The code for all implementations is available in `code/graph_part/`.
 
 == Recursive bisection
 
+#figure(image("plots/graph/bisection.svg"), caption: "") <bisection>
+#figure(image("plots/graph/bisection_recursive.svg"), caption: "") <bisection_recursive>
+
 = HPC software frameworks [50 points]
