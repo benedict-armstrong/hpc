@@ -11,7 +11,7 @@
 #SBATCH --mail-type=END
 
 # Load some modules & list loaded modules
-module load stack/2024-06 gcc/12.2.0 python/3.11.6 py-mpi4py/3.1.4
+module load stack/2024-06 gcc/12.2.0 openmpi/4.1.6 python/3.11.6 py-mpi4py/3.1.4
 module list
 
 mpirun -np 2 python3 poisson.py
