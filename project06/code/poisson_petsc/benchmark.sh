@@ -14,6 +14,16 @@
 module load stack/2024-06 gcc/12.2.0 openmpi/4.1.6 python/3.11.6 py-mpi4py/3.1.4
 module list
 
+python3 -m venv --system-site-packages project06-env
+source project06-env/bin/activate # activates the virtual environment
+
+# install required packages
+pip install numpy scipy matplotlib mpi4py petsc4py
+
+# list installed packages
+pip list
+
 mpirun -np 2 python3 poisson.py
 
+deactivate
 echo "Done"
