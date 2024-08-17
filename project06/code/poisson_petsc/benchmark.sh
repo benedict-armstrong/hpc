@@ -4,6 +4,8 @@
 #SBATCH --error=out/poisson_py.err                       # Error file  (default: slurm-%j.out)
 #SBATCH --constraint=EPYC_7763                            # Select node with CPU
 #SBATCH --mem-per-cpu=8G                                  # Memory per CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=2
 #SBATCH --time=1:00:00                                   # Wall clock time limit
 #SBATCH --mail-user=benedict.armstrong@inf.ethz.ch
 #SBATCH --mail-type=END
